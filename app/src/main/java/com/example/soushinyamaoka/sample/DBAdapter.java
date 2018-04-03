@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 public class DBAdapter extends AppCompatActivity {
-    private final static String DB_NAME = "test4.db";//DB名
-    private final static String DB_TABLE = "test4";//テーブル名
+    private final static String DB_NAME = "test5.db";//DB名
+    private final static String DB_TABLE = "test5";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
+    private static final String COL_ID = "_id";
 
     private SQLiteDatabase db = null;           // SQLiteDatabase
     private DBHelper dbHelper = null;           // DBHepler
@@ -60,47 +61,48 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     //データベースからの読み込み
-    public ArrayList<String> readDB() throws Exception {
-        ArrayList<String> list = new ArrayList<String>();
-        String[] cols = {"info"};
-        try {
-            Cursor c = db.query(DB_TABLE, cols, null, null, null, null, null);
-            c.moveToFirst();
-            for (int i = 0; i < c.getCount(); i++) {
-                list.add(c.getString(0));
-                c.moveToNext();
-            }
-            c.close();
+//    public ArrayList<String> readDB() throws Exception {
+//        ArrayList<String> list = new ArrayList<String>();
+//        String[] cols = {"info"};
+//        try {
+//            Cursor c = db.query(DB_TABLE, cols, null, null, null, null, null);
+//            c.moveToFirst();
+//            for (int i = 0; i < c.getCount(); i++) {
+//                list.add(c.getString(0));
+//                c.moveToNext();
+//            }
+//            c.close();
 
-        }catch(SQLException e) {
-            Log.e(TAG, "SQLExcepption:"+e.toString());
-        }
-        return list;
-    }
+//        }catch(SQLException e) {
+//            Log.e(TAG, "SQLExcepption:"+e.toString());
+//        }
+//        return list;
+//    }
 
     public void deleteDB(long id){
-        db.delete(DB_TABLE, id + "=?", null);
+        db.delete(DB_TABLE, "id = " + id, null);
+        db.close();
         }
-
-    private static class DBHelper extends SQLiteOpenHelper {
+}
+//    private static class DBHelper extends SQLiteOpenHelper {
 
         //データベースヘルパーのコンストラクタ
-        public DBHelper(Context context) {
-            super(context, DB_NAME, null, DB_VERSION); //DB名、テーブル名、DBバージョンを定数として保持している
-        }
+//        public DBHelper(Context context) {
+//            super(context, DB_NAME, null, DB_VERSION); //DB名、テーブル名、DBバージョンを定数として保持している
+//        }
 
         //データベースの生成
-        @Override
-        public void onCreate(SQLiteDatabase db){
-            db.execSQL("create table if not exists " +
-                    DB_TABLE + "(id integer primary key ,info text)");//_id text primary key
-        }
+//        @Override
+//        public void onCreate(SQLiteDatabase db){
+//            db.execSQL("create table if not exists " +
+//                    DB_TABLE + "(id integer primary key autoincrement ,info text)");//_id text primary key
+//        }
 
         //データベースのアップグレード
-        @Override
-        public void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion){
-            db.execSQL("drop table if exists "+DB_TABLE);
-            onCreate(db);
-        }
-    }
-}
+//        @Override
+//        public void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion){
+//            db.execSQL("drop table if exists "+DB_TABLE);
+//            onCreate(db);
+//        }
+//    }
+
