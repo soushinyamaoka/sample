@@ -1,17 +1,13 @@
 package com.example.soushinyamaoka.sample;
 
-import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -19,8 +15,8 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 public class DBAdapter extends AppCompatActivity {
-    private final static String DB_NAME = "test5.db";//DB名
-    private final static String DB_TABLE = "test5";//テーブル名
+    private final static String DB_NAME = "test6.db";//DB名
+    private final static String DB_TABLE = "test6";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "_id";
 
@@ -61,28 +57,50 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     //データベースからの読み込み
-//    public ArrayList<String> readDB() throws Exception {
-//        ArrayList<String> list = new ArrayList<String>();
-//        String[] cols = {"info"};
-//        try {
-//            Cursor c = db.query(DB_TABLE, cols, null, null, null, null, null);
-//            c.moveToFirst();
-//            for (int i = 0; i < c.getCount(); i++) {
-//                list.add(c.getString(0));
-//                c.moveToNext();
-//            }
-//            c.close();
+    public ArrayList<String> readDB() throws Exception {
+        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<Integer> listID = new ArrayList<>();
+        String[] cols = {"info","id"};
+        try {
+            Cursor c = db.query(DB_TABLE, cols, null, null, null, null, null);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                list.add(c.getString(0));
+                listID.add(c.getInt(1));
+                c.moveToNext();
+            }
+            c.close();
 
-//        }catch(SQLException e) {
-//            Log.e(TAG, "SQLExcepption:"+e.toString());
-//        }
-//        return list;
-//    }
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        return list;
+    }
 
-    public void deleteDB(long id){
+    public void deleteDB(int id){
         db.delete(DB_TABLE, "id = " + id, null);
         db.close();
+    }
+
+    //データベースからの読み込み
+    public ArrayList<Integer> deletereadDB() throws Exception {
+        ArrayList<Integer> listID = new ArrayList<>();
+        String[] cols = {"id"};
+        try {
+            Cursor c = db.query(DB_TABLE, cols, null, null, null, null, null);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listID.add(c.getInt(0));
+                c.moveToNext();
+            }
+            c.close();
+
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
         }
+        return listID;
+    }
+
 }
 //    private static class DBHelper extends SQLiteOpenHelper {
 
