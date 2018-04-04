@@ -1,6 +1,5 @@
 package com.example.soushinyamaoka.sample;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.database.Cursor;
@@ -9,16 +8,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
 import static android.content.ContentValues.TAG;
 
 /**
@@ -32,7 +27,7 @@ public class MainActivity2 extends Activity {
     public ListView listView;
     String[] cols = {"info"};
     DBAdapter2 dbAdapter = new DBAdapter2(this);
-    DialogFragment newFragment = new SampleDialogFragment();
+    DialogFragment newFragment = new EmptyTaskDialogFragment();
     private SQLiteDatabase db = null;           // SQLiteDatabase
     private final static String DB_TABLE = "test5";//テーブル名
 

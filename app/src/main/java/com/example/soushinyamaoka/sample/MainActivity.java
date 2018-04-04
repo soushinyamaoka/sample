@@ -31,8 +31,10 @@ public class MainActivity extends Activity {
     private Button editButton;
     public ListView listView;
     DBAdapter dbAdapter = new DBAdapter(this);
-    DialogFragment newFragment = new SampleDialogFragment();
+    DialogFragment emptyTaskDialogFragment = new EmptyTaskDialogFragment();
+    DialogFragment deleteDialogFragment = new DeleteDialogFragment();
     DBHelper db = new DBHelper(this);
+    private String deleteresult;
 
     //アクティビティ起動時に呼ばれる
     @Override
@@ -46,12 +48,13 @@ public class MainActivity extends Activity {
         showlist();
 
         editButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 try {
                     String str = editText.getText().toString();//書き込まれた内容(getText)をstrに格納
                     if(str.equals("")){
-                        newFragment.show(getFragmentManager(), "test1");
+                        emptyTaskDialogFragment.show(getFragmentManager(), "empty");
                     }
                     else {
                         dbAdapter.openDB();
@@ -71,16 +74,19 @@ public class MainActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,View view,
                                            int position, long id) {
-                dbAdapter.openDB();
-                ArrayList<Integer> deleteListID = deleteList();//DB上のid
-                int deleteID = deleteListID.get((int) id);//削除対象のリストと同じ位置にある、DB上のidを取得
-                dbAdapter.deleteDB(deleteID);
-                showlist();
-                try {
-                    //showlist();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                deleteDialogFragment.show(getFragmentManager(), "delete");
+
+                //if (getDialogResult()) {
+                //    try {
+                //        dbAdapter.openDB();
+                //        ArrayList<Integer> deleteListID = deleteList();//①DB上のidを取得
+                //        int deleteID = deleteListID.get((int) id);//②削除対象のリストと同じ位置にある、DB上のidを取得
+                //        dbAdapter.deleteDB(deleteID);//③②で取得したidをdeloteDBに渡す。
+                //        showlist();
+                //    } catch (Exception e) {
+                //        e.printStackTrace();
+                //    }
+                //}
                 return false;
             }
         });
@@ -109,10 +115,35 @@ public class MainActivity extends Activity {
         ArrayList<Integer> idAdapter = new ArrayList<>();
         dbAdapter.openDB();
         try {
-            idAdapter = dbAdapter.deletereadDB();
+            idAdapter = dbAdapter.deletereadDB();//①DB上のidを取得
         } catch (Exception e) {
             e.printStackTrace();
         }
         return idAdapter;
+    }
+
+    public void deleteList2(long listId){
+        ArrayList<Integer> idAdapter = new ArrayList<>();
+        dbAdapter.openDB();
+        try {
+            idAdapter = dbAdapter.deletereadDB();//①DB上のidを取得しidAdapterに格納
+            int deleteDBID = idAdapter.get((int) listId);//②削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
+            dbAdapter.deleteDB(deleteDBID);//DB上の値をDB上のidで削除。
+            showlist();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    String setdialogresult;
+    final String deleteOK = "はい";
+    final String deleteNG = "いいえ";
+
+    public void setDialogResult(String dialogResult){
+        setdialogresult = dialogResult;
+    }
+
+    public boolean getDialogResult(){
+        return setdialogresult.equals(deleteOK);
     }
 }

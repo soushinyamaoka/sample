@@ -10,7 +10,7 @@ import android.os.Bundle;
  * Created by SoushinYamaoka on 2018/03/25.
  */
 
-public class SampleDialogFragment extends DialogFragment {
+public class EmptyTaskDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
