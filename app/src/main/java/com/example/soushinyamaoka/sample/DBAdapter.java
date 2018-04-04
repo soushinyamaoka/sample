@@ -25,6 +25,11 @@ public class DBAdapter extends AppCompatActivity {
     protected Context context;
     public ListView listView;
 
+    public DBAdapter(DeleteDialogFragment deleteDialogFragment) {
+        this.context = context;
+        dbHelper = new DBHelper(this.context);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

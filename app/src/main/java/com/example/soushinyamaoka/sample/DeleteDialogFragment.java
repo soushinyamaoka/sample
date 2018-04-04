@@ -6,11 +6,23 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import java.util.ArrayList;
+
 public class DeleteDialogFragment extends DialogFragment {
 
-    public void deleteDialog(long id){
-        MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.deleteList2((int)id);
+    DBAdapter dbAdapter = new DBAdapter(this);
+
+    public int deleteDialog(long id){
+        ArrayList<Integer> idAdapter = new ArrayList<>();
+        try {
+            idAdapter = dbAdapter.deletereadDB();//①DB上のidを取得しidAdapterに格納
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        int deleteDBID = idAdapter.get((int) id);//②削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
+        //dbAdapter.deleteDB(deleteDBID);//DB上の値をDB上のidで削除。
+
+        return deleteDBID;
     }
 
     @Override
@@ -26,6 +38,7 @@ public class DeleteDialogFragment extends DialogFragment {
                 .setPositiveButton(deleteOK, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //リストクリック時の処理
+
                         // MainActivityのインスタンスを取得
                         //MainActivity mainActivity = (MainActivity) getActivity();
                         //mainActivity.deleteList2();
