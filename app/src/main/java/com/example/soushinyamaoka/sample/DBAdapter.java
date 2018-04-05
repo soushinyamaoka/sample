@@ -25,11 +25,16 @@ public class DBAdapter extends AppCompatActivity {
     protected Context context;
     public ListView listView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listview);
         listView = findViewById(R.id.listView);
+    }
+
+    public DBAdapter(){
+        dbHelper = new DBHelper();
     }
 
     public DBAdapter(Context context) {

@@ -32,7 +32,6 @@ public class MainActivity extends Activity {
     public ListView listView;
     DBAdapter dbAdapter = new DBAdapter(this);
     DialogFragment emptyTaskDialogFragment = new EmptyTaskDialogFragment();
-    DialogFragment deleteDialogFragment = new DeleteDialogFragment();
     DBHelper db = new DBHelper(this);
     private String deleteresult;
 
@@ -74,6 +73,13 @@ public class MainActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,View view,
                                            int position, long id) {
+                DeleteDialogFragment deleteDialogFragment = new DeleteDialogFragment();
+
+                Bundle bundle = new Bundle();
+
+                bundle.putLong("deleteId", id);
+                deleteDialogFragment.setArguments(bundle);
+
                 deleteDialogFragment.show(getFragmentManager(), "delete");
 
                 //if (getDialogResult()) {
