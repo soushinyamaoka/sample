@@ -20,10 +20,6 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DB_VERSION); //DB名、テーブル名、DBバージョンを定数として保持している
     }
 
-    public DBHelper(){
-        super(null, DB_NAME, null, DB_VERSION);
-    }
-
     //データベースの生成
     @Override
     public void onCreate(SQLiteDatabase db){
