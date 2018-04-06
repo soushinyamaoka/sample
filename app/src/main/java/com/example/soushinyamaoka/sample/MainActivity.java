@@ -2,6 +2,7 @@ package com.example.soushinyamaoka.sample;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,10 +31,12 @@ public class MainActivity extends Activity {
     private EditText editText;
     private Button editButton;
     public ListView listView;
-    DBAdapter dbAdapter = new DBAdapter(this);
-    DialogFragment emptyTaskDialogFragment = new EmptyTaskDialogFragment();
-    DBHelper db = new DBHelper(this);
+    DBAdapter dbAdapter;
+    DialogFragment emptyTaskDialogFragment;
+    DBHelper db;
     private String deleteresult;
+    ArrayAdapter<String> adapter;
+    ArrayList<String> lvAdapter;
 
     //アクティビティ起動時に呼ばれる
     @Override
@@ -42,9 +45,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         editText = findViewById(R.id.editText);
         editButton = findViewById(R.id.editButton);
-        listView = findViewById(R.id.listView);
+        listView = findViewById(R.id.list_view);
+        dbAdapter = new DBAdapter(this);
+        emptyTaskDialogFragment = new EmptyTaskDialogFragment();
+        db = new DBHelper(this);
 
-        showlist();
+
+        showlist(this);
 
         editButton.setOnClickListener(new View.OnClickListener() {
 
@@ -59,7 +66,7 @@ public class MainActivity extends Activity {
                         dbAdapter.openDB();
                         dbAdapter.writeDB(str);//writeDBメソッドを呼び出し、strを引数として渡す
                         dbAdapter.readDB();
-                        showlist();
+                        showlist(getApplicationContext());
                     }
                 } catch (Exception e) {//エラーの場合
                     Log.e(TAG, "SQLExcepption:" + e.toString());
@@ -73,13 +80,11 @@ public class MainActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,View view,
                                            int position, long id) {
+                //deleteList2(id);
                 DeleteDialogFragment deleteDialogFragment = new DeleteDialogFragment();
-
                 Bundle bundle = new Bundle();
-
                 bundle.putLong("deleteId", id);
                 deleteDialogFragment.setArguments(bundle);
-
                 deleteDialogFragment.show(getFragmentManager(), "delete");
 
                 //if (getDialogResult()) {
@@ -87,7 +92,7 @@ public class MainActivity extends Activity {
                 //        dbAdapter.openDB();
                 //        ArrayList<Integer> deleteListID = deleteList();//①DB上のidを取得
                 //        int deleteID = deleteListID.get((int) id);//②削除対象のリストと同じ位置にある、DB上のidを取得
-                //        dbAdapter.deleteDB(deleteID);//③②で取得したidをdeloteDBに渡す。
+                //        dbAdapter.deleteDB(deleteID);//③②で取得したidをdeleteDBに渡す。
                 //        showlist();
                 //    } catch (Exception e) {
                 //        e.printStackTrace();
@@ -103,8 +108,8 @@ public class MainActivity extends Activity {
     //    @SuppressLint("Recycle") Cursor cursor = db.query(DB_TABLE, null, null, null, null, null, null);
     //    db.close();
     //}
-    public void showlist(){
-        ArrayList<String> lvAdapter = new ArrayList<>();
+    public void showlist(Context context){
+        lvAdapter = new ArrayList<>();
         dbAdapter.openDB();
         try {
             lvAdapter = dbAdapter.readDB();
@@ -112,8 +117,10 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
         // Adapterの作成
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list, (List<String>) lvAdapter);
+        adapter = new ArrayAdapter<String>(context, R.layout.list, (List<String>) lvAdapter);
+
         // ListViewにAdapterを関連付ける
+        listView = findViewById(R.id.list_view);
         listView.setAdapter(adapter);
     }
 
@@ -128,14 +135,16 @@ public class MainActivity extends Activity {
         return idAdapter;
     }
 
-    public void deleteList2(long listId){
+    public void deleteList2(Context context, long listId){
         ArrayList<Integer> idAdapter = new ArrayList<>();
-        dbAdapter.openDB();
+        dbAdapter = new DBAdapter(context);
         try {
+            dbAdapter.openDB();
             idAdapter = dbAdapter.deletereadDB();//①DB上のidを取得しidAdapterに格納
             int deleteDBID = idAdapter.get((int) listId);//②削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
+            dbAdapter.openDB();
             dbAdapter.deleteDB(deleteDBID);//DB上の値をDB上のidで削除。
-            showlist();
+            //showlist(context);
         } catch (Exception e) {
             e.printStackTrace();
         }

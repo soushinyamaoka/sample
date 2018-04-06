@@ -15,16 +15,16 @@ public class DBHelper extends SQLiteOpenHelper {
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "_id";
 
-    //データベースヘルパーのコンストラクタ
-    public DBHelper(Context context) {
-        super(context, DB_NAME, null, DB_VERSION); //DB名、テーブル名、DBバージョンを定数として保持している
-    }
-
     //データベースの生成
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL("create table if not exists " +
                 DB_TABLE + "(id integer primary key autoincrement ,info text)");//_id text primary key
+    }
+
+    //データベースヘルパーのコンストラクタ
+    public DBHelper(Context context) {
+        super(context, DB_NAME, null, DB_VERSION); //DB名、テーブル名、DBバージョンを定数として保持している
     }
 
     //データベースのアップグレード

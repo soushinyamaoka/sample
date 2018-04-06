@@ -21,7 +21,7 @@ public class DBAdapter extends AppCompatActivity {
     private static final String COL_ID = "_id";
 
     private SQLiteDatabase db = null;           // SQLiteDatabase
-    private DBHelper dbHelper = null;           // DBHepler
+    private DBHelper dbHelper;           // DBHepler
     protected Context context;
     public ListView listView;
 
@@ -29,7 +29,7 @@ public class DBAdapter extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listview);
-        listView = findViewById(R.id.listView);
+        listView = findViewById(R.id.list_view);
     }
 
     public DBAdapter(Context context) {
