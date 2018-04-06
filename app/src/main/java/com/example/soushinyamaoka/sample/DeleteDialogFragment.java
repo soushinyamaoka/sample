@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.widget.ListView;
 
 public class DeleteDialogFragment extends DialogFragment {
 
@@ -16,16 +17,20 @@ public class DeleteDialogFragment extends DialogFragment {
         final String deleteOK = "はい";
         final String deleteNG = "いいえ";
         final long deleteId = getArguments().getLong("deleteId");
-        //ListView listView = findViewById(R.id.list_view);
+
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(deleteMessage)
                 .setPositiveButton(deleteOK, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //リストクリック時の処理
+
+                        //mainActivity.showlist(getActivity(),listView);
+
                         MainActivity mainActivity = new MainActivity();
-                        mainActivity.deleteList2(getActivity(),deleteId);
-                        mainActivity.showlist(getActivity());
+                        mainActivity.deleteList(getActivity(),deleteId);
+
+                        //listView = (ListView) getView().findViewById(R.id.list_view);
 
                         dialog.dismiss();
                     }

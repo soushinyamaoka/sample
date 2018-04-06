@@ -34,9 +34,9 @@ public class MainActivity extends Activity {
     DBAdapter dbAdapter;
     DialogFragment emptyTaskDialogFragment;
     DBHelper db;
-    private String deleteresult;
     ArrayAdapter<String> adapter;
     ArrayList<String> lvAdapter;
+    DeleteDialogFragment deleteDialogFragment;
 
     //アクティビティ起動時に呼ばれる
     @Override
@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
         db = new DBHelper(this);
 
 
-        showlist(this);
+        showList(this);
 
         editButton.setOnClickListener(new View.OnClickListener() {
 
@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
                         dbAdapter.openDB();
                         dbAdapter.writeDB(str);//writeDBメソッドを呼び出し、strを引数として渡す
                         dbAdapter.readDB();
-                        showlist(getApplicationContext());
+                        showList(getApplicationContext());
                     }
                 } catch (Exception e) {//エラーの場合
                     Log.e(TAG, "SQLExcepption:" + e.toString());
@@ -80,35 +80,15 @@ public class MainActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,View view,
                                            int position, long id) {
-                //deleteList2(id);
-                DeleteDialogFragment deleteDialogFragment = new DeleteDialogFragment();
-                Bundle bundle = new Bundle();
-                bundle.putLong("deleteId", id);
-                deleteDialogFragment.setArguments(bundle);
-                deleteDialogFragment.show(getFragmentManager(), "delete");
+                deleteDialog(id);
+                showList(getApplicationContext());
 
-                //if (getDialogResult()) {
-                //    try {
-                //        dbAdapter.openDB();
-                //        ArrayList<Integer> deleteListID = deleteList();//①DB上のidを取得
-                //        int deleteID = deleteListID.get((int) id);//②削除対象のリストと同じ位置にある、DB上のidを取得
-                //        dbAdapter.deleteDB(deleteID);//③②で取得したidをdeleteDBに渡す。
-                //        showlist();
-                //    } catch (Exception e) {
-                //        e.printStackTrace();
-                //    }
-                //}
                 return false;
             }
         });
     }
 
-    //    public  void showList2(){
-    //    SQLiteDatabase db = (new DBHelper(this)).getWritableDatabase();
-    //    @SuppressLint("Recycle") Cursor cursor = db.query(DB_TABLE, null, null, null, null, null, null);
-    //    db.close();
-    //}
-    public void showlist(Context context){
+    public void showList(Context context){
         lvAdapter = new ArrayList<>();
         dbAdapter.openDB();
         try {
@@ -118,24 +98,10 @@ public class MainActivity extends Activity {
         }
         // Adapterの作成
         adapter = new ArrayAdapter<String>(context, R.layout.list, (List<String>) lvAdapter);
-
-        // ListViewにAdapterを関連付ける
-        listView = findViewById(R.id.list_view);
         listView.setAdapter(adapter);
     }
 
-    public ArrayList<Integer> deleteList(){
-        ArrayList<Integer> idAdapter = new ArrayList<>();
-        dbAdapter.openDB();
-        try {
-            idAdapter = dbAdapter.deletereadDB();//①DB上のidを取得
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return idAdapter;
-    }
-
-    public void deleteList2(Context context, long listId){
+    public void deleteList(Context context, long listId){
         ArrayList<Integer> idAdapter = new ArrayList<>();
         dbAdapter = new DBAdapter(context);
         try {
@@ -150,15 +116,11 @@ public class MainActivity extends Activity {
         }
     }
 
-    String setdialogresult;
-    final String deleteOK = "はい";
-    final String deleteNG = "いいえ";
-
-    public void setDialogResult(String dialogResult){
-        setdialogresult = dialogResult;
-    }
-
-    public boolean getDialogResult(){
-        return setdialogresult.equals(deleteOK);
+    public void deleteDialog(long id){
+        deleteDialogFragment = new DeleteDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong("deleteId", id);
+        deleteDialogFragment.setArguments(bundle);
+        deleteDialogFragment.show(getFragmentManager(), "delete");
     }
 }
