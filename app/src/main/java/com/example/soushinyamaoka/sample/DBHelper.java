@@ -10,16 +10,21 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private final static String DB_NAME = "test6.db";//DB名
-    private final static String DB_TABLE = "test6";//テーブル名
+    private final static String DB_NAME = "test6_2.db";//DB名
+    private final static String DB_TABLE = "test6_4";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
-    private static final String COL_ID = "_id";
+    //private static final String COL_ID = "_id";
+    private static final String COL_ID = "id";
+    private static final String COL_TODO = "todo";
+    private static final String COL_BOX = "box";
+    private static final String COL_DATE = "date";
+    private static final String COL_MEMO = "memo";
 
     //データベースの生成
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL("create table if not exists " +
-                DB_TABLE + "(id integer primary key autoincrement ,info text)");//_id text primary key
+                DB_TABLE + "(id integer primary key autoincrement ,todo text,box text,date text, memo text)");//_id text primary key
     }
 
     //データベースヘルパーのコンストラクタ

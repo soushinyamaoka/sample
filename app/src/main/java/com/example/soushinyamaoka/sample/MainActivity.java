@@ -3,6 +3,7 @@ package com.example.soushinyamaoka.sample;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,8 +28,12 @@ public class MainActivity extends Activity {
     private final static String DB_TABLE = "test5";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "_id";
+    String editTodo;
+    String editBox;
+    String editDate;
+    String editMemo;
 
-    private EditText editText;
+    private EditText edit_Text;
     private Button editButton;
     public ListView listView;
     DBAdapter dbAdapter;
@@ -43,8 +48,8 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);
-        editText = findViewById(R.id.editText);
-        editButton = findViewById(R.id.editButton);
+        edit_Text = findViewById(R.id.edit_Text);
+        editButton = findViewById(R.id.edit_Button);
         listView = findViewById(R.id.list_view);
         dbAdapter = new DBAdapter(this);
         emptyTaskDialogFragment = new EmptyTaskDialogFragment();
@@ -58,13 +63,13 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 try {
-                    String str = editText.getText().toString();//書き込まれた内容(getText)をstrに格納
-                    if(str.equals("")){
+                    editTodo = edit_Text.getText().toString();//書き込まれた内容(getText)をstrに格納
+                    if(editTodo.equals("")){
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
                     }
                     else {
                         dbAdapter.openDB();
-                        dbAdapter.writeDB(str);//writeDBメソッドを呼び出し、strを引数として渡す
+                        dbAdapter.writeDB(editTodo, editBox, editDate, editMemo);//writeDBメソッドを呼び出し、strを引数として渡す
                         dbAdapter.readDB();
                         showList(getApplicationContext());
                     }
@@ -84,6 +89,17 @@ public class MainActivity extends Activity {
                 showList(getApplicationContext());
 
                 return false;
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                // 遷移先のactivityを指定してintentを作成
+                Intent intent = new Intent(MainActivity.this, TodoDetail.class);
+                // intentへ添え字付で値を保持させる
+                intent.putExtra( "todoId", id );
+                startActivity(intent);
             }
         });
     }

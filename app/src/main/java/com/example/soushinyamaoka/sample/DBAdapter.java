@@ -15,10 +15,15 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 public class DBAdapter extends AppCompatActivity {
-    private final static String DB_NAME = "test6.db";//DB名
-    private final static String DB_TABLE = "test6";//テーブル名
+    private final static String DB_NAME = "test6_2.db";//DB名
+    private final static String DB_TABLE = "test6_4";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
-    private static final String COL_ID = "_id";
+    private static final String COL_ID = "id";
+    private static final String COL_TODO = "todo";
+    private static final String COL_BOX = "box";
+    private static final String COL_DATE = "date";
+    private static final String COL_MEMO = "memo";
+    private static final String[] cols = {COL_ID, COL_TODO, COL_BOX, COL_DATE, COL_MEMO};
 
     private SQLiteDatabase db = null;           // SQLiteDatabase
     private DBHelper dbHelper;           // DBHepler
@@ -28,7 +33,7 @@ public class DBAdapter extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.listview);
+        setContentView(R.layout.list_view);
         listView = findViewById(R.id.list_view);
     }
 
@@ -41,10 +46,13 @@ public class DBAdapter extends AppCompatActivity {
         db = dbHelper.getWritableDatabase();        // DBの読み書き
     }
 
-    public void writeDB(String info) throws Exception{
+    public void writeDB(String todo, String box, String date, String memo) throws Exception{
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
-        //values.put("id", "0");
-        values.put("info", info);
+        values.put(COL_TODO, todo);
+        values.put(COL_BOX, box);
+        values.put(COL_DATE, date);
+        values.put(COL_MEMO, memo);
+
         //空欄でも書き込めるようになっているので要修正
             try {
                 db.insert(DB_TABLE, null, values);
@@ -60,7 +68,6 @@ public class DBAdapter extends AppCompatActivity {
     public ArrayList<String> readDB() throws Exception {
         ArrayList<String> list = new ArrayList<String>();
         ArrayList<Integer> listID = new ArrayList<>();
-        String[] cols = {"info","id"};
         try {
             Cursor c = db.query(DB_TABLE, cols, null, null, null, null, null);
             c.moveToFirst();
@@ -75,6 +82,27 @@ public class DBAdapter extends AppCompatActivity {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
         return list;
+    }
+
+    public String[] readDetailDB(long todoId) throws Exception {
+        String[] todoInfo = new  String[cols.length];
+        try {
+            Cursor c = db.query(DB_TABLE, cols, "id = " + todoId, null, null, null, null);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                todoInfo[i] = c.getString(i);
+                c.moveToNext();
+            }
+            c.close();
+
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        return todoInfo;
+    }
+
+    public int getColsCount(){
+        return cols.length;
     }
 
     public void deleteDB(int id){
