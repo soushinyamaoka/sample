@@ -35,6 +35,8 @@ public class DBAdapter extends AppCompatActivity {
     ArrayList<String> listDate;
     ArrayList<String> listMemo;
 
+    int datebaseId = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,9 +92,10 @@ public class DBAdapter extends AppCompatActivity {
         return listTodo;
     }
 
-    public ArrayList<String> getTodo(long todoId) throws Exception {
+    public String[] getTodo(long todoId) throws Exception {
         listTodo = new ArrayList<>();
         int todoid;
+        String[] array = new String[0];
         String todo = null;
         String box = null;
         String date = null;
@@ -108,8 +111,7 @@ public class DBAdapter extends AppCompatActivity {
             for (int i = 0; i < c.getCount(); i++) {
                 //todoInfo[i] = c.getString(i);
                 //listId.add(c.getInt(0));
-                //listTodo.add(c.getString(0));
-                String test = c.getString(0);
+                listTodo.add(c.getString(0));
                 //listBox.add(c.getString(2));
                 //listDate.add(c.getString(3));
                 //listMemo.add(c.getString(4));
@@ -122,11 +124,12 @@ public class DBAdapter extends AppCompatActivity {
                 c.moveToNext();
             }
             c.close();
+            array=(String[])listTodo.toArray(new String[0]);
 
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        return test;
+        return array;
     }
 
     public int getColsCount(){
@@ -155,6 +158,17 @@ public class DBAdapter extends AppCompatActivity {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
         return listID;
+    }
+
+    public int getDataBaseId(long listviewId){
+        ArrayList<Integer> idAdapter = new ArrayList<>();
+        try {
+            openDB();
+            datebaseId = idAdapter.get((int)listviewId);//削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return datebaseId;
     }
 }
 

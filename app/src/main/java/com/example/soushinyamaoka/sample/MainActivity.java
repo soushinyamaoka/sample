@@ -33,6 +33,8 @@ public class MainActivity extends Activity {
     String editDate;
     String editMemo;
 
+    int datebaseId = 0;
+
     private EditText edit_Text;
     private Button editButton;
     public ListView listView;
@@ -84,8 +86,8 @@ public class MainActivity extends Activity {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,View view,
-                                           int position, long id) {
-                deleteDialog(id);
+                                           int position, long listviewId) {
+                deleteDialog(listviewId);
                 showList(getApplicationContext());
 
                 return false;
@@ -117,25 +119,26 @@ public class MainActivity extends Activity {
         listView.setAdapter(adapter);
     }
 
-    public void deleteList(Context context, long listId){
+    public void deleteList(Context context, long listviewId){
         ArrayList<Integer> idAdapter = new ArrayList<>();
         dbAdapter = new DBAdapter(context);
         try {
             dbAdapter.openDB();
-            idAdapter = dbAdapter.deletereadDB();//①DB上のidを取得しidAdapterに格納
-            int deleteDBID = idAdapter.get((int) listId);//②削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
+            datebaseId = dbAdapter.getDataBaseId(listviewId);
+            //idAdapter = dbAdapter.deletereadDB();//①DB上のidを取得しidAdapterに格納
+            //int deleteDBID = idAdapter.get((int) listId);//②削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
             dbAdapter.openDB();
-            dbAdapter.deleteDB(deleteDBID);//DB上の値をDB上のidで削除。
+            dbAdapter.deleteDB(datebaseId);//DB上の値をDB上のidで削除。
             //showlist(context);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void deleteDialog(long id){
+    public void deleteDialog(long listviewId){
         deleteDialogFragment = new DeleteDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putLong("deleteId", id);
+        bundle.putLong("deleteId", listviewId);
         deleteDialogFragment.setArguments(bundle);
         deleteDialogFragment.show(getFragmentManager(), "delete");
     }

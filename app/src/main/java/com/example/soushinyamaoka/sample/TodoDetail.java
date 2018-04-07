@@ -20,6 +20,9 @@ public class TodoDetail extends Activity {
     DBHelper db;
     DBAdapter dbAdapter;
 
+    long listviewId = 0;
+    int databaseId = 0;
+
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -31,13 +34,14 @@ public class TodoDetail extends Activity {
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
 
+
         // 現在のintentを取得する
         Intent intent = getIntent();
         // intentから指定キーの文字列を取得する
-        long todoId = intent.getLongExtra( "todoId", -1);
+        listviewId = intent.getLongExtra( "todoId", -1);
 
         try {
-            showDetail(todoId);
+            showDetail(listviewId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -58,9 +62,12 @@ public class TodoDetail extends Activity {
         });
     }
 
-    public void showDetail(long todoId) throws Exception {
+    public void showDetail(long listviewId) throws Exception {
+        String[] setTodo = new String[0];
+        databaseId = dbAdapter.getDataBaseId(listviewId);
         dbAdapter.openDB();
-        text_Todo.setText((CharSequence) dbAdapter.getTodo(todoId));
+        setTodo = dbAdapter.getTodo(databaseId);
+        text_Todo.setText(setTodo[0]);
     }
 }
 

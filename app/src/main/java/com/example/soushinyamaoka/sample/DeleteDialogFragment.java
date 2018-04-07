@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.widget.ListView;
 
 public class DeleteDialogFragment extends DialogFragment {
 
@@ -16,7 +15,7 @@ public class DeleteDialogFragment extends DialogFragment {
         String deleteMessage = "削除してよろしいですか？";
         final String deleteOK = "はい";
         final String deleteNG = "いいえ";
-        final long deleteId = getArguments().getLong("deleteId");
+        final long listviewId = getArguments().getLong("deleteId");
 
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -28,7 +27,7 @@ public class DeleteDialogFragment extends DialogFragment {
                         //mainActivity.showlist(getActivity(),listView);
 
                         MainActivity mainActivity = new MainActivity();
-                        mainActivity.deleteList(getActivity(),deleteId);
+                        mainActivity.deleteList(getActivity(),listviewId);
 
                         //listView = (ListView) getView().findViewById(R.id.list_view);
 
