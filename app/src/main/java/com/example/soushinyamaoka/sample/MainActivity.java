@@ -57,7 +57,6 @@ public class MainActivity extends Activity {
         emptyTaskDialogFragment = new EmptyTaskDialogFragment();
         db = new DBHelper(this);
 
-
         showList(this);
 
         editButton.setOnClickListener(new View.OnClickListener() {
@@ -120,16 +119,12 @@ public class MainActivity extends Activity {
     }
 
     public void deleteList(Context context, long listviewId){
-        ArrayList<Integer> idAdapter = new ArrayList<>();
         dbAdapter = new DBAdapter(context);
         try {
             dbAdapter.openDB();
-            datebaseId = dbAdapter.getDataBaseId(listviewId);
-            //idAdapter = dbAdapter.deletereadDB();//①DB上のidを取得しidAdapterに格納
-            //int deleteDBID = idAdapter.get((int) listId);//②削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
+            datebaseId = dbAdapter.changeId(listviewId);//List上のIDをDB上のIDに変換
             dbAdapter.openDB();
             dbAdapter.deleteDB(datebaseId);//DB上の値をDB上のidで削除。
-            //showlist(context);
         } catch (Exception e) {
             e.printStackTrace();
         }

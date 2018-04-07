@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 public class DBAdapter extends AppCompatActivity {
-    private final static String DB_NAME = "sampletodo1.db";//DB名
-    private final static String DB_TABLE = "test1";//テーブル名
+    private final static String DB_NAME = "sampletodo2.db";//DB名
+    private final static String DB_TABLE = "test2";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";
@@ -92,48 +92,100 @@ public class DBAdapter extends AppCompatActivity {
         return listTodo;
     }
 
-    public String[] getTodo(long todoId) throws Exception {
+    public String[] getTodo(long todoId) {
         listTodo = new ArrayList<>();
-        int todoid;
-        String[] array = new String[0];
-        String todo = null;
-        String box = null;
-        String date = null;
-        String memo = null;
-        listId = new ArrayList<>();
-        listBox = new ArrayList<>();
-        listTodo = new ArrayList<>();
-        listDate = new ArrayList<>();
-        listMemo = new ArrayList<>();
+        String[] setTodo = new String[0];
         try {
-            Cursor c = db.query(DB_TABLE, new String[]{COL_TODO}, "id = " + todoId, null, null, null, null);
+            Cursor c = db.query(DB_TABLE,
+                                new String[]{COL_TODO},
+                                "id = " + todoId,
+                                null,
+                                null,
+                                null,
+                                null);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
-                //todoInfo[i] = c.getString(i);
-                //listId.add(c.getInt(0));
                 listTodo.add(c.getString(0));
-                //listBox.add(c.getString(2));
-                //listDate.add(c.getString(3));
-                //listMemo.add(c.getString(4));
-                //todoid = c.getInt(0);
-                //todo = c.getString(1);
-                //box = c.getString(2);
-                //date = c.getString(3);
-                //memo = c.getString(4);
-
                 c.moveToNext();
             }
             c.close();
-            array=(String[])listTodo.toArray(new String[0]);
-
+            setTodo = listTodo.toArray(new String[0]);
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        return array;
+        return setTodo;
     }
 
-    public int getColsCount(){
-        return cols.length;
+    public String[] getBox(long todoId) {
+        listBox = new ArrayList<>();
+        String[] setBox = new String[0];
+        try {
+            Cursor c = db.query(DB_TABLE,
+                    new String[]{COL_BOX},
+                    "id = " + todoId,
+                    null,
+                    null,
+                    null,
+                    null);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listBox.add(c.getString(0));
+                c.moveToNext();
+            }
+            c.close();
+            setBox = listBox.toArray(new String[0]);
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        return setBox;
+    }
+
+    public String[] getDate(long todoId) {
+        listDate = new ArrayList<>();
+        String[] setDate = new String[0];
+        try {
+            Cursor c = db.query(DB_TABLE,
+                    new String[]{COL_DATE},
+                    "id = " + todoId,
+                    null,
+                    null,
+                    null,
+                    null);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listDate.add(c.getString(0));
+                c.moveToNext();
+            }
+            c.close();
+            setDate = listDate.toArray(new String[0]);
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        return setDate;
+    }
+
+    public String[] getMemo(long todoId) {
+        listMemo = new ArrayList<>();
+        String[] setMemo = new String[0];
+        try {
+            Cursor c = db.query(DB_TABLE,
+                    new String[]{COL_MEMO},
+                    "id = " + todoId,
+                    null,
+                    null,
+                    null,
+                    null);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listMemo.add(c.getString(0));
+                c.moveToNext();
+            }
+            c.close();
+            setMemo = listMemo.toArray(new String[0]);
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        return setMemo;
     }
 
     public void deleteDB(int id){
@@ -142,7 +194,7 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     //データベースからの読み込み
-    public ArrayList<Integer> deletereadDB() throws Exception {
+    public ArrayList<Integer> getDataBaseId() {
         ArrayList<Integer> listID = new ArrayList<>();
         String[] cols = {"id"};
         try {
@@ -153,17 +205,17 @@ public class DBAdapter extends AppCompatActivity {
                 c.moveToNext();
             }
             c.close();
-
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
         return listID;
     }
 
-    public int getDataBaseId(long listviewId){
+    public int changeId(long listviewId){
         ArrayList<Integer> idAdapter = new ArrayList<>();
         try {
             openDB();
+            idAdapter = getDataBaseId();
             datebaseId = idAdapter.get((int)listviewId);//削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
         } catch (Exception e) {
             e.printStackTrace();

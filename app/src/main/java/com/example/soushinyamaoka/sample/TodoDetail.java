@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.TextView;
 
 public class TodoDetail extends Activity {
@@ -46,6 +47,12 @@ public class TodoDetail extends Activity {
             e.printStackTrace();
         }
 
+        text_Todo.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ((TextView)v).setText("クリックイベントが発生しました。");
+            }
+        });
+
         text_Todo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -63,11 +70,23 @@ public class TodoDetail extends Activity {
     }
 
     public void showDetail(long listviewId) throws Exception {
-        String[] setTodo = new String[0];
-        databaseId = dbAdapter.getDataBaseId(listviewId);
+        String[] setTodo;
+        String[] setBox;
+        String[] setDate;
+        String[] setMemo;
+
+        databaseId = dbAdapter.changeId(listviewId);
         dbAdapter.openDB();
+
         setTodo = dbAdapter.getTodo(databaseId);
+        setBox = dbAdapter.getBox(databaseId);
+        setDate = dbAdapter.getDate(databaseId);
+        setMemo = dbAdapter.getMemo(databaseId);
+
         text_Todo.setText(setTodo[0]);
+        text_Box.setText(setBox[0]);
+        text_Date.setText(setDate[0]);
+        text_Memo.setText(setMemo[0]);
     }
 }
 
