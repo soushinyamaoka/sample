@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 public class DBAdapter extends AppCompatActivity {
-    private final static String DB_NAME = "test6_2.db";//DB名
-    private final static String DB_TABLE = "test6_4";//テーブル名
+    private final static String DB_NAME = "sampletodo1.db";//DB名
+    private final static String DB_TABLE = "test1";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";
@@ -29,6 +29,11 @@ public class DBAdapter extends AppCompatActivity {
     private DBHelper dbHelper;           // DBHepler
     protected Context context;
     public ListView listView;
+    ArrayList<Integer> listId;
+    ArrayList<String> listTodo;
+    ArrayList<String> listBox;
+    ArrayList<String> listDate;
+    ArrayList<String> listMemo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +71,15 @@ public class DBAdapter extends AppCompatActivity {
 
     //データベースからの読み込み
     public ArrayList<String> readDB() throws Exception {
-        ArrayList<String> list = new ArrayList<String>();
-        ArrayList<Integer> listID = new ArrayList<>();
+        listId = new ArrayList<Integer>();
+        listTodo = new ArrayList<>();
+
         try {
             Cursor c = db.query(DB_TABLE, cols, null, null, null, null, null);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
-                list.add(c.getString(0));
-                listID.add(c.getInt(1));
+                listId.add(c.getInt(0));
+                listTodo.add(c.getString(1));
                 c.moveToNext();
             }
             c.close();
@@ -81,16 +87,38 @@ public class DBAdapter extends AppCompatActivity {
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        return list;
+        return listTodo;
     }
 
-    public String[] readDetailDB(long todoId) throws Exception {
-        String[] todoInfo = new  String[cols.length];
+    public ArrayList<String> getTodo(long todoId) throws Exception {
+        listTodo = new ArrayList<>();
+        int todoid;
+        String todo = null;
+        String box = null;
+        String date = null;
+        String memo = null;
+        listId = new ArrayList<>();
+        listBox = new ArrayList<>();
+        listTodo = new ArrayList<>();
+        listDate = new ArrayList<>();
+        listMemo = new ArrayList<>();
         try {
-            Cursor c = db.query(DB_TABLE, cols, "id = " + todoId, null, null, null, null);
+            Cursor c = db.query(DB_TABLE, new String[]{COL_TODO}, "id = " + todoId, null, null, null, null);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
-                todoInfo[i] = c.getString(i);
+                //todoInfo[i] = c.getString(i);
+                //listId.add(c.getInt(0));
+                //listTodo.add(c.getString(0));
+                String test = c.getString(0);
+                //listBox.add(c.getString(2));
+                //listDate.add(c.getString(3));
+                //listMemo.add(c.getString(4));
+                //todoid = c.getInt(0);
+                //todo = c.getString(1);
+                //box = c.getString(2);
+                //date = c.getString(3);
+                //memo = c.getString(4);
+
                 c.moveToNext();
             }
             c.close();
@@ -98,7 +126,7 @@ public class DBAdapter extends AppCompatActivity {
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        return todoInfo;
+        return test;
     }
 
     public int getColsCount(){
@@ -128,8 +156,8 @@ public class DBAdapter extends AppCompatActivity {
         }
         return listID;
     }
-
 }
+
 //    private static class DBHelper extends SQLiteOpenHelper {
 
         //データベースヘルパーのコンストラクタ

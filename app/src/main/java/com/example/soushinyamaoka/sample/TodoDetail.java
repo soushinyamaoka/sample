@@ -36,7 +36,11 @@ public class TodoDetail extends Activity {
         // intentから指定キーの文字列を取得する
         long todoId = intent.getLongExtra( "todoId", -1);
 
-        showDetail(todoId);
+        try {
+            showDetail(todoId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         text_Todo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -54,20 +58,9 @@ public class TodoDetail extends Activity {
         });
     }
 
-    public void showDetail(long todoId){
-        int colsCount = dbAdapter.getColsCount();
-        String todoDetail[] = new String[colsCount];
+    public void showDetail(long todoId) throws Exception {
         dbAdapter.openDB();
-        try {
-            todoDetail = dbAdapter.readDetailDB(todoId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //TextView.setText
-        text_Todo.setText(todoDetail[0]);
-        text_Box.setText(todoDetail[1]);
-        text_Date.setText(todoDetail[2]);
-        text_Memo.setText(todoDetail[3]);
+        text_Todo.setText((CharSequence) dbAdapter.getTodo(todoId));
     }
 }
 
