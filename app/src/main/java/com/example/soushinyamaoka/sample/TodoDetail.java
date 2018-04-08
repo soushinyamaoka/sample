@@ -3,16 +3,24 @@ package com.example.soushinyamaoka.sample;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 
 public class TodoDetail extends Activity {
 
-    private TextView text_Todo;
-    private TextView text_Box;
-    private TextView text_Date;
-    private TextView text_Memo;
+    private EditText text_Todo;
+    private EditText text_Box;
+    private EditText text_Date;
+    private EditText text_Memo;
+    private Button custom_Todo;
+    private Button custom_Box;
+    private Button custom_Date;
+    private Button custom_Memo;
+    public ListView listView;
+
+    private EditText editText;
 
     String editTodo;
     String editBox;
@@ -32,51 +40,74 @@ public class TodoDetail extends Activity {
         text_Box = findViewById(R.id.text_Box);
         text_Date = findViewById(R.id.text_Date);
         text_Memo = findViewById(R.id.text_Memo);
+        custom_Todo = findViewById(R.id.custom_todo_button);
+        custom_Box = findViewById(R.id.custom_box_button);
+        custom_Date = findViewById(R.id.custom_date_button);
+        custom_Memo = findViewById(R.id.custom_memo_button);
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
+        //editText = findViewById(R.id.editText);
+        listView = findViewById(R.id.list_view);
 
 
         // 現在のintentを取得する
         Intent intent = getIntent();
         // intentから指定キーの文字列を取得する
         listviewId = intent.getLongExtra( "todoId", -1);
+        databaseId = dbAdapter.changeId(listviewId);
 
+        //todoの詳細を表示
+        //-------------------------
+        dbAdapter.openDB();
         try {
-            showDetail(listviewId);
+            showDetail();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //-------------------------
 
-        text_Todo.setOnClickListener(new View.OnClickListener() {
+        custom_Todo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((TextView)v).setText("クリックイベントが発生しました。");
+                // 遷移先のactivityを指定してintentを作成
+                Intent intent = new Intent(TodoDetail.this, TodoDetail.class);
+                // intentへ添え字付で値を保持させる
+                //intent.putExtra( "todoId", id );
+                startActivity(intent);
             }
         });
 
-        text_Todo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                // ... 処理 ...
-                editTodo = text_Todo.getText().toString();
-                try {
-                    dbAdapter.openDB();
-                    dbAdapter.writeDB(editTodo,null,null,null);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return false;
-            }
-        });
+        //text_Todo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        //    @Override
+        //    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        //        // ... 処理 ...
+        //        String text = text_Todo.getText().toString();
+        //        try {
+        //            dbAdapter.openDB();
+        //            dbAdapter.updateDB(databaseId, text_Todo.getText().toString(),null,null,null);
+        //        } catch (Exception e) {
+        //            e.printStackTrace();
+        //        }
+        //        return false;
+        //    }
+        //});
     }
 
-    public void showDetail(long listviewId) throws Exception {
+    @Override
+    public void onBackPressed(){
+        dbAdapter.openDB();
+        dbAdapter.updateDB(databaseId,
+                            text_Todo.getText().toString(),
+                            text_Box.getText().toString(),
+                            text_Date.getText().toString(),
+                            text_Memo.getText().toString());
+        super.onBackPressed();
+    }
+
+    public void showDetail()  {
         String[] setTodo;
         String[] setBox;
         String[] setDate;
         String[] setMemo;
-
-        databaseId = dbAdapter.changeId(listviewId);
-        dbAdapter.openDB();
 
         setTodo = dbAdapter.getTodo(databaseId);
         setBox = dbAdapter.getBox(databaseId);
@@ -87,6 +118,7 @@ public class TodoDetail extends Activity {
         text_Box.setText(setBox[0]);
         text_Date.setText(setDate[0]);
         text_Memo.setText(setMemo[0]);
+        editText.setText(setTodo[0]);
     }
 }
 

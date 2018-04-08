@@ -71,6 +71,24 @@ public class DBAdapter extends AppCompatActivity {
             //上記はINSERT INTO DB_TABLE (id, 0) VALUES("info", info);と同じ処理をしている
     }
 
+    public void updateDB(int todoId, String todo, String box, String date, String memo) {
+        ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
+        values.put(COL_TODO, todo);
+        values.put(COL_BOX, box);
+        values.put(COL_DATE, date);
+        values.put(COL_MEMO, memo);
+
+        //空欄でも書き込めるようになっているので要修正
+        try {
+            db.update(DB_TABLE, values, "id = " + todoId, null);
+        } catch (Exception e) {
+            Log.e(TAG, "SQLExcepption:" + e.toString());
+        }
+        //int colNum = db.update(DB_TABLE, values, null, null);
+        //if(colNum == 0)db.insert(DB_TABLE, "", values);
+        //上記はINSERT INTO DB_TABLE (id, 0) VALUES("info", info);と同じ処理をしている
+    }
+
     //データベースからの読み込み
     public ArrayList<String> readDB() throws Exception {
         listId = new ArrayList<Integer>();

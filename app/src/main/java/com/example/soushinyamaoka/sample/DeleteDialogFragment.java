@@ -17,7 +17,6 @@ public class DeleteDialogFragment extends DialogFragment {
         final String deleteNG = "いいえ";
         final long listviewId = getArguments().getLong("deleteId");
 
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(deleteMessage)
                 .setPositiveButton(deleteOK, new DialogInterface.OnClickListener() {

@@ -101,8 +101,10 @@ public class MainActivity extends Activity {
                 // intentへ添え字付で値を保持させる
                 intent.putExtra( "todoId", id );
                 startActivity(intent);
+                showList(getApplicationContext());
             }
         });
+        adapter.notifyDataSetChanged();
     }
 
     public void showList(Context context){
