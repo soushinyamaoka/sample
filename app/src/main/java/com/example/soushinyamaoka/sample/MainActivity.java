@@ -1,13 +1,14 @@
 package com.example.soushinyamaoka.sample;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,7 +25,7 @@ import static android.content.ContentValues.TAG;
  * Created by syama on 2018/02/03.
  */
 
-public class MainActivity extends Activity {
+public class MainActivity  extends AppCompatActivity {
 
     String editTodo;
     String editBox;
@@ -49,8 +50,6 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.openDrawer(GravityCompat.START);
 
         edit_Text = findViewById(R.id.edit_Text);
         editButton = findViewById(R.id.edit_Button);
@@ -59,10 +58,12 @@ public class MainActivity extends Activity {
         emptyTaskDialogFragment = new EmptyTaskDialogFragment();
         db = new DBHelper(this);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         showList(this);
 
         editButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 try {
@@ -165,5 +166,27 @@ public class MainActivity extends Activity {
         bundle.putLong("deleteId", listviewId);
         deleteDialogFragment.setArguments(bundle);
         deleteDialogFragment.show(getFragmentManager(), "delete");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
