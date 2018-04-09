@@ -5,14 +5,12 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -26,16 +24,14 @@ import static android.content.ContentValues.TAG;
 
 public class MainActivity extends Activity {
 
-    private final static String DB_NAME = "test5.db";//DB名
-    private final static String DB_TABLE = "test5";//テーブル名
-    private final static int    DB_VERSION = 1;   //バージョン
-    private static final String COL_ID = "_id";
     String editTodo;
     String editBox;
     String editDate;
     String editMemo;
 
-    int datebaseId = 0;
+    int databaseId = 0;
+    String today = "今日";
+    String delete = "削除";
 
     private EditText edit_Text;
     private Button editButton;
@@ -44,9 +40,7 @@ public class MainActivity extends Activity {
     DialogFragment emptyTaskDialogFragment;
     DBHelper db;
     ArrayAdapter<String> adapter;
-    ArrayList<String> lvAdapter;
     DeleteDialogFragment deleteDialogFragment;
-    Handler handler;
 
     //アクティビティ起動時に呼ばれる
     @Override
@@ -60,14 +54,7 @@ public class MainActivity extends Activity {
         emptyTaskDialogFragment = new EmptyTaskDialogFragment();
         db = new DBHelper(this);
 
-        //ハンドラ
-        handler = new Handler();
-
         showList(this);
-
-        //Intent intent = new Intent(MainActivity.this, TodoList.class);
-        //intent.putExtra( "todoId", id );
-        //startActivity(intent);
 
         editButton.setOnClickListener(new View.OnClickListener() {
 
@@ -79,10 +66,13 @@ public class MainActivity extends Activity {
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
                     }
                     else {
+                        editBox = today;
                         dbAdapter.openDB();
-                        dbAdapter.writeDB(editTodo, editBox, editDate, editMemo);//writeDBメソッドを呼び出し、strを引数として渡す
+                        dbAdapter.writeDB(editTodo, editBox, editDate, editMemo);
                         dbAdapter.readDB();
                         showList(getApplicationContext());
+
+                        edit_Text.getEditableText().clear();
                     }
                 } catch (Exception e) {//エラーの場合
                     Log.e(TAG, "SQLExcepption:" + e.toString());
@@ -96,7 +86,8 @@ public class MainActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,View view,
                                            int position, long listviewId) {
-                deleteDialog(listviewId);
+                //deleteDialog(listviewId);
+                deleteList(getApplicationContext(), listviewId);
                 showList(getApplicationContext());
 
                 return false;
@@ -121,24 +112,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-        //Bundle bundle = data.getExtras();
-        //adapter = bundle.getString("key.StringData");
-        //listView.setAdapter(adapter);
         showList(this);
     }
 
-    //ワーカーから呼び出す。
-    public void setAsyncText(final ArrayList<String> reAdapter){
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                listView.setAdapter((ListAdapter) reAdapter);
-            }
-        });
-    }
-
     public void showList(Context context){
-        lvAdapter = new ArrayList<>();
+        ArrayList<String> lvAdapter = new ArrayList<>();
         dbAdapter.openDB();
         try {
             lvAdapter = dbAdapter.readDB();
@@ -154,9 +132,23 @@ public class MainActivity extends Activity {
         dbAdapter = new DBAdapter(context);
         try {
             dbAdapter.openDB();
-            datebaseId = dbAdapter.changeId(listviewId);//List上のIDをDB上のIDに変換
+            databaseId = dbAdapter.changeId(listviewId);//List上のIDをDB上のIDに変換
+
+            String[] getTodo = dbAdapter.getTodo(databaseId);
+            //String[] getBox = dbAdapter.getBox(databaseId);
+            String[] getDate = dbAdapter.getDate(databaseId);
+            String[] getMemo = dbAdapter.getMemo(databaseId);
+
+            String setTodo = getTodo[0];
+            String setBox = delete;
+            String setDate = getDate[0];
+            String setMemo = getMemo[0];
+
             dbAdapter.openDB();
-            dbAdapter.deleteDB(datebaseId);//DB上の値をDB上のidで削除。
+            dbAdapter.updateDB(databaseId, setTodo, setBox, setDate, setMemo);
+
+            //dbAdapter.openDB();
+            //dbAdapter.deleteDB(databaseId);//DB上の値をDB上のidで削除。
         } catch (Exception e) {
             e.printStackTrace();
         }

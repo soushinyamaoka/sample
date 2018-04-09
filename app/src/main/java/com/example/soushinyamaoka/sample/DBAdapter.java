@@ -24,6 +24,8 @@ public class DBAdapter extends AppCompatActivity {
     private static final String COL_DATE = "date";
     private static final String COL_MEMO = "memo";
     private static final String[] cols = {COL_ID, COL_TODO, COL_BOX, COL_DATE, COL_MEMO};
+    private static final String ORDER_BY = "id desc";
+    private static final String delete = "削除";
 
     private SQLiteDatabase db = null;           // SQLiteDatabase
     private DBHelper dbHelper;           // DBHepler
@@ -61,14 +63,11 @@ public class DBAdapter extends AppCompatActivity {
         values.put(COL_MEMO, memo);
 
         //空欄でも書き込めるようになっているので要修正
-            try {
-                db.insert(DB_TABLE, null, values);
-            } catch (Exception e) {
-                Log.e(TAG, "SQLExcepption:" + e.toString());
-            }
-            //int colNum = db.update(DB_TABLE, values, null, null);
-            //if(colNum == 0)db.insert(DB_TABLE, "", values);
-            //上記はINSERT INTO DB_TABLE (id, 0) VALUES("info", info);と同じ処理をしている
+        try {
+            db.insert(DB_TABLE, null, values);
+        } catch (Exception e) {
+            Log.e(TAG, "SQLExcepption:" + e.toString());
+        }
     }
 
     public void updateDB(int todoId, String todo, String box, String date, String memo) {
@@ -84,9 +83,6 @@ public class DBAdapter extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG, "SQLExcepption:" + e.toString());
         }
-        //int colNum = db.update(DB_TABLE, values, null, null);
-        //if(colNum == 0)db.insert(DB_TABLE, "", values);
-        //上記はINSERT INTO DB_TABLE (id, 0) VALUES("info", info);と同じ処理をしている
     }
 
     //データベースからの読み込み
@@ -95,7 +91,13 @@ public class DBAdapter extends AppCompatActivity {
         listTodo = new ArrayList<>();
 
         try {
-            Cursor c = db.query(DB_TABLE, cols, null, null, null, null, null);
+            Cursor c = db.query(DB_TABLE,
+                                cols,
+                                "box !=?",
+                                new String[]{delete},
+                                null,
+                                null,
+                                ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
                 listId.add(c.getInt(0));
@@ -110,6 +112,11 @@ public class DBAdapter extends AppCompatActivity {
         return listTodo;
     }
 
+    public void deleteDB(int id){
+        db.delete(DB_TABLE, "id = " + id, null);
+        db.close();
+    }
+
     public String[] getTodo(long todoId) {
         listTodo = new ArrayList<>();
         String[] setTodo = new String[0];
@@ -120,7 +127,7 @@ public class DBAdapter extends AppCompatActivity {
                                 null,
                                 null,
                                 null,
-                                null);
+                                ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
                 listTodo.add(c.getString(0));
@@ -139,12 +146,12 @@ public class DBAdapter extends AppCompatActivity {
         String[] setBox = new String[0];
         try {
             Cursor c = db.query(DB_TABLE,
-                    new String[]{COL_BOX},
-                    "id = " + todoId,
-                    null,
-                    null,
-                    null,
-                    null);
+                                new String[]{COL_BOX},
+                                "id = " + todoId,
+                                null,
+                                null,
+                                null,
+                                ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
                 listBox.add(c.getString(0));
@@ -163,12 +170,12 @@ public class DBAdapter extends AppCompatActivity {
         String[] setDate = new String[0];
         try {
             Cursor c = db.query(DB_TABLE,
-                    new String[]{COL_DATE},
-                    "id = " + todoId,
-                    null,
-                    null,
-                    null,
-                    null);
+                                new String[]{COL_DATE},
+                                "id = " + todoId,
+                                null,
+                                null,
+                                null,
+                                ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
                 listDate.add(c.getString(0));
@@ -187,12 +194,12 @@ public class DBAdapter extends AppCompatActivity {
         String[] setMemo = new String[0];
         try {
             Cursor c = db.query(DB_TABLE,
-                    new String[]{COL_MEMO},
-                    "id = " + todoId,
-                    null,
-                    null,
-                    null,
-                    null);
+                                new String[]{COL_MEMO},
+                                "id = " + todoId,
+                                null,
+                                null,
+                                null,
+                                ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
                 listMemo.add(c.getString(0));
@@ -206,17 +213,18 @@ public class DBAdapter extends AppCompatActivity {
         return setMemo;
     }
 
-    public void deleteDB(int id){
-        db.delete(DB_TABLE, "id = " + id, null);
-        db.close();
-    }
-
     //データベースからの読み込み
     public ArrayList<Integer> getDataBaseId() {
         ArrayList<Integer> listID = new ArrayList<>();
         String[] cols = {"id"};
         try {
-            Cursor c = db.query(DB_TABLE, cols, null, null, null, null, null);
+            Cursor c = db.query(DB_TABLE,
+                                cols,
+                                "box !=?",
+                                new String[]{delete},
+                                null,
+                                null,
+                                ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
                 listID.add(c.getInt(0));
@@ -241,26 +249,3 @@ public class DBAdapter extends AppCompatActivity {
         return datebaseId;
     }
 }
-
-//    private static class DBHelper extends SQLiteOpenHelper {
-
-        //データベースヘルパーのコンストラクタ
-//        public DBHelper(Context context) {
-//            super(context, DB_NAME, null, DB_VERSION); //DB名、テーブル名、DBバージョンを定数として保持している
-//        }
-
-        //データベースの生成
-//        @Override
-//        public void onCreate(SQLiteDatabase db){
-//            db.execSQL("create table if not exists " +
-//                    DB_TABLE + "(id integer primary key autoincrement ,info text)");//_id text primary key
-//        }
-
-        //データベースのアップグレード
-//        @Override
-//        public void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion){
-//            db.execSQL("drop table if exists "+DB_TABLE);
-//            onCreate(db);
-//        }
-//    }
-

@@ -33,7 +33,7 @@ public class DeleteDialogFragment extends DialogFragment {
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+                .setNegativeButton(deleteNG, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //リストクリック時の処理
                         dialog.dismiss();

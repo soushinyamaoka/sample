@@ -3,14 +3,9 @@ package com.example.soushinyamaoka.sample;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TodoDetail extends Activity {
 
@@ -79,17 +74,7 @@ public class TodoDetail extends Activity {
                             text_Box.getText().toString(),
                             text_Date.getText().toString(),
                             text_Memo.getText().toString());
-
-        //------------------------------
-        //Intent data = new Intent();
-        //Bundle bundle = new Bundle();
-        //setResult(RESULT_OK, data);
-
-        // finish() で終わらせて
-        // Intent data を送る
         finish();
-        //------------------------------
-
         super.onBackPressed();
     }
 
