@@ -22,6 +22,9 @@
         <activity
             android:name=".TodoDetail">
         </activity>
+        <activity
+            android:name=".TodoList">
+        </activity>
     </application>
 
 </manifest>

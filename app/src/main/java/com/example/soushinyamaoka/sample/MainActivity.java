@@ -5,12 +5,14 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ public class MainActivity extends Activity {
     ArrayAdapter<String> adapter;
     ArrayList<String> lvAdapter;
     DeleteDialogFragment deleteDialogFragment;
+    Handler handler;
 
     //アクティビティ起動時に呼ばれる
     @Override
@@ -57,7 +60,14 @@ public class MainActivity extends Activity {
         emptyTaskDialogFragment = new EmptyTaskDialogFragment();
         db = new DBHelper(this);
 
+        //ハンドラ
+        handler = new Handler();
+
         showList(this);
+
+        //Intent intent = new Intent(MainActivity.this, TodoList.class);
+        //intent.putExtra( "todoId", id );
+        //startActivity(intent);
 
         editButton.setOnClickListener(new View.OnClickListener() {
 
@@ -100,11 +110,31 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent(MainActivity.this, TodoDetail.class);
                 // intentへ添え字付で値を保持させる
                 intent.putExtra( "todoId", id );
-                startActivity(intent);
-                showList(getApplicationContext());
+                //startActivity(intent);
+
+                int requestCode = 123;
+                startActivityForResult(intent, requestCode);
             }
         });
-        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        //Bundle bundle = data.getExtras();
+        //adapter = bundle.getString("key.StringData");
+        //listView.setAdapter(adapter);
+        showList(this);
+    }
+
+    //ワーカーから呼び出す。
+    public void setAsyncText(final ArrayList<String> reAdapter){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                listView.setAdapter((ListAdapter) reAdapter);
+            }
+        });
     }
 
     public void showList(Context context){

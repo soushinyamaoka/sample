@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TodoDetail extends Activity {
 
@@ -65,31 +69,6 @@ public class TodoDetail extends Activity {
             e.printStackTrace();
         }
         //-------------------------
-
-        custom_Todo.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // 遷移先のactivityを指定してintentを作成
-                Intent intent = new Intent(TodoDetail.this, TodoDetail.class);
-                // intentへ添え字付で値を保持させる
-                //intent.putExtra( "todoId", id );
-                startActivity(intent);
-            }
-        });
-
-        //text_Todo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-        //    @Override
-        //    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        //        // ... 処理 ...
-        //        String text = text_Todo.getText().toString();
-        //        try {
-        //            dbAdapter.openDB();
-        //            dbAdapter.updateDB(databaseId, text_Todo.getText().toString(),null,null,null);
-        //        } catch (Exception e) {
-        //            e.printStackTrace();
-        //        }
-        //        return false;
-        //    }
-        //});
     }
 
     @Override
@@ -100,6 +79,17 @@ public class TodoDetail extends Activity {
                             text_Box.getText().toString(),
                             text_Date.getText().toString(),
                             text_Memo.getText().toString());
+
+        //------------------------------
+        //Intent data = new Intent();
+        //Bundle bundle = new Bundle();
+        //setResult(RESULT_OK, data);
+
+        // finish() で終わらせて
+        // Intent data を送る
+        finish();
+        //------------------------------
+
         super.onBackPressed();
     }
 
