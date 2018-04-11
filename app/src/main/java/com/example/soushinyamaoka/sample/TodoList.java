@@ -20,7 +20,7 @@ public class TodoList extends Activity {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         //setContentView(R.layout.activity_main);
-        setContentView(R.layout.list_view);
+        setContentView(R.layout.todo_list_view);
         listView = findViewById(R.id.list_view);
         dbAdapter = new DBAdapter(this);
         db = new DBHelper(this);
@@ -37,7 +37,7 @@ public class TodoList extends Activity {
             e.printStackTrace();
         }
         // Adapterの作成
-        adapter = new ArrayAdapter<String>(context, R.layout.list, (List<String>) lvAdapter);
+        adapter = new ArrayAdapter<String>(context, R.layout.text_todo_list, (List<String>) lvAdapter);
         listView.setAdapter(adapter);
     }
 }

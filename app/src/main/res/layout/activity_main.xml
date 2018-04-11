@@ -32,6 +32,6 @@
         android:layout_height="wrap_content"
         android:text="追加" />
 
-    <include layout="@layout/list_view" />
+    <include layout="@layout/todo_list_view" />
 
 </LinearLayout>

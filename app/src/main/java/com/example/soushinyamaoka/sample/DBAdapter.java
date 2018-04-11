@@ -42,7 +42,7 @@ public class DBAdapter extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_view);
+        setContentView(R.layout.todo_list_view);
         listView = findViewById(R.id.list_view);
     }
 
@@ -92,12 +92,12 @@ public class DBAdapter extends AppCompatActivity {
 
         try {
             Cursor c = db.query(DB_TABLE,
-                                cols,
-                                "box !=?",
-                                new String[]{delete},
-                                null,
-                                null,
-                                ORDER_BY);
+                    cols,
+                    "box !=?",
+                    new String[]{delete},
+                    null,
+                    null,
+                    ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
                 listId.add(c.getInt(0));
@@ -247,5 +247,32 @@ public class DBAdapter extends AppCompatActivity {
             e.printStackTrace();
         }
         return datebaseId;
+    }
+
+    public ArrayList<String> readDBBox(){
+        ArrayList<String> boxList = new ArrayList<>();
+        String[] cols = {"box"};
+
+        try {
+            Cursor c = db.query(DB_TABLE,
+                    cols,
+                    null,
+                    null,
+                    null,
+                    null,
+                    ORDER_BY);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listId.add(c.getInt(0));
+                listTodo.add(c.getString(1));
+                c.moveToNext();
+            }
+            c.close();
+
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+
+        return boxList;
     }
 }

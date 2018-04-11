@@ -25,7 +25,7 @@ import static android.content.ContentValues.TAG;
  * Created by syama on 2018/02/03.
  */
 
-public class MainActivity  extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     String editTodo;
     String editBox;
@@ -36,7 +36,7 @@ public class MainActivity  extends AppCompatActivity {
     String today = "今日";
     String delete = "削除";
 
-    private EditText edit_Text;
+    private EditText editText;
     private Button editButton;
     public ListView listView;
     DBAdapter dbAdapter;
@@ -51,7 +51,7 @@ public class MainActivity  extends AppCompatActivity {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);
 
-        edit_Text = findViewById(R.id.edit_Text);
+        editText = findViewById(R.id.edit_Text);
         editButton = findViewById(R.id.edit_Button);
         listView = findViewById(R.id.list_view);
         dbAdapter = new DBAdapter(this);
@@ -60,6 +60,9 @@ public class MainActivity  extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        setTitle( "受信箱" );
 
         showList(this);
 
@@ -67,7 +70,7 @@ public class MainActivity  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    editTodo = edit_Text.getText().toString();//書き込まれた内容(getText)をstrに格納
+                    editTodo = editText.getText().toString();//書き込まれた内容(getText)をstrに格納
                     if(editTodo.equals("")){
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
                     }
@@ -78,7 +81,7 @@ public class MainActivity  extends AppCompatActivity {
                         dbAdapter.readDB();
                         showList(getApplicationContext());
 
-                        edit_Text.getEditableText().clear();
+                        editText.getEditableText().clear();
                     }
                 } catch (Exception e) {//エラーの場合
                     Log.e(TAG, "SQLExcepption:" + e.toString());
@@ -130,7 +133,7 @@ public class MainActivity  extends AppCompatActivity {
             e.printStackTrace();
         }
         // Adapterの作成
-        adapter = new ArrayAdapter<String>(context, R.layout.list, (List<String>) lvAdapter);
+        adapter = new ArrayAdapter<String>(context, R.layout.text_todo_list, (List<String>) lvAdapter);
         listView.setAdapter(adapter);
     }
 
@@ -184,6 +187,10 @@ public class MainActivity  extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        else if (id == android.R.id.home){
+
             return true;
         }
 
