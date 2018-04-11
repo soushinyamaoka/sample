@@ -39,10 +39,7 @@ public class TodoDetail extends Activity {
         text_Box = findViewById(R.id.text_Box);
         text_Date = findViewById(R.id.text_Date);
         text_Memo = findViewById(R.id.text_Memo);
-        custom_Todo = findViewById(R.id.custom_todo_button);
         custom_Box = findViewById(R.id.custom_box_button);
-        custom_Date = findViewById(R.id.custom_date_button);
-        custom_Memo = findViewById(R.id.custom_memo_button);
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
         //editText = findViewById(R.id.editText);

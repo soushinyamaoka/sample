@@ -94,7 +94,7 @@ public class DBAdapter extends AppCompatActivity {
             Cursor c = db.query(DB_TABLE,
                     cols,
                     "box !=?",
-                    new String[]{"アーカイブ"},
+                    new String[]{"完了"},
                     null,
                     null,
                     ORDER_BY);
@@ -148,7 +148,7 @@ public class DBAdapter extends AppCompatActivity {
                                 DB_TABLE,
                                 cols,
                       "box !=?",
-                                new String[]{""},
+                                new String[]{"", "完了"},
                                 null,
                                 null,
                                 ORDER_BY,
@@ -275,7 +275,7 @@ public class DBAdapter extends AppCompatActivity {
             Cursor c = db.query(DB_TABLE,
                                 cols,
                                 "box !=?",
-                                new String[]{"アーカイブ"},
+                                new String[]{"完了"},
                                 null,
                                 null,
                                 ORDER_BY);

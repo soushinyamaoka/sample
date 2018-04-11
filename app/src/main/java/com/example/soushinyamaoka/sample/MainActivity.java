@@ -3,12 +3,12 @@ package com.example.soushinyamaoka.sample;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,7 +18,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private ListView listViewBox;
-    private Button allTodoButton;
+    private TextView allTodoView;
+    private TextView completeView;
     DBAdapter dbAdapter;
     DBHelper db;
     ArrayAdapter<String> adapter;
@@ -34,22 +35,34 @@ public class MainActivity extends AppCompatActivity {
         setTitle( "受信箱" );
 
         listViewBox = findViewById(R.id.list_view_box);
-        allTodoButton = findViewById(R.id.all_todo_button);
+        allTodoView = findViewById(R.id.all_todo_view);
+        completeView = findViewById(R.id.complete_view);
         dbAdapter = new DBAdapter(this);
         db = new DBHelper(this);
 
         showBox(this);
 
-        allTodoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
+        allTodoView.setClickable(true);
+        allTodoView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // 遷移先のactivityを指定してintentを作成
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
-                // intentへ添え字付で値を保持させる
+                String boxName = "全て";
+                intent.putExtra( "boxname", boxName );
+                int requestCode = 123;
+                startActivityForResult(intent, requestCode);
                 startActivity(intent);
+            }
+        });
 
-                //int requestCode = 123;
-                //startActivityForResult(intent, requestCode);
+        completeView.setClickable(true);
+        completeView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
+                String boxName = "完了";
+                intent.putExtra( "boxname", boxName );
+                int requestCode = 123;
+                startActivityForResult(intent, requestCode);
+                startActivity(intent);
             }
         });
 
@@ -68,6 +81,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, requestCode);
             }
         });
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.edit_todo_button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, TodoEdit.class);
+                int requestCode = 123;
+                startActivityForResult(intent, requestCode);
+                startActivity(intent);
+            }
+        });
     }
 
     public void showBox(Context context){
@@ -82,5 +106,4 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<String>(context, R.layout.text_box_list, (List<String>) lvAdapter);
         listViewBox.setAdapter(adapter);
     }
-
 }

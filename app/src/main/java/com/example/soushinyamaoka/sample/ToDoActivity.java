@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,8 @@ public class ToDoActivity extends AppCompatActivity {
     int databaseId = 0;
     String today = "今日";
     String delete = "削除";
+    private String allList = "全て";
+    private String archiveList = "アーカイブ";
 
     private EditText editText;
     private Button editButton;
@@ -70,10 +73,11 @@ public class ToDoActivity extends AppCompatActivity {
 
         String boxName = intent.getStringExtra("boxname");
 
-        if (boxName != null){
+        if (boxName.equals("全て")){
+            showList(this,null);
+        } else {
             showList(this,boxName);
         }
-        showList(this);
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +111,7 @@ public class ToDoActivity extends AppCompatActivity {
                 deleteList(getApplicationContext(), listviewId);
                 //deleteArchive(getApplicationContext(),listviewId);
                 showList(getApplicationContext());
+                Toast.makeText(ToDoActivity.this, "完了済みにしました", Toast.LENGTH_LONG).show();
 
                 return false;
             }
@@ -171,7 +176,7 @@ public class ToDoActivity extends AppCompatActivity {
             String[] getMemo = dbAdapter.getMemo(databaseId);
 
             String setTodo = getTodo[0];
-            String setBox = "アーカイブ";
+            String setBox = "完了";
             String setDate = getDate[0];
             String setMemo = getMemo[0];
 

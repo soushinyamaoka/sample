@@ -23,7 +23,10 @@
             android:name=".TodoDetail">
         </activity>
         <activity
-            android:name=".ToDoActivity">
+        android:name=".ToDoActivity">
+        </activity>
+        <activity
+            android:name=".TodoEdit">
         </activity>
     </application>
 
