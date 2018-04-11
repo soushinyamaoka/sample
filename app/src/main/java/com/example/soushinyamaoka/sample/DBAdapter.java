@@ -112,6 +112,33 @@ public class DBAdapter extends AppCompatActivity {
         return listTodo;
     }
 
+    public ArrayList<String> readDB2(String boxName) throws Exception {
+        listId = new ArrayList<Integer>();
+        listTodo = new ArrayList<>();
+        String[] cols = {"todo"};
+
+        try {
+            Cursor c = db.query(DB_TABLE,
+                    cols,
+                    "box =?",
+                    new String[]{boxName},
+                    null,
+                    null,
+                    ORDER_BY);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listId.add(c.getInt(0));
+                listTodo.add(c.getString(1));
+                c.moveToNext();
+            }
+            c.close();
+
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        return listTodo;
+    }
+
     public ArrayList<String> readDBBox(){
         ArrayList<String> boxList = new ArrayList<>();
         String[] cols = {"box"};

@@ -25,8 +25,8 @@ public class DeleteDialogFragment extends DialogFragment {
 
                         //mainActivity.showlist(getActivity(),listView);
 
-                        MainActivity mainActivity = new MainActivity();
-                        mainActivity.deleteList(getActivity(),listviewId);
+                        ToDoActivity toDoActivity = new ToDoActivity();
+                        toDoActivity.deleteList(getActivity(),listviewId);
 
                         //listView = (ListView) getView().findViewById(R.id.list_view_todo);
 

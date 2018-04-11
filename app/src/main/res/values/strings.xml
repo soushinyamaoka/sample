@@ -10,4 +10,5 @@
     <string name="date_text">日付</string>
     <string name="memo_text">メモ</string>
     <string name="custom">編集</string>
+    <string name="all_text">  全て</string>
 </resources>

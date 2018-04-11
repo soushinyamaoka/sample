@@ -19,7 +19,7 @@ public class TodoList extends Activity {
 
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        //setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_todo);
         setContentView(R.layout.list_view_todo);
         listView = findViewById(R.id.list_view_todo);
         dbAdapter = new DBAdapter(this);
