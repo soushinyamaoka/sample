@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText editText;
     private Button editButton;
-    public ListView listView;
+    public ListView listViewTodo;
     DBAdapter dbAdapter;
     DialogFragment emptyTaskDialogFragment;
     DBHelper db;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         editText = findViewById(R.id.edit_Text);
         editButton = findViewById(R.id.edit_Button);
-        listView = findViewById(R.id.list_view);
+        listViewTodo = findViewById(R.id.list_view_todo);
         dbAdapter = new DBAdapter(this);
         emptyTaskDialogFragment = new EmptyTaskDialogFragment();
         db = new DBHelper(this);
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
                     }
                     else {
-                        editBox = today;
+                        editBox = "今日";
                         dbAdapter.openDB();
                         dbAdapter.writeDB(editTodo, editBox, editDate, editMemo);
                         dbAdapter.readDB();
@@ -89,21 +89,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        listView.setOnItemLongClickListener(
+        listViewTodo.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,View view,
                                            int position, long listviewId) {
-                //deleteDialog(listviewId);
                 deleteList(getApplicationContext(), listviewId);
+                //deleteArchive(getApplicationContext(),listviewId);
                 showList(getApplicationContext());
 
                 return false;
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewTodo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 // 遷移先のactivityを指定してintentを作成
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         }
         // Adapterの作成
         adapter = new ArrayAdapter<String>(context, R.layout.text_todo_list, (List<String>) lvAdapter);
-        listView.setAdapter(adapter);
+        listViewTodo.setAdapter(adapter);
     }
 
     public void deleteList(Context context, long listviewId){
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             String[] getMemo = dbAdapter.getMemo(databaseId);
 
             String setTodo = getTodo[0];
-            String setBox = delete;
+            String setBox = "アーカイブ";
             String setDate = getDate[0];
             String setMemo = getMemo[0];
 
@@ -158,6 +158,18 @@ public class MainActivity extends AppCompatActivity {
 
             //dbAdapter.openDB();
             //dbAdapter.deleteDB(databaseId);//DB上の値をDB上のidで削除。
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteArchive(Context context, long listviewId){
+        dbAdapter = new DBAdapter(context);
+        try {
+            dbAdapter.openDB();
+            databaseId = dbAdapter.changeId(listviewId);//List上のIDをDB上のIDに変換
+            dbAdapter.openDB();
+            dbAdapter.deleteDB(databaseId);//DB上の値をDB上のidで削除。
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -190,7 +202,13 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         else if (id == android.R.id.home){
+            Intent intent = new Intent(MainActivity.this, BoxList.class);
+            // intentへ添え字付で値を保持させる
+            intent.putExtra( "todoId", id );
+            startActivity(intent);
 
+            //int requestCode = 1234;
+            //startActivityForResult(intent, requestCode);
             return true;
         }
 

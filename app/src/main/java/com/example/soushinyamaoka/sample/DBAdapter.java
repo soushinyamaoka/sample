@@ -30,7 +30,7 @@ public class DBAdapter extends AppCompatActivity {
     private SQLiteDatabase db = null;           // SQLiteDatabase
     private DBHelper dbHelper;           // DBHepler
     protected Context context;
-    public ListView listView;
+    public ListView listViewTodo;
     ArrayList<Integer> listId;
     ArrayList<String> listTodo;
     ArrayList<String> listBox;
@@ -42,8 +42,8 @@ public class DBAdapter extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.todo_list_view);
-        listView = findViewById(R.id.list_view);
+        //setContentView(R.layout.list_view_todo);
+        //listViewTodo = findViewById(R.id.list_view_todo);
     }
 
     public DBAdapter(Context context) {
@@ -94,7 +94,7 @@ public class DBAdapter extends AppCompatActivity {
             Cursor c = db.query(DB_TABLE,
                     cols,
                     "box !=?",
-                    new String[]{delete},
+                    new String[]{"アーカイブ"},
                     null,
                     null,
                     ORDER_BY);
@@ -110,6 +110,33 @@ public class DBAdapter extends AppCompatActivity {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
         return listTodo;
+    }
+
+    public ArrayList<String> readDBBox(){
+        ArrayList<String> boxList = new ArrayList<>();
+        String[] cols = {"box"};
+
+        try {
+            Cursor c = db.query(true,
+                                DB_TABLE,
+                                cols,
+                      "box !=?",
+                                new String[]{""},
+                                null,
+                                null,
+                                ORDER_BY,
+                                null);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                //listId.add(c.getInt(0));
+                boxList.add(c.getString(0));
+                c.moveToNext();
+            }
+            c.close();
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        return boxList;
     }
 
     public void deleteDB(int id){
@@ -221,7 +248,7 @@ public class DBAdapter extends AppCompatActivity {
             Cursor c = db.query(DB_TABLE,
                                 cols,
                                 "box !=?",
-                                new String[]{delete},
+                                new String[]{"アーカイブ"},
                                 null,
                                 null,
                                 ORDER_BY);
@@ -247,32 +274,5 @@ public class DBAdapter extends AppCompatActivity {
             e.printStackTrace();
         }
         return datebaseId;
-    }
-
-    public ArrayList<String> readDBBox(){
-        ArrayList<String> boxList = new ArrayList<>();
-        String[] cols = {"box"};
-
-        try {
-            Cursor c = db.query(DB_TABLE,
-                    cols,
-                    null,
-                    null,
-                    null,
-                    null,
-                    ORDER_BY);
-            c.moveToFirst();
-            for (int i = 0; i < c.getCount(); i++) {
-                listId.add(c.getInt(0));
-                listTodo.add(c.getString(1));
-                c.moveToNext();
-            }
-            c.close();
-
-        }catch(SQLException e) {
-            Log.e(TAG, "SQLExcepption:"+e.toString());
-        }
-
-        return boxList;
     }
 }

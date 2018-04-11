@@ -34,7 +34,7 @@ public class TodoDetail extends Activity {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        setContentView(R.layout.todo_detail);
+        setContentView(R.layout.activity_detail_todo);
         text_Todo = findViewById(R.id.text_Todo);
         text_Box = findViewById(R.id.text_Box);
         text_Date = findViewById(R.id.text_Date);
@@ -46,7 +46,7 @@ public class TodoDetail extends Activity {
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
         //editText = findViewById(R.id.editText);
-        listView = findViewById(R.id.list_view);
+        //listView = findViewById(R.id.list_view_todo);
 
 
         // 現在のintentを取得する

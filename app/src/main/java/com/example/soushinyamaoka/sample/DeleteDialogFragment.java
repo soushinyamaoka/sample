@@ -28,7 +28,7 @@ public class DeleteDialogFragment extends DialogFragment {
                         MainActivity mainActivity = new MainActivity();
                         mainActivity.deleteList(getActivity(),listviewId);
 
-                        //listView = (ListView) getView().findViewById(R.id.todo_list_view);
+                        //listView = (ListView) getView().findViewById(R.id.list_view_todo);
 
                         dialog.dismiss();
                     }

@@ -18,20 +18,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <EditText
-        android:id="@+id/edit_Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName" />
 
 
-    <Button
-        android:id="@+id/edit_Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="追加" />
-
-    <include layout="@layout/list_view_todo" />
+    <include layout="@layout/list_view_box" />
 
 </LinearLayout>
