@@ -34,7 +34,9 @@ public class TodoEdit extends Activity {
     String editDate;
     String editMemo;
     DBHelper db;
+    BoxDBHelper boxdb;
     DBAdapter dbAdapter;
+    BoxDBAdapter boxDBAdapter;
     ArrayAdapter<String> adapter;
 
     long listviewId = 0;
@@ -49,7 +51,9 @@ public class TodoEdit extends Activity {
         text_Date = findViewById(R.id.text_Date);
         text_Memo = findViewById(R.id.text_Memo);
         db = new DBHelper(this);
+        boxdb = new BoxDBHelper(this);
         dbAdapter = new DBAdapter(this);
+        boxDBAdapter = new BoxDBAdapter(this);
         //editText = findViewById(R.id.editText);
         //listView = findViewById(R.id.list_view_todo);
         Spinner boxSpinner = (Spinner) findViewById(R.id.box_spinner);
@@ -83,10 +87,16 @@ public class TodoEdit extends Activity {
                         dbAdapter.openDB();
                         dbAdapter.writeDB(editTodo, editBox, editDate, editMemo);
 
+                        boxDBAdapter.openBoxDB();
+                        boxDBAdapter.writeBoxDB(editBox);
+
                         finish();
                     } else {
                         dbAdapter.openDB();
                         dbAdapter.writeDB(editTodo, editBox, editDate, editMemo);
+
+                        boxDBAdapter.openBoxDB();
+                        boxDBAdapter.writeBoxDB(editBox);
 
                         fileList();
                     }
@@ -138,24 +148,11 @@ public class TodoEdit extends Activity {
         editText.setText(setTodo[0]);
     }
 
-    public ArrayList<String> spinnerBox(Context context){
-        ArrayList<String> lvAdapter = new ArrayList<>();
-        dbAdapter.openDB();
-        try {
-            lvAdapter = dbAdapter.readDBBox();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // Adapterの作成
-        adapter = new ArrayAdapter<String>(context, R.layout.text_box_list, (List<String>) lvAdapter);
-        return lvAdapter;
-    }
-
     public ArrayList<String> getSpinner(){
         ArrayList<String> lvAdapter = new ArrayList<>();
-        dbAdapter.openDB();
+        boxDBAdapter.openBoxDB();
         try {
-            lvAdapter = dbAdapter.readDBBox();
+            lvAdapter = boxDBAdapter.readBoxDB();
         } catch (Exception e) {
             e.printStackTrace();
         }

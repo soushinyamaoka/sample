@@ -28,7 +28,7 @@ public class DBAdapter extends AppCompatActivity {
     private static final String delete = "削除";
 
     private SQLiteDatabase db = null;           // SQLiteDatabase
-    private DBHelper dbHelper;           // DBHepler
+    private DBHelper dbHelper;// DBHepler
     protected Context context;
     public ListView listViewTodo;
     ArrayList<Integer> listId;

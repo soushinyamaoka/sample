@@ -3,9 +3,12 @@ package com.example.soushinyamaoka.sample;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -75,6 +79,8 @@ public class ToDoActivity extends AppCompatActivity {
 
         if (boxName.equals("全て")){
             showList(this,null);
+        } else if (boxName.equals("完了")){
+            showList(this,boxName);
         } else {
             showList(this,boxName);
         }
@@ -146,6 +152,12 @@ public class ToDoActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        TextView textView = findViewById(R.id.text_Todo);
+        textView.setTextColor(Color.LTGRAY);
+        TextPaint paint =  textView.getPaint();
+        paint.setFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        paint.setAntiAlias(true);
         // Adapterの作成
         adapter = new ArrayAdapter<String>(context, R.layout.text_todo_list, (List<String>) lvAdapter);
         listViewTodo.setAdapter(adapter);
