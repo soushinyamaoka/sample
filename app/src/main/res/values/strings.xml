@@ -12,4 +12,6 @@
     <string name="archive_text">アーカイブ</string>
     <string name="all_text">全て</string>
     <string name="edit_text">追加</string>
+    <string name="edit_box_text">カテゴリを作成</string>
+    <string name="input_text">カテゴリを入力してください</string>
 </resources>

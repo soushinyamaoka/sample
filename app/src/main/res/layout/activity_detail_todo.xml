@@ -8,7 +8,7 @@
     >
 
     <EditText
-        android:id="@+id/text_Todo"
+        android:id="@+id/new_edit_Todo"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -34,7 +34,7 @@
         android:layout_marginTop="24dp"
         android:text="@string/box_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_Todo" />
+        app:layout_constraintTop_toBottomOf="@+id/new_edit_Todo" />
 
     <EditText
         android:id="@+id/text_Box"
@@ -57,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@+id/text_Box" />
 
     <EditText
-        android:id="@+id/text_Date"
+        android:id="@+id/new_edit_Date"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
@@ -74,10 +74,10 @@
         android:layout_marginTop="24dp"
         android:text="@string/memo_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_Date" />
+        app:layout_constraintTop_toBottomOf="@+id/new_edit_Date" />
 
     <EditText
-        android:id="@+id/text_Memo"
+        android:id="@+id/new_edit_Memo"
         android:layout_width="match_parent"
         android:layout_height="157dp"
         android:background="@drawable/flame_style"

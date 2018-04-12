@@ -35,10 +35,10 @@ public class TodoDetail extends Activity {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_detail_todo);
-        text_Todo = findViewById(R.id.text_Todo);
+        text_Todo = findViewById(R.id.new_edit_Todo);
         text_Box = findViewById(R.id.text_Box);
-        text_Date = findViewById(R.id.text_Date);
-        text_Memo = findViewById(R.id.text_Memo);
+        text_Date = findViewById(R.id.new_edit_Date);
+        text_Memo = findViewById(R.id.new_edit_Memo);
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
         //editText = findViewById(R.id.editText);

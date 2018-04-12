@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private ListView listViewBox;
     private TextView allTodoView;
     private TextView completeView;
+    private EditText editBoxView;
     DBAdapter dbAdapter;
+    BoxDBAdapter boxDBAdapter;
     DBHelper db;
     BoxDBHelper boxdb;
     ArrayAdapter<String> adapter;
@@ -33,16 +36,16 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_box);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_box);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_box);
         setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
-        setTitle( "受信箱" );
+        setTitle("受信箱");
 
         listViewBox = findViewById(R.id.list_view_box);
         allTodoView = findViewById(R.id.all_todo_view);
         completeView = findViewById(R.id.complete_view);
+        editBoxView = findViewById(R.id.edit_box_view);
         dbAdapter = new DBAdapter(this);
+        boxDBAdapter = new BoxDBAdapter(this);
         db = new DBHelper(this);
         boxdb = new BoxDBHelper(this);
 
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
                 String boxName = "全て";
-                intent.putExtra( "boxname", boxName );
+                intent.putExtra("boxname", boxName);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
                 startActivity(intent);
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
                 String boxName = "完了";
-                intent.putExtra( "boxname", boxName );
+                intent.putExtra("boxname", boxName);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
                 startActivity(intent);
@@ -78,9 +81,9 @@ public class MainActivity extends AppCompatActivity {
                 // 遷移先のactivityを指定してintentを作成
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
                 // intentへ添え字付で値を保持させる
-                ListView list = (ListView)adapterView;
-                String boxName = (String)list.getItemAtPosition(position);
-                intent.putExtra( "boxname", boxName );
+                ListView list = (ListView) adapterView;
+                String boxName = (String) list.getItemAtPosition(position);
+                intent.putExtra("boxname", boxName);
                 //startActivity(intent);
 
                 int requestCode = 123;
@@ -88,8 +91,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.edit_todo_button);
-        fab.setOnClickListener(new View.OnClickListener() {
+        editBoxView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String setBoxName = editBoxView.getText().toString();
+                boxDBAdapter.openBoxDB();
+                boxDBAdapter.writeBoxDB(setBoxName);
+                showBox(getApplicationContext());
+                editBoxView.getEditableText().clear();
+            }
+        });
+
+        FloatingActionButton fabEditTodo = (FloatingActionButton) findViewById(R.id.fab_edit_todo);
+        fabEditTodo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, TodoEdit.class);
@@ -100,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void showBox(Context context){
+    public void showBox(Context context) {
         ArrayList<String> lvAdapter = new ArrayList<>();
         dbAdapter.openDB();
         try {
@@ -113,11 +126,11 @@ public class MainActivity extends AppCompatActivity {
         listViewBox.setAdapter(adapter);
     }
 
-    public void delete(){
+    public void delete() {
 
     }
 
-    public static class BoxDeleteDialogFragment extends DialogFragment {
+    public static class DeleteBoxDialogFragment extends DialogFragment {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -137,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                             //mainActivity.showlist(getActivity(),listView);
 
                             ToDoActivity toDoActivity = new ToDoActivity();
-                            toDoActivity.deleteList(getActivity(),listviewId);
+                            toDoActivity.deleteList(getActivity(), listviewId);
 
                             //listView = (ListView) getView().findViewById(R.id.list_view_todo);
 

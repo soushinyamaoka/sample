@@ -1,7 +1,6 @@
 package com.example.soushinyamaoka.sample;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,24 +14,23 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
 public class TodoEdit extends Activity {
 
-    private EditText text_Todo;
-    private EditText text_Box;
-    private EditText text_Date;
-    private EditText text_Memo;
+    private EditText editTodo;
+    private EditText editBox;
+    private EditText editDate;
+    private EditText editMemo;
     public ListView listView;
     private EditText editText;
     private Button editTodoButton;
 
-    String editTodo;
-    String editBox;
-    String editDate;
-    String editMemo;
+    String setTextTodo;
+    String setTextBox;
+    String setTextDate;
+    String setTextMemo;
     DBHelper db;
     BoxDBHelper boxdb;
     DBAdapter dbAdapter;
@@ -46,17 +44,18 @@ public class TodoEdit extends Activity {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_edit_todo);
-        text_Todo = findViewById(R.id.text_Todo);
-        text_Box = findViewById(R.id.text_Box);
-        text_Date = findViewById(R.id.text_Date);
-        text_Memo = findViewById(R.id.text_Memo);
+        editTodo = findViewById(R.id.new_edit_Todo);
+        editBox = findViewById(R.id.text_Box);
+        editDate = findViewById(R.id.new_edit_Date);
+        editMemo = findViewById(R.id.new_edit_Memo);
+        editTodoButton = findViewById(R.id.edit_todo_button);
         db = new DBHelper(this);
         boxdb = new BoxDBHelper(this);
         dbAdapter = new DBAdapter(this);
         boxDBAdapter = new BoxDBAdapter(this);
         //editText = findViewById(R.id.editText);
         //listView = findViewById(R.id.list_view_todo);
-        Spinner boxSpinner = (Spinner) findViewById(R.id.box_spinner);
+        final Spinner boxSpinner = (Spinner) findViewById(R.id.new_box_spinner);
 
 
         // 現在のintentを取得する
@@ -78,27 +77,28 @@ public class TodoEdit extends Activity {
         editTodoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setTextTodo = editTodo.getText().toString();//書き込まれた内容(getText)をstrに格納
+                setTextBox = (String)boxSpinner.getSelectedItem();
                 try {
-                    editTodo = editText.getText().toString();//書き込まれた内容(getText)をstrに格納
-                    if(editTodo.equals("")){
+                    if(setTextTodo.equals("")){
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
-                    } else if (editBox.equals("")){
-                        editBox = "今日";
+                    } else if (setTextBox != null){
                         dbAdapter.openDB();
-                        dbAdapter.writeDB(editTodo, editBox, editDate, editMemo);
+                        dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextMemo);
 
                         boxDBAdapter.openBoxDB();
-                        boxDBAdapter.writeBoxDB(editBox);
+                        boxDBAdapter.writeBoxDB(setTextBox);
 
                         finish();
                     } else {
+                        setTextBox = "今日";
                         dbAdapter.openDB();
-                        dbAdapter.writeDB(editTodo, editBox, editDate, editMemo);
+                        dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextMemo);
 
                         boxDBAdapter.openBoxDB();
-                        boxDBAdapter.writeBoxDB(editBox);
+                        boxDBAdapter.writeBoxDB(setTextBox);
 
-                        fileList();
+                        finish();
                     }
                 } catch (Exception e) {//エラーの場合
                     Log.e(TAG, "SQLExcepption:" + e.toString());
@@ -141,10 +141,10 @@ public class TodoEdit extends Activity {
         setDate = dbAdapter.getDate(databaseId);
         setMemo = dbAdapter.getMemo(databaseId);
 
-        text_Todo.setText(setTodo[0]);
-        text_Box.setText(setBox[0]);
-        text_Date.setText(setDate[0]);
-        text_Memo.setText(setMemo[0]);
+        editTodo.setText(setTodo[0]);
+        editBox.setText(setBox[0]);
+        editDate.setText(setDate[0]);
+        editMemo.setText(setMemo[0]);
         editText.setText(setTodo[0]);
     }
 
