@@ -79,7 +79,41 @@ public class BoxDBAdapter extends AppCompatActivity {
     }
 
     //データベースからの読み込み
-    public ArrayList<String> readBoxDB() throws Exception {
+    //public ArrayList<String> readBoxDB() {
+    public String[] readBoxDB() {
+        //listId = new ArrayList<Integer>();
+        listBox = new ArrayList<>();
+        int[] listId;
+        //String[] stringBox = new String[];
+
+        try {
+            Cursor c = db.query(DB_TABLE,
+                    null,
+                    "box !=?",
+                    new String[]{"完了"},
+                    null,
+                    null,
+                    ORDER_BY);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listBox.add(c.getString(1));
+                //listId.add(c.getInt(0));
+                //listBox.add(c.getString(1));
+                c.moveToNext();
+            }
+            c.close();
+            //stringBox = listBox.toArray(new String[0]);
+
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        String[] array = new String[listBox.size()];
+        array = listBox.toArray(new String[listBox.size()]);
+        return array;
+    }
+
+    //データベースからの読み込み
+    public ArrayList<String> readBoxDB2() {
         listId = new ArrayList<Integer>();
         listBox = new ArrayList<>();
 
@@ -145,13 +179,13 @@ public class BoxDBAdapter extends AppCompatActivity {
         return listID;
     }
 
-    public String[] getBoxName(long boxDataBaseId) {
+    public String[] getBoxName(int boxDataBaseId) {
         listBox = new ArrayList<>();
         String[] setBoxName = new String[0];
         try {
             Cursor c = db.query(DB_TABLE,
                     null,
-                    "id = " + boxDataBaseId,
+                    "id =?" + boxDataBaseId,
                     null,
                     null,
                     null,

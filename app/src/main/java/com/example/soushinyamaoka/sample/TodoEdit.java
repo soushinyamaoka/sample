@@ -152,7 +152,7 @@ public class TodoEdit extends Activity {
         ArrayList<String> lvAdapter = new ArrayList<>();
         boxDBAdapter.openBoxDB();
         try {
-            lvAdapter = boxDBAdapter.readBoxDB();
+            lvAdapter = boxDBAdapter.readBoxDB2();
         } catch (Exception e) {
             e.printStackTrace();
         }

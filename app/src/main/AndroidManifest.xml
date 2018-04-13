@@ -28,6 +28,9 @@
         <activity
             android:name=".TodoEdit">
         </activity>
+        <activity
+            android:name=".EditBox">
+        </activity>
     </application>
 
 </manifest>

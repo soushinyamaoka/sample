@@ -1,10 +1,6 @@
 package com.example.soushinyamaoka.sample;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -19,9 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
 
     private ListView listViewBox;
@@ -34,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     DBHelper db;
     BoxDBHelper boxdb;
     ArrayAdapter<String> adapter;
+    CustomAdapter customAdapter;
     int boxDataBaseId;
 
     @Override
@@ -79,15 +73,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         listViewBox.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long boxListViewId) {
 
                 if (view.getId() == R.id.edit){
-                    startEditBoxClass(id);
+                    startEditBoxClass(position);
                 } else if (view.getId() == R.id.delete){
-                    deleteBoxList(id);
+                    deleteBoxList(boxListViewId);
                     Toast.makeText(MainActivity.this, "削除しました。", Toast.LENGTH_SHORT).show();
                 } else {
                     startTodoActivityClass((ListView)adapterView,position);
@@ -118,7 +111,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showBox(Context context) {
-        ArrayList<String> lvAdapter = new ArrayList<>();
+        //ArrayList<String> lvAdapter = new ArrayList<>();
+        String[] lvAdapter = new String[0];
         boxDBAdapter.openBoxDB();
         try {
             lvAdapter = boxDBAdapter.readBoxDB();
@@ -126,8 +120,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         // Adapterの作成
-        adapter = new ArrayAdapter<String>(context, R.layout.text_box_list, (List<String>) lvAdapter);
-        listViewBox.setAdapter(adapter);
+        //adapter = new ArrayAdapter<String>(context, R.layout.text_box_list, (List<String>) lvAdapter);
+        //listViewBox.setAdapter(adapter);
+        customAdapter = new CustomAdapter(getApplicationContext(), R.layout.row_item, boxDBAdapter.readBoxDB());
+        listViewBox.setAdapter(customAdapter);
     }
 
     public void deleteBoxList(long boxListViewId){
@@ -148,9 +144,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void startEditBoxClass(int position){
+        boxDBAdapter.openBoxDB();
+        // Adapterの作成
+        //adapter = new ArrayAdapter<String>(context, R.layout.text_box_list, (List<String>) lvAdapter);
+        //listViewBox.setAdapter(adapter);
+        customAdapter = new CustomAdapter(getApplicationContext(), R.layout.row_item, boxDBAdapter.readBoxDB());
+        int BoxListViewId = (int) customAdapter.getItemId(position);
 
-
-    public void startEditBoxClass(long BoxListViewId){
         Intent editIntent = new Intent(MainActivity.this, EditBox.class);
         boxDataBaseId = boxDBAdapter.changeBoxId(BoxListViewId);
         editIntent.putExtra("boxDataBaseId", boxDataBaseId);
