@@ -76,9 +76,9 @@ public class ToDoActivity extends AppCompatActivity {
         if (boxName.equals("全て")){
             showList(this);
         } else if (boxName.equals("完了")){
-            showList(this,boxName);
+            showDividedTodoList(this,boxName);
         } else {
-            showList(this,boxName);
+            showDividedTodoList(this,boxName);
         }
 
         editButton.setOnClickListener(new View.OnClickListener() {
@@ -153,11 +153,11 @@ public class ToDoActivity extends AppCompatActivity {
         listViewTodo.setAdapter(adapter);
     }
 
-    public void showList(Context context, String boxName){
+    public void showDividedTodoList(Context context, String boxName){
         ArrayList<String> lvAdapter = new ArrayList<>();
         dbAdapter.openDB();
         try {
-            lvAdapter = dbAdapter.readDB2(boxName);
+            lvAdapter = dbAdapter.readDividedBoxDB(boxName);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -36,7 +36,7 @@ public class BoxDBAdapter extends AppCompatActivity {
     ArrayList<String> listDate;
     ArrayList<String> listMemo;
 
-    int datebaseId = 0;
+    int boxDataBaseId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,16 +66,13 @@ public class BoxDBAdapter extends AppCompatActivity {
         }
     }
 
-    public void updateBoxDB(int todoId, String todo, String box, String date, String memo) {
+    public void updateBoxDB(int boxDataBaseId, String boxName) {
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
-        values.put(COL_TODO, todo);
-        values.put(COL_BOX, box);
-        values.put(COL_DATE, date);
-        values.put(COL_MEMO, memo);
+        values.put(COL_TODO, boxName);
 
         //空欄でも書き込めるようになっているので要修正
         try {
-            db.update(DB_TABLE, values, "id = " + todoId, null);
+            db.update(DB_TABLE, values, "id = " + boxDataBaseId, null);
         } catch (Exception e) {
             Log.e(TAG, "SQLExcepption:" + e.toString());
         }
@@ -85,8 +82,49 @@ public class BoxDBAdapter extends AppCompatActivity {
     public ArrayList<String> readBoxDB() throws Exception {
         listId = new ArrayList<Integer>();
         listBox = new ArrayList<>();
-        String[] cols = {"box"};
 
+        try {
+            Cursor c = db.query(DB_TABLE,
+                    null,
+                    "box !=?",
+                    new String[]{"完了"},
+                    null,
+                    null,
+                    ORDER_BY);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listId.add(c.getInt(0));
+                listBox.add(c.getString(1));
+                c.moveToNext();
+            }
+            c.close();
+
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        return listBox;
+    }
+
+    public void deleteBoxDB(int boxDataBaseId){
+        db.delete(DB_TABLE, "id = " + boxDataBaseId, null);
+        db.close();
+    }
+
+    public int changeBoxId(long boxListViewId){
+        ArrayList<Integer> idAdapter = new ArrayList<>();
+        try {
+            openBoxDB();
+            idAdapter = getBoxDataBaseId();
+            boxDataBaseId = idAdapter.get((int)boxListViewId);//削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return boxDataBaseId;
+    }
+
+    public ArrayList<Integer> getBoxDataBaseId() {
+        ArrayList<Integer> listID = new ArrayList<>();
+        String[] cols = {"id"};
         try {
             Cursor c = db.query(DB_TABLE,
                     cols,
@@ -97,14 +135,37 @@ public class BoxDBAdapter extends AppCompatActivity {
                     ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
-                listTodo.add(c.getString(0));
+                listID.add(c.getInt(0));
                 c.moveToNext();
             }
             c.close();
-
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        return listBox;
+        return listID;
+    }
+
+    public String[] getBoxName(long boxDataBaseId) {
+        listBox = new ArrayList<>();
+        String[] setBoxName = new String[0];
+        try {
+            Cursor c = db.query(DB_TABLE,
+                    null,
+                    "id = " + boxDataBaseId,
+                    null,
+                    null,
+                    null,
+                    ORDER_BY);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listBox.add(c.getString(0));
+                c.moveToNext();
+            }
+            c.close();
+            setBoxName = listBox.toArray(new String[0]);
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        return setBoxName;
     }
 }

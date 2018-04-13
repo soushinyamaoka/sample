@@ -112,7 +112,7 @@ public class DBAdapter extends AppCompatActivity {
         return listTodo;
     }
 
-    public ArrayList<String> readDB2(String boxName) throws Exception {
+    public ArrayList<String> readDividedBoxDB(String boxName) throws Exception {
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
         String[] cols = {"todo"};

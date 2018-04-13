@@ -13,9 +13,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +28,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView allTodoView;
     private TextView completeView;
     private EditText editBoxView;
+    private Button editBoxButton;
     DBAdapter dbAdapter;
     BoxDBAdapter boxDBAdapter;
     DBHelper db;
     BoxDBHelper boxdb;
     ArrayAdapter<String> adapter;
+    int boxDataBaseId;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -44,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         allTodoView = findViewById(R.id.all_todo_view);
         completeView = findViewById(R.id.complete_view);
         editBoxView = findViewById(R.id.edit_box_view);
+        editBoxButton = findViewById(R.id.edit_box_button);
         dbAdapter = new DBAdapter(this);
         boxDBAdapter = new BoxDBAdapter(this);
         db = new DBHelper(this);
@@ -78,20 +83,19 @@ public class MainActivity extends AppCompatActivity {
         listViewBox.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                // 遷移先のactivityを指定してintentを作成
-                Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
-                // intentへ添え字付で値を保持させる
-                ListView list = (ListView) adapterView;
-                String boxName = (String) list.getItemAtPosition(position);
-                intent.putExtra("boxname", boxName);
-                //startActivity(intent);
 
-                int requestCode = 123;
-                startActivityForResult(intent, requestCode);
+                if (view.getId() == R.id.edit){
+                    startEditBoxClass(id);
+                } else if (view.getId() == R.id.delete){
+                    deleteBoxList(id);
+                    Toast.makeText(MainActivity.this, "削除しました。", Toast.LENGTH_SHORT).show();
+                } else {
+                    startTodoActivityClass((ListView)adapterView,position);
+                }
             }
         });
 
-        editBoxView.setOnClickListener(new View.OnClickListener() {
+        editBoxButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String setBoxName = editBoxView.getText().toString();
                 boxDBAdapter.openBoxDB();
@@ -115,9 +119,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void showBox(Context context) {
         ArrayList<String> lvAdapter = new ArrayList<>();
-        dbAdapter.openDB();
+        boxDBAdapter.openBoxDB();
         try {
-            lvAdapter = dbAdapter.readDBBox();
+            lvAdapter = boxDBAdapter.readBoxDB();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -126,44 +130,42 @@ public class MainActivity extends AppCompatActivity {
         listViewBox.setAdapter(adapter);
     }
 
-    public void delete() {
+    public void deleteBoxList(long boxListViewId){
+        try {
+            boxDBAdapter.openBoxDB();
+            boxDataBaseId = boxDBAdapter.changeBoxId(boxListViewId);//List上のIDをDB上のIDに変換
 
+            String setBox = "完了";
+
+            //カテゴリ内にあるタスクのカテゴリを完了に変更
+            boxDBAdapter.openBoxDB();
+            boxDBAdapter.updateBoxDB(boxDataBaseId,setBox);
+            //カテゴリ名を削除
+            boxDBAdapter.openBoxDB();
+            boxDBAdapter.deleteBoxDB(boxDataBaseId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static class DeleteBoxDialogFragment extends DialogFragment {
 
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-//CharSequenceとStringは互換あり
-            String deleteMessage = "完全に削除してよろしいですか？";
-            final String deleteOK = "はい";
-            final String deleteNG = "いいえ";
-            final long listviewId = getArguments().getLong("deleteId");
+    public void startEditBoxClass(long BoxListViewId){
+        Intent editIntent = new Intent(MainActivity.this, EditBox.class);
+        boxDataBaseId = boxDBAdapter.changeBoxId(BoxListViewId);
+        editIntent.putExtra("boxDataBaseId", boxDataBaseId);
+        int requestCode = 123;
+        startActivityForResult(editIntent, requestCode);
+    }
 
-            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(deleteMessage)
-                    .setPositiveButton(deleteOK, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            //リストクリック時の処理
-
-                            //mainActivity.showlist(getActivity(),listView);
-
-                            ToDoActivity toDoActivity = new ToDoActivity();
-                            toDoActivity.deleteList(getActivity(), listviewId);
-
-                            //listView = (ListView) getView().findViewById(R.id.list_view_todo);
-
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton(deleteNG, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            //リストクリック時の処理
-                            dialog.dismiss();
-                        }
-                    });
-            return builder.create();
-        }
+    public void startTodoActivityClass(ListView adapterView,int position){
+        // 遷移先のactivityを指定してintentを作成
+        Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
+        // intentへ添え字付で値を保持させる
+        ListView list = (ListView) adapterView;
+        String boxName = (String) list.getItemAtPosition(position);
+        intent.putExtra("boxname", boxName);
+        int requestCode = 123;
+        startActivityForResult(intent, requestCode);
     }
 }
