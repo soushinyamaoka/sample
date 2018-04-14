@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView listViewBox;
     private TextView allTodoView;
     private TextView completeView;
+    private TextView todayView;
     private EditText editBoxView;
     private Button editBoxButton;
     DBAdapter dbAdapter;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         listViewBox = findViewById(R.id.list_view_box);
         allTodoView = findViewById(R.id.all_todo_view);
         completeView = findViewById(R.id.complete_view);
+        todayView = findViewById(R.id.today_todo_view);
         editBoxView = findViewById(R.id.edit_box_view);
         editBoxButton = findViewById(R.id.edit_box_button);
         dbAdapter = new DBAdapter(this);
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
                 String boxName = "全て";
-                intent.putExtra("boxname", boxName);
+                intent.putExtra("boxName", boxName);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
                 startActivity(intent);
@@ -67,12 +69,27 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
                 String boxName = "完了";
-                intent.putExtra("boxname", boxName);
+                intent.putExtra("boxName", boxName);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
                 startActivity(intent);
             }
         });
+
+        todayView.setClickable(true);
+        todayView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //dateの値に合わせて設定したい
+                Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
+                String boxName = "今日";
+                intent.putExtra("boxName", boxName);
+                int requestCode = 123;
+                startActivityForResult(intent, requestCode);
+                startActivity(intent);
+            }
+        });
+
+        listViewBox.setClickable(true);
         listViewBox.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -82,8 +99,9 @@ public class MainActivity extends AppCompatActivity {
                 } else if (view.getId() == R.id.delete){
                     ListView list = (ListView) adapterView;
                     int boxlistViewId = (int) list.getItemAtPosition(position);
+                    deleteBoxList(boxlistViewId);
                     Toast.makeText(MainActivity.this, "削除しました。", Toast.LENGTH_SHORT).show();
-                } else {
+                } else if (view.getId() == R.id.text){
                     startTodoActivityClass((ListView)adapterView,position);
                 }
             }
@@ -166,13 +184,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void startTodoActivityClass(ListView adapterView,int position){
         // 遷移先のactivityを指定してintentを作成
-        Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
-        // intentへ添え字付で値を保持させる
+        Intent todoActiveIntent = new Intent(MainActivity.this, ToDoActivity.class);
         ListView list = (ListView) adapterView;
-        String boxName = (String) list.getItemAtPosition(position);
-        intent.putExtra("boxname", boxName);
+
+        int BoxListViewId = (int)list.getItemAtPosition(position);
+        boxDataBaseId = boxDBAdapter.changeBoxId(BoxListViewId);
+
+        String[] setBoxName = boxDBAdapter.getBoxName(boxDataBaseId);
+
+        todoActiveIntent.putExtra("boxDataBaseId", boxDataBaseId);
+        todoActiveIntent.putExtra("boxName", setBoxName[0]);
+
         int requestCode = 123;
-        startActivityForResult(intent, requestCode);
+        startActivityForResult(todoActiveIntent, requestCode);
     }
 
     // SubActivity からの返しの結果を受け取る

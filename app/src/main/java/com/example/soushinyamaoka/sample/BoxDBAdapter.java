@@ -15,8 +15,8 @@ import static android.content.ContentValues.TAG;
 
 public class BoxDBAdapter extends AppCompatActivity {
 
-    private final static String DB_NAME = "samplebox4.db";//DB名
-    private final static String DB_TABLE = "testbox4";//テーブル名
+    private final static String DB_NAME = "samplebox6.db";//DB名
+    private final static String DB_TABLE = "testbox6";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";
@@ -68,7 +68,7 @@ public class BoxDBAdapter extends AppCompatActivity {
 
     public void updateBoxDB(int boxDataBaseId, String boxName) {
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
-        values.put(COL_TODO, boxName);
+        values.put(COL_BOX, boxName);
 
         //空欄でも書き込めるようになっているので要修正
         try {
@@ -76,6 +76,11 @@ public class BoxDBAdapter extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG, "SQLExcepption:" + e.toString());
         }
+    }
+
+    public void deleteBoxDB(int boxDataBaseId){
+        db.delete(DB_TABLE, "id = " + boxDataBaseId, null);
+        db.close();
     }
 
     //データベースからの読み込み
@@ -90,8 +95,8 @@ public class BoxDBAdapter extends AppCompatActivity {
             Cursor c = db.query(
                     DB_TABLE,
                     null,
-                    "box !=?",
-                    new String[]{"完了"},
+                    "box !=? or box !=?",
+                    new String[]{"完了","今日"},
                     null,
                     null,
                     ORDER_BY);
@@ -138,11 +143,6 @@ public class BoxDBAdapter extends AppCompatActivity {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
         return listBox;
-    }
-
-    public void deleteBoxDB(int boxDataBaseId){
-        db.delete(DB_TABLE, "id = " + boxDataBaseId, null);
-        db.close();
     }
 
     public int changeBoxId(long boxListViewId){

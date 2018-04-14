@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 public class DBAdapter extends AppCompatActivity {
-    private final static String DB_NAME = "sampletodo4.db";//DB名
-    private final static String DB_TABLE = "test4";//テーブル名
+    private final static String DB_NAME = "sampletodo6.db";//DB名
+    private final static String DB_TABLE = "test6";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";

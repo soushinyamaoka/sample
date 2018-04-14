@@ -69,10 +69,12 @@ public class ToDoActivity extends AppCompatActivity {
 
         // 現在のintentを取得する
         Intent intent = getIntent();
-        // intentから指定キーの文字列を取得する
+        //Mainから渡された「選択されたカテゴリのDB上のID」を取得
+        final int boxDataBaseId = intent.getIntExtra( "boxDataBaseId",-1);
+        //Mainから渡された「選択されたカテゴリ名」を取得
+        final String boxName = intent.getStringExtra("boxName");
 
-        String boxName = intent.getStringExtra("boxname");
-
+        //リストの生成
         if (boxName.equals("全て")){
             showList(this);
         } else if (boxName.equals("完了")){
@@ -92,7 +94,7 @@ public class ToDoActivity extends AppCompatActivity {
                     else {
                         editBox = "今日";
                         dbAdapter.openDB();
-                        dbAdapter.writeDB(editTodo, editBox, editDate, editMemo);
+                        dbAdapter.writeDB(editTodo, boxName, editDate, editMemo);
                         dbAdapter.readDB();
                         showList(getApplicationContext());
 
@@ -112,7 +114,7 @@ public class ToDoActivity extends AppCompatActivity {
                                            int position, long listviewId) {
                 deleteList(getApplicationContext(), listviewId);
                 //deleteArchive(getApplicationContext(),listviewId);
-                showList(getApplicationContext());
+                showDividedTodoList(getApplicationContext(),boxName);
                 Toast.makeText(ToDoActivity.this, "完了済みにしました", Toast.LENGTH_LONG).show();
 
                 return false;

@@ -4,7 +4,9 @@
 
     <!-- 枠線 width:線の幅、color:線の色 -->
     <stroke
-        android:width="4dp"
+        android:width="2dp"
         android:color="#34465d" />
+    <solid
+        android:color="@color/colorWhite" />
 
 </shape>

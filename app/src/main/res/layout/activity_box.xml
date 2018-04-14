@@ -36,7 +36,7 @@
                 android:background="@drawable/flame_style"
                 android:clickable="true"
                 android:gravity="left|center_vertical"
-                android:text="@string/edit_box_text"
+                android:hint="@string/edit_box_text"
                 android:textSize="16sp" />
 
             <Button
@@ -52,20 +52,30 @@
         android:id="@+id/all_todo_view"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#FFFFFF"
+        android:background="@drawable/flame_style_white"
         android:clickable="true"
         android:gravity="left|center_vertical"
         android:text="@string/all_text"
         android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/today_todo_view"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/flame_style_white"
+            android:clickable="true"
+            android:gravity="left|center_vertical"
+            android:text="@string/today_text"
+            android:textSize="16sp" />
+
+        <TextView
             android:id="@+id/complete_view"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="#FFFFFF"
+            android:background="@drawable/flame_style_white"
             android:clickable="true"
             android:gravity="left|center_vertical"
-            android:text="@string/archive_text"
+            android:text="@string/complete_text"
             android:textSize="16sp" />
 
         <include layout="@layout/list_view_box" />

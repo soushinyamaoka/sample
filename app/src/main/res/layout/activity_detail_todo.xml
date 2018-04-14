@@ -22,7 +22,7 @@
         android:id="@+id/todo_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/todo_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,19 +31,18 @@
         android:id="@+id/box_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/box_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_edit_Todo" />
 
-    <EditText
-        android:id="@+id/text_Box"
+    <Spinner
+        android:id="@+id/new_box_spinner"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:layout_marginTop="4dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/flame_style"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/box_text" />
 
@@ -51,10 +50,10 @@
         android:id="@+id/date_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/date_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_Box" />
+        app:layout_constraintTop_toBottomOf="@+id/new_box_spinner" />
 
     <EditText
         android:id="@+id/new_edit_Date"
@@ -71,7 +70,7 @@
         android:id="@+id/memo_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/memo_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_edit_Date" />
@@ -80,6 +79,7 @@
         android:id="@+id/new_edit_Memo"
         android:layout_width="match_parent"
         android:layout_height="157dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/flame_style"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

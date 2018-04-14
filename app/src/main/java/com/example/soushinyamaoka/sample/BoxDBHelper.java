@@ -10,8 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class BoxDBHelper extends SQLiteOpenHelper {
 
-    private final static String DB_NAME = "samplebox4.db";//DB名
-    private final static String DB_TABLE = "testbox4";//テーブル名
+    private final static String DB_NAME = "samplebox6.db";//DB名
+    private final static String DB_TABLE = "testbox6";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     //private static final String COL_ID = "id";
@@ -32,7 +32,7 @@ public class BoxDBHelper extends SQLiteOpenHelper {
         String createTable =
                 "CREATE TABLE IF NOT EXISTS " + DB_TABLE + " ( " +
                         COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        COL_BOX + " TEXT" +
+                        COL_BOX + " TEXT UNIQUE" +
                         ")";
         db.execSQL(createTable);
     }

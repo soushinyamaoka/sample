@@ -14,5 +14,6 @@
     <string name="edit_text">追加</string>
     <string name="edit_box_text">カテゴリを作成</string>
     <string name="input_text">カテゴリを入力してください</string>
-    <string name="complete_text">完了</string>
+    <string name="complete_text">完了済み</string>
+    <string name="today_text">今日</string>
 </resources>

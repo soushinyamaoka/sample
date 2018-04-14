@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
 
 public class TodoDetail extends Activity {
 
@@ -26,24 +29,26 @@ public class TodoDetail extends Activity {
     String editDate;
     String editMemo;
     DBHelper db;
+    BoxDBHelper boxdb;
     DBAdapter dbAdapter;
+    BoxDBAdapter boxDBAdapter;
 
     long listviewId = 0;
     int databaseId = 0;
+    Spinner boxSpinner;
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_detail_todo);
         text_Todo = findViewById(R.id.new_edit_Todo);
-        text_Box = findViewById(R.id.text_Box);
         text_Date = findViewById(R.id.new_edit_Date);
         text_Memo = findViewById(R.id.new_edit_Memo);
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
+        boxSpinner = (Spinner) findViewById(R.id.new_box_spinner);
         //editText = findViewById(R.id.editText);
         //listView = findViewById(R.id.list_view_todo);
-
 
         // 現在のintentを取得する
         Intent intent = getIntent();
@@ -64,10 +69,11 @@ public class TodoDetail extends Activity {
 
     @Override
     public void onBackPressed(){
+
         dbAdapter.openDB();
         dbAdapter.updateDB(databaseId,
                             text_Todo.getText().toString(),
-                            text_Box.getText().toString(),
+                    (String)boxSpinner.getSelectedItem(),
                             text_Date.getText().toString(),
                             text_Memo.getText().toString());
         finish();
@@ -86,10 +92,21 @@ public class TodoDetail extends Activity {
         setMemo = dbAdapter.getMemo(databaseId);
 
         text_Todo.setText(setTodo[0]);
-        text_Box.setText(setBox[0]);
+        //boxSpinner.setSelection(setBox[0]);
         text_Date.setText(setDate[0]);
         text_Memo.setText(setMemo[0]);
         editText.setText(setTodo[0]);
+    }
+
+    public ArrayList<String> getSpinner(){
+        ArrayList<String> lvAdapter = new ArrayList<>();
+        boxDBAdapter.openBoxDB();
+        try {
+            lvAdapter = boxDBAdapter.readBoxDB2();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lvAdapter;
     }
 }
 

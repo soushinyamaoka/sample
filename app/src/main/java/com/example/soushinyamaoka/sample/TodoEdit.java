@@ -45,7 +45,6 @@ public class TodoEdit extends Activity {
         super.onCreate(bundle);
         setContentView(R.layout.activity_edit_todo);
         editTodo = findViewById(R.id.new_edit_Todo);
-        editBox = findViewById(R.id.text_Box);
         editDate = findViewById(R.id.new_edit_Date);
         editMemo = findViewById(R.id.new_edit_Memo);
         editTodoButton = findViewById(R.id.edit_todo_button);

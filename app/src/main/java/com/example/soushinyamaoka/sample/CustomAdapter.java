@@ -42,6 +42,12 @@ class CustomAdapter extends BaseAdapter {
         }
 
         holder.textView.setText(items[position]);
+        holder.textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((ListView) parent).performItemClick(view, position, R.id.text);
+            }
+        });
 
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
