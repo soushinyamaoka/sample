@@ -141,7 +141,7 @@ public class TodoEdit extends Activity {
         setMemo = dbAdapter.getMemo(databaseId);
 
         editTodo.setText(setTodo[0]);
-        editBox.setText(setBox[0]);
+        //editBox.setText(setBox[0]);
         editDate.setText(setDate[0]);
         editMemo.setText(setMemo[0]);
         editText.setText(setTodo[0]);
