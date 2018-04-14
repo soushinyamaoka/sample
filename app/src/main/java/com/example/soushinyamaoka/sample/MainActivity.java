@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
     // SubActivity からの返しの結果を受け取る
     protected void onActivityResult( int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+
         if(resultCode == RESULT_OK && requestCode == 123 &&
                 null != intent) {
             String changedBoxName = intent.getStringExtra("changedBoxName");
