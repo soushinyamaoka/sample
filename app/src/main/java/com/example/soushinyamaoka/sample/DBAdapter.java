@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 public class DBAdapter extends AppCompatActivity {
-    private final static String DB_NAME = "sampletodo3.db";//DB名
-    private final static String DB_TABLE = "test3";//テーブル名
+    private final static String DB_NAME = "sampletodo4.db";//DB名
+    private final static String DB_TABLE = "test4";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";
@@ -174,6 +174,7 @@ public class DBAdapter extends AppCompatActivity {
     public String[] getTodo(long todoId) {
         listTodo = new ArrayList<>();
         String[] setTodo = new String[0];
+
         try {
             Cursor c = db.query(DB_TABLE,
                                 new String[]{COL_TODO},

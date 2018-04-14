@@ -27,11 +27,10 @@ public class EditBox extends AppCompatActivity{
 
         // 現在のintentを取得する
         Intent intent = getIntent();
-        // intentから指定キーの文字列を取得する
+        //Mainから渡された「選択されたカテゴリのDB上のID」を取得
         final int boxDataBaseId = intent.getIntExtra( "boxDataBaseId",-1);
-        //editEditBoxに現在格納されている値を表示
-        String[] setBox;
-        setBox = boxDBAdapter.getBoxName(boxDataBaseId);
+        //Mainから渡された「選択されたカテゴリ名」を取得
+        String[] setBox = intent.getStringArrayExtra( "boxName");
         editEditBox.setText(setBox[0]);
 
         editEditButton.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +45,9 @@ public class EditBox extends AppCompatActivity{
                     e.printStackTrace();
                 }
                 //-------------------------
+                Intent intent = new Intent();
+                intent.putExtra("changedBoxName", setBoxName);
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });

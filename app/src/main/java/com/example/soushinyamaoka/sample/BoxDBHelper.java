@@ -10,8 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class BoxDBHelper extends SQLiteOpenHelper {
 
-    private final static String DB_NAME = "samplebox3.db";//DB名
-    private final static String DB_TABLE = "testbox3";//テーブル名
+    private final static String DB_NAME = "samplebox4.db";//DB名
+    private final static String DB_TABLE = "testbox4";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     //private static final String COL_ID = "id";

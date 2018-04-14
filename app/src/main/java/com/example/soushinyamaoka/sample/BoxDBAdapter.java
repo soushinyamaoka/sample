@@ -15,8 +15,8 @@ import static android.content.ContentValues.TAG;
 
 public class BoxDBAdapter extends AppCompatActivity {
 
-    private final static String DB_NAME = "samplebox3.db";//DB名
-    private final static String DB_TABLE = "testbox3";//テーブル名
+    private final static String DB_NAME = "samplebox4.db";//DB名
+    private final static String DB_TABLE = "testbox4";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";
@@ -87,7 +87,8 @@ public class BoxDBAdapter extends AppCompatActivity {
         //String[] stringBox = new String[];
 
         try {
-            Cursor c = db.query(DB_TABLE,
+            Cursor c = db.query(
+                    DB_TABLE,
                     null,
                     "box !=?",
                     new String[]{"完了"},
@@ -182,14 +183,15 @@ public class BoxDBAdapter extends AppCompatActivity {
     public String[] getBoxName(int boxDataBaseId) {
         listBox = new ArrayList<>();
         String[] setBoxName = new String[0];
+        String[] cols = {"box"};
         try {
             Cursor c = db.query(DB_TABLE,
-                    null,
-                    "id =?" + boxDataBaseId,
-                    null,
-                    null,
-                    null,
-                    ORDER_BY);
+                                new String[]{COL_BOX},
+                                "id = " + boxDataBaseId,
+                                null,
+                                null,
+                                null,
+                                ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
                 listBox.add(c.getString(0));

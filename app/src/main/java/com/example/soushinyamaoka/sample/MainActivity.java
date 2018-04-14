@@ -75,12 +75,13 @@ public class MainActivity extends AppCompatActivity {
         });
         listViewBox.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long boxListViewId) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
                 if (view.getId() == R.id.edit){
                     startEditBoxClass(position);
                 } else if (view.getId() == R.id.delete){
-                    deleteBoxList(boxListViewId);
+                    ListView list = (ListView) adapterView;
+                    int boxlistViewId = (int) list.getItemAtPosition(position);
                     Toast.makeText(MainActivity.this, "削除しました。", Toast.LENGTH_SHORT).show();
                 } else {
                     startTodoActivityClass((ListView)adapterView,position);
@@ -150,11 +151,15 @@ public class MainActivity extends AppCompatActivity {
         //adapter = new ArrayAdapter<String>(context, R.layout.text_box_list, (List<String>) lvAdapter);
         //listViewBox.setAdapter(adapter);
         customAdapter = new CustomAdapter(getApplicationContext(), R.layout.row_item, boxDBAdapter.readBoxDB());
-        int BoxListViewId = (int) customAdapter.getItemId(position);
-
+        //editIntentにEditBox.classを入れる
         Intent editIntent = new Intent(MainActivity.this, EditBox.class);
+        //リスト上のIDをDB上のIDに変換し、Intentに格納
+        int BoxListViewId = (int) customAdapter.getItemId(position);
         boxDataBaseId = boxDBAdapter.changeBoxId(BoxListViewId);
         editIntent.putExtra("boxDataBaseId", boxDataBaseId);
+        //選択されたカテゴリ名を取得し、Intentに格納
+        String[] setBoxName = boxDBAdapter.getBoxName(boxDataBaseId);
+        editIntent.putExtra("boxName", setBoxName);
         int requestCode = 123;
         startActivityForResult(editIntent, requestCode);
     }
@@ -168,5 +173,16 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("boxname", boxName);
         int requestCode = 123;
         startActivityForResult(intent, requestCode);
+    }
+
+    // SubActivity からの返しの結果を受け取る
+    protected void onActivityResult( int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if(resultCode == RESULT_OK && requestCode == 123 &&
+                null != intent) {
+            String changedBoxName = intent.getStringExtra("changedBoxName");
+
+        }
     }
 }
