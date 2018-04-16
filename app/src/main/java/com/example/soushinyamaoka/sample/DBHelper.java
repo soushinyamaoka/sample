@@ -10,8 +10,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private final static String DB_NAME = "sampletodo6.db";//DB名
-    private final static String DB_TABLE = "test6";//テーブル名
+    private final static String DB_NAME = "sampletodo7.db";//DB名
+    private final static String DB_TABLE = "test7";//テーブル名
+    private final static String DB_BOX_TABLE = "testbox7";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     //private static final String COL_ID = "id";
@@ -38,6 +39,13 @@ public class DBHelper extends SQLiteOpenHelper {
                         COL_MEMO + " TEXT" +
                         ")";
         db.execSQL(createTable);
+
+        String createBoxTable =
+                "CREATE TABLE IF NOT EXISTS " + DB_BOX_TABLE + " ( " +
+                        COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COL_BOX + " TEXT UNIQUE" +
+                        ")";
+        db.execSQL(createBoxTable);
     }
 
     //データベースヘルパーのコンストラクタ
@@ -49,6 +57,8 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion){
         db.execSQL("drop table if exists "+DB_TABLE);
+        onCreate(db);
+        db.execSQL("drop table if exists "+DB_BOX_TABLE);
         onCreate(db);
     }
 }

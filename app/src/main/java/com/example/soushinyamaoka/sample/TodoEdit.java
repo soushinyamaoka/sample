@@ -32,7 +32,6 @@ public class TodoEdit extends Activity {
     String setTextDate;
     String setTextMemo;
     DBHelper db;
-    BoxDBHelper boxdb;
     DBAdapter dbAdapter;
     BoxDBAdapter boxDBAdapter;
     ArrayAdapter<String> adapter;
@@ -49,7 +48,6 @@ public class TodoEdit extends Activity {
         editMemo = findViewById(R.id.new_edit_Memo);
         editTodoButton = findViewById(R.id.edit_todo_button);
         db = new DBHelper(this);
-        boxdb = new BoxDBHelper(this);
         dbAdapter = new DBAdapter(this);
         boxDBAdapter = new BoxDBAdapter(this);
         //editText = findViewById(R.id.editText);

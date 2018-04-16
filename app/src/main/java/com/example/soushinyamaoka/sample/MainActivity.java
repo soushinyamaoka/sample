@@ -15,6 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private ListView listViewBox;
@@ -26,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     DBAdapter dbAdapter;
     BoxDBAdapter boxDBAdapter;
     DBHelper db;
-    BoxDBHelper boxdb;
     ArrayAdapter<String> adapter;
     CustomAdapter customAdapter;
     int boxDataBaseId;
@@ -48,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         dbAdapter = new DBAdapter(this);
         boxDBAdapter = new BoxDBAdapter(this);
         db = new DBHelper(this);
-        boxdb = new BoxDBHelper(this);
 
         showBox(this);
 
@@ -110,8 +110,10 @@ public class MainActivity extends AppCompatActivity {
         editBoxButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String setBoxName = editBoxView.getText().toString();
+
                 boxDBAdapter.openBoxDB();
                 boxDBAdapter.writeBoxDB(setBoxName);
+
                 showBox(getApplicationContext());
                 editBoxView.getEditableText().clear();
             }
@@ -132,15 +134,15 @@ public class MainActivity extends AppCompatActivity {
     public void showBox(Context context) {
         //ArrayList<String> lvAdapter = new ArrayList<>();
         String[] lvAdapter = new String[0];
+        //dbAdapter.openDB();
+        //lvAdapter = dbAdapter.readDBBox();
+        //String[] arr = lvAdapter.toArray(new String[lvAdapter.size()]);
         boxDBAdapter.openBoxDB();
-        try {
-            lvAdapter = boxDBAdapter.readBoxDB();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //lvAdapter = boxDBAdapter.readBoxDB();
         // Adapterの作成
         //adapter = new ArrayAdapter<String>(context, R.layout.text_box_list, (List<String>) lvAdapter);
         //listViewBox.setAdapter(adapter);
+        //customAdapter = new CustomAdapter(getApplicationContext(), R.layout.row_item, arr);
         customAdapter = new CustomAdapter(getApplicationContext(), R.layout.row_item, boxDBAdapter.readBoxDB());
         listViewBox.setAdapter(customAdapter);
     }
@@ -194,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
         todoActiveIntent.putExtra("boxDataBaseId", boxDataBaseId);
         todoActiveIntent.putExtra("boxName", setBoxName[0]);
+        todoActiveIntent.putExtra("spinnerPosition", position);
 
         int requestCode = 123;
         startActivityForResult(todoActiveIntent, requestCode);

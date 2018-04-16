@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 public class DBAdapter extends AppCompatActivity {
-    private final static String DB_NAME = "sampletodo6.db";//DB名
-    private final static String DB_TABLE = "test6";//テーブル名
+    private final static String DB_NAME = "sampletodo7.db";//DB名
+    private final static String DB_TABLE = "test7";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";
@@ -55,7 +55,7 @@ public class DBAdapter extends AppCompatActivity {
         db = dbHelper.getWritableDatabase();        // DBの読み書き
     }
 
-    public void writeDB(String todo, String box, String date, String memo) throws Exception{
+    public void writeDB(String todo, String box, String date, String memo) {
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
         values.put(COL_TODO, todo);
         values.put(COL_BOX, box);
@@ -127,8 +127,8 @@ public class DBAdapter extends AppCompatActivity {
                     ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
-                listId.add(c.getInt(0));
-                listTodo.add(c.getString(1));
+                //listId.add(c.getInt(0));
+                listTodo.add(c.getString(0));
                 c.moveToNext();
             }
             c.close();
@@ -147,7 +147,7 @@ public class DBAdapter extends AppCompatActivity {
             Cursor c = db.query(true,
                                 DB_TABLE,
                                 cols,
-                      "box !=?",
+                      "box !=? or box !=?",
                                 new String[]{"", "完了"},
                                 null,
                                 null,

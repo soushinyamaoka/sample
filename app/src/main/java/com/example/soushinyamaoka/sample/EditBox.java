@@ -11,7 +11,6 @@ import android.widget.EditText;
 public class EditBox extends AppCompatActivity{
 
     BoxDBAdapter boxDBAdapter;
-    BoxDBHelper boxdb;
     ArrayAdapter<String> adapter;
     EditText editEditBox;
     Button editEditButton;
@@ -23,7 +22,6 @@ public class EditBox extends AppCompatActivity{
         editEditBox = findViewById(R.id.edit_edit_box);
         editEditButton = findViewById(R.id.edit_edit_button);
         boxDBAdapter = new BoxDBAdapter(this);
-        boxdb = new BoxDBHelper(this);
 
         // 現在のintentを取得する
         Intent intent = getIntent();

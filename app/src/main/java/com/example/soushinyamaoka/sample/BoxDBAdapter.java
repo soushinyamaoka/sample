@@ -15,8 +15,8 @@ import static android.content.ContentValues.TAG;
 
 public class BoxDBAdapter extends AppCompatActivity {
 
-    private final static String DB_NAME = "samplebox6.db";//DB名
-    private final static String DB_TABLE = "testbox6";//テーブル名
+    private final static String DB_NAME = "samplebox7.db";//DB名
+    private final static String DB_TABLE = "testbox7";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";
@@ -28,7 +28,7 @@ public class BoxDBAdapter extends AppCompatActivity {
     private static final String delete = "削除";
 
     private SQLiteDatabase db = null;           // SQLiteDatabase
-    private BoxDBHelper boxDBHelper;// DBHepler
+    private DBHelper dbHelper;// DBHepler
     protected Context context;
     ArrayList<Integer> listId;
     ArrayList<String> listTodo;
@@ -47,11 +47,11 @@ public class BoxDBAdapter extends AppCompatActivity {
 
     public BoxDBAdapter(Context context) {
         this.context = context;
-        boxDBHelper = new BoxDBHelper(this.context);
+        dbHelper = new DBHelper(this.context);
     }
 
     public void openBoxDB() {
-        db = boxDBHelper.getWritableDatabase();        // DBの読み書き
+        db = dbHelper.getWritableDatabase();        // DBの読み書き
     }
 
     public void writeBoxDB(String box) {

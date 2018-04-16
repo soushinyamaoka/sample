@@ -34,10 +34,13 @@ public class ToDoActivity extends AppCompatActivity {
     String editMemo;
 
     int databaseId = 0;
+    int spinnerPosition = 0;
     String today = "今日";
     String delete = "削除";
     private String allList = "全て";
     private String archiveList = "アーカイブ";
+    String boxName;
+    int boxDataBaseId;
 
     private EditText editText;
     private Button editButton;
@@ -70,9 +73,11 @@ public class ToDoActivity extends AppCompatActivity {
         // 現在のintentを取得する
         Intent intent = getIntent();
         //Mainから渡された「選択されたカテゴリのDB上のID」を取得
-        final int boxDataBaseId = intent.getIntExtra( "boxDataBaseId",-1);
+        boxDataBaseId = intent.getIntExtra( "boxDataBaseId",-1);
         //Mainから渡された「選択されたカテゴリ名」を取得
-        final String boxName = intent.getStringExtra("boxName");
+        boxName = intent.getStringExtra("boxName");
+        //Mainから渡されたboxのposition(spinnerPosition)を取得
+        spinnerPosition = intent.getIntExtra("spinnerPosition",0);
 
         //リストの生成
         if (boxName.equals("全て")){
@@ -128,7 +133,7 @@ public class ToDoActivity extends AppCompatActivity {
                 Intent intent = new Intent(ToDoActivity.this, TodoDetail.class);
                 // intentへ添え字付で値を保持させる
                 intent.putExtra( "todoId", id );
-                //startActivity(intent);
+                intent.putExtra("spinnerPosition", spinnerPosition);
 
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
