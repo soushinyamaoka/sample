@@ -4,11 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 
 import java.util.ArrayList;
 
@@ -61,8 +58,11 @@ public class TodoDetail extends Activity {
                     (String)edit_boxSpinner.getSelectedItem(),
                             edit_Date.getText().toString(),
                             edit_Memo.getText().toString());
-        finish();
-        super.onBackPressed();
+        Intent intent = new Intent(TodoDetail.this,ToDoActivity.class);
+        intent.putExtra("boxName",(String)edit_boxSpinner.getSelectedItem());
+        int requestCode = 1234;
+        startActivityForResult(intent, requestCode);
+        //super.onBackPressed();
     }
 
     public void showDetail()  {
@@ -82,8 +82,8 @@ public class TodoDetail extends Activity {
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, lvAdapter);
 
         edit_Todo.setText(setTodo[0]);
-        edit_boxSpinner.setAdapter(adapter);
-        edit_boxSpinner.setSelection(spinnerPosition);
+        //edit_boxSpinner.setAdapter(adapter);
+        //edit_boxSpinner.setSelection(spinnerPosition);
         edit_Date.setText(setDate[0]);
         edit_Memo.setText(setMemo[0]);
     }

@@ -1,5 +1,6 @@
 package com.example.soushinyamaoka.sample;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -97,11 +98,11 @@ public class ToDoActivity extends AppCompatActivity {
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
                     }
                     else {
-                        editBox = "今日";
+                        //editBox = "今日";
                         dbAdapter.openDB();
                         dbAdapter.writeDB(editTodo, boxName, editDate, editMemo);
-                        dbAdapter.readDB();
-                        showList(getApplicationContext());
+                        //dbAdapter.readDB();
+                        showDividedTodoList(getApplicationContext(),boxName);
 
                         editText.getEditableText().clear();
                     }
@@ -143,8 +144,17 @@ public class ToDoActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        showList(this);
+        //super.onActivityResult(requestCode, resultCode, data);
+        // startActivityForResult()の際に指定した識別コードとの比較
+        if( requestCode == 1234 ){
+            // 返却結果ステータスとの比較
+            if( resultCode == Activity.RESULT_OK ){
+                // 返却されてきたintentから値を取り出す
+                Intent intent = getIntent();
+                boxName = intent.getStringExtra("boxName");
+                showDividedTodoList(this, boxName);
+            }
+        }
     }
 
     public void showList(Context context){
