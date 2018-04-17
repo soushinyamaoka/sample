@@ -42,6 +42,7 @@ public class ToDoActivity extends AppCompatActivity {
     private String archiveList = "アーカイブ";
     String boxName;
     int boxDataBaseId;
+    private static final int TODO_DETAIL = 1001;
 
     private EditText editText;
     private Button editButton;
@@ -65,12 +66,6 @@ public class ToDoActivity extends AppCompatActivity {
         emptyTaskDialogFragment = new EmptyTaskDialogFragment();
         db = new DBHelper(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_todo);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        setTitle( "受信箱" );
-
         // 現在のintentを取得する
         Intent intent = getIntent();
         //Mainから渡された「選択されたカテゴリのDB上のID」を取得
@@ -79,6 +74,8 @@ public class ToDoActivity extends AppCompatActivity {
         boxName = intent.getStringExtra("boxName");
         //Mainから渡されたboxのposition(spinnerPosition)を取得
         spinnerPosition = intent.getIntExtra("spinnerPosition",0);
+
+        setToolbar(boxName);
 
         //リストの生成
         if (boxName.equals("全て")){
@@ -136,8 +133,8 @@ public class ToDoActivity extends AppCompatActivity {
                 intent.putExtra( "todoId", id );
                 intent.putExtra("spinnerPosition", spinnerPosition);
 
-                int requestCode = 123;
-                startActivityForResult(intent, requestCode);
+
+                startActivityForResult(intent, TODO_DETAIL);
             }
         });
     }
@@ -146,12 +143,12 @@ public class ToDoActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         //super.onActivityResult(requestCode, resultCode, data);
         // startActivityForResult()の際に指定した識別コードとの比較
-        if( requestCode == 1234 ){
-            // 返却結果ステータスとの比較
-            if( resultCode == Activity.RESULT_OK ){
-                // 返却されてきたintentから値を取り出す
-                Intent intent = getIntent();
-                boxName = intent.getStringExtra("boxName");
+        // requestCodeがサブ画面か確認する
+        if(requestCode == TODO_DETAIL) {
+            // resultCodeがOKか確認する
+            if (resultCode == RESULT_OK) {
+                // 結果を取得して, 表示する.
+                boxName = data.getStringExtra("boxName");
                 showDividedTodoList(this, boxName);
             }
         }
@@ -201,9 +198,6 @@ public class ToDoActivity extends AppCompatActivity {
 
             dbAdapter.openDB();
             dbAdapter.updateDB(databaseId, setTodo, setBox, setDate, setMemo);
-
-            //dbAdapter.openDB();
-            //dbAdapter.deleteDB(databaseId);//DB上の値をDB上のidで削除。
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -257,7 +251,14 @@ public class ToDoActivity extends AppCompatActivity {
             //startActivityForResult(intent, requestCode);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setToolbar(String boxName){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_todo);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        setTitle(boxName);
     }
 }

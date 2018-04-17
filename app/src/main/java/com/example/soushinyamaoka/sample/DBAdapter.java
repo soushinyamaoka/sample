@@ -80,6 +80,7 @@ public class DBAdapter extends AppCompatActivity {
         //空欄でも書き込めるようになっているので要修正
         try {
             db.update(DB_TABLE, values, "id = " + todoId, null);
+            db.close();
         } catch (Exception e) {
             Log.e(TAG, "SQLExcepption:" + e.toString());
         }

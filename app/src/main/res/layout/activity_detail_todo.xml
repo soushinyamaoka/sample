@@ -36,13 +36,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_edit_Todo" />
 
-    <Spinner
-        android:id="@+id/new_box_spinner"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/new_edit_box"
+        android:layout_width="344dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/flame_style"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/box_text" />
 
@@ -53,7 +52,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/date_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_box_spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/new_edit_box" />
 
     <EditText
         android:id="@+id/new_edit_Date"
@@ -85,5 +84,14 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/memo_text" />
+
+    <Spinner
+        android:id="@+id/spinner_button"
+        android:layout_width="44dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/new_edit_box"
+        app:layout_constraintTop_toBottomOf="@+id/box_text" />
 
 </android.support.constraint.ConstraintLayout>
