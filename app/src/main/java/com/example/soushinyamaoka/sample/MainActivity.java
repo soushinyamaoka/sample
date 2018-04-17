@@ -15,8 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity {
 
     private ListView listViewBox;
@@ -189,14 +187,14 @@ public class MainActivity extends AppCompatActivity {
         Intent todoActiveIntent = new Intent(MainActivity.this, ToDoActivity.class);
         ListView list = (ListView) adapterView;
 
-        int BoxListViewId = (int)list.getItemAtPosition(position);
-        boxDataBaseId = boxDBAdapter.changeBoxId(BoxListViewId);
+        int boxListViewId = (int)list.getItemAtPosition(position);
+        boxDataBaseId = boxDBAdapter.changeBoxId(boxListViewId);
 
         String[] setBoxName = boxDBAdapter.getBoxName(boxDataBaseId);
 
         todoActiveIntent.putExtra("boxDataBaseId", boxDataBaseId);
         todoActiveIntent.putExtra("boxName", setBoxName[0]);
-        todoActiveIntent.putExtra("spinnerPosition", position);
+        todoActiveIntent.putExtra("spinnerPosition", boxListViewId);
 
         int requestCode = 123;
         startActivityForResult(todoActiveIntent, requestCode);

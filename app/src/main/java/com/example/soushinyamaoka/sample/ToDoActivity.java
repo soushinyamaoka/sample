@@ -1,6 +1,5 @@
 package com.example.soushinyamaoka.sample;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -130,9 +129,10 @@ public class ToDoActivity extends AppCompatActivity {
                 // 遷移先のactivityを指定してintentを作成
                 Intent intent = new Intent(ToDoActivity.this, TodoDetail.class);
                 // intentへ添え字付で値を保持させる
-                intent.putExtra( "todoId", id );
+                databaseId = dbAdapter.changeDividedId(id, boxName);
+                intent.putExtra( "databaseId", databaseId );
                 intent.putExtra("spinnerPosition", spinnerPosition);
-
+                intent.putExtra("boxName", boxName);
 
                 startActivityForResult(intent, TODO_DETAIL);
             }
@@ -149,7 +149,11 @@ public class ToDoActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // 結果を取得して, 表示する.
                 boxName = data.getStringExtra("boxName");
-                showDividedTodoList(this, boxName);
+                if (boxName.equals("全て")){
+                    showList(this);
+                } else {
+                    showDividedTodoList(this, boxName);
+                }
             }
         }
     }

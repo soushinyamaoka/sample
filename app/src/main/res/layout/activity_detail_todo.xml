@@ -37,22 +37,13 @@
         app:layout_constraintTop_toBottomOf="@+id/new_edit_Todo" />
 
     <TextView
-        android:id="@+id/new_edit_box"
-        android:layout_width="344dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/flame_style"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/box_text" />
-
-    <TextView
         android:id="@+id/date_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/date_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_edit_box" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_box" />
 
     <EditText
         android:id="@+id/new_edit_Date"
@@ -78,20 +69,22 @@
         android:id="@+id/new_edit_Memo"
         android:layout_width="match_parent"
         android:layout_height="157dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/flame_style"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/memo_text" />
+
+    <Spinner
+        android:id="@+id/spinner_box"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/flame_style"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/memo_text" />
-
-    <Spinner
-        android:id="@+id/spinner_button"
-        android:layout_width="44dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/new_edit_box"
         app:layout_constraintTop_toBottomOf="@+id/box_text" />
 
 </android.support.constraint.ConstraintLayout>

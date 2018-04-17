@@ -37,7 +37,7 @@ public class DBAdapter extends AppCompatActivity {
     ArrayList<String> listDate;
     ArrayList<String> listMemo;
 
-    int datebaseId = 0;
+    int databaseId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,14 +172,14 @@ public class DBAdapter extends AppCompatActivity {
         db.close();
     }
 
-    public String[] getTodo(long todoId) {
+    public String[] getTodo(int databaseId) {
         listTodo = new ArrayList<>();
         String[] setTodo = new String[0];
 
         try {
             Cursor c = db.query(DB_TABLE,
                                 new String[]{COL_TODO},
-                                "id = " + todoId,
+                                "id = " + databaseId,
                                 null,
                                 null,
                                 null,
@@ -197,13 +197,13 @@ public class DBAdapter extends AppCompatActivity {
         return setTodo;
     }
 
-    public String[] getBox(long todoId) {
+    public String[] getBox(int databaseId) {
         listBox = new ArrayList<>();
         String[] setBox = new String[0];
         try {
             Cursor c = db.query(DB_TABLE,
                                 new String[]{COL_BOX},
-                                "id = " + todoId,
+                                "id = " + databaseId,
                                 null,
                                 null,
                                 null,
@@ -221,13 +221,13 @@ public class DBAdapter extends AppCompatActivity {
         return setBox;
     }
 
-    public String[] getDate(long todoId) {
+    public String[] getDate(int databaseId) {
         listDate = new ArrayList<>();
         String[] setDate = new String[0];
         try {
             Cursor c = db.query(DB_TABLE,
                                 new String[]{COL_DATE},
-                                "id = " + todoId,
+                                "id = " + databaseId,
                                 null,
                                 null,
                                 null,
@@ -245,13 +245,13 @@ public class DBAdapter extends AppCompatActivity {
         return setDate;
     }
 
-    public String[] getMemo(long todoId) {
+    public String[] getMemo(int databaseId) {
         listMemo = new ArrayList<>();
         String[] setMemo = new String[0];
         try {
             Cursor c = db.query(DB_TABLE,
                                 new String[]{COL_MEMO},
-                                "id = " + todoId,
+                                "id = " + databaseId,
                                 null,
                                 null,
                                 null,
@@ -293,15 +293,66 @@ public class DBAdapter extends AppCompatActivity {
         return listID;
     }
 
+    public int changeDividedId(long listviewId, String boxName) {
+        int databaseId = 0;
+        listId = new ArrayList<Integer>();
+        listTodo = new ArrayList<>();
+        String[] cols = {"id"};
+        Integer[] array = new Integer[(int) listviewId];
+        if (boxName.equals("全て")){
+            try {
+                Cursor c = db.query(DB_TABLE,
+                        cols,
+                        "box !=?",
+                        new String[]{"完了"},
+                        null,
+                        null,
+                        ORDER_BY);
+                c.moveToFirst();
+                for (int i = 0; i < c.getCount(); i++) {
+                    listId.add(c.getInt(0));
+                    c.moveToNext();
+                    array = listId.toArray(new Integer[0]);
+                }
+                c.close();
+                databaseId = array[(int) listviewId];
+            }catch(SQLException e) {
+                Log.e(TAG, "SQLExcepption:"+e.toString());
+            }
+        } else{
+            try {
+                Cursor c = db.query(DB_TABLE,
+                        cols,
+                        "box =?",
+                        new String[]{boxName},
+                        null,
+                        null,
+                        ORDER_BY);
+                c.moveToFirst();
+                for (int i = 0; i < c.getCount(); i++) {
+                    //listId.add(c.getInt(0));
+                    listId.add(c.getInt(0));
+                    c.moveToNext();
+                    array = listId.toArray(new Integer[0]);
+                }
+                c.close();
+                databaseId = array[(int) listviewId];
+            }catch(SQLException e) {
+                Log.e(TAG, "SQLExcepption:"+e.toString());
+            }
+        }
+        return databaseId;
+    }
+
     public int changeId(long listviewId){
         ArrayList<Integer> idAdapter = new ArrayList<>();
         try {
             openDB();
             idAdapter = getDataBaseId();
-            datebaseId = idAdapter.get((int)listviewId);//削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
+            databaseId = idAdapter.get((int)listviewId);//削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return datebaseId;
+        return databaseId;
     }
 }
