@@ -16,4 +16,6 @@
     <string name="input_text">カテゴリを入力してください</string>
     <string name="complete_text">完了済み</string>
     <string name="today_text">今日</string>
+    <string name="delete_text">完全に削除</string>
+    <string name="back_text">長押しで元に戻す</string>
 </resources>

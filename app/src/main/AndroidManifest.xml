@@ -31,6 +31,11 @@
         <activity
             android:name=".EditBox">
         </activity>
+        <activity
+            android:name=".DeleteDialogFragment"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleInstance">
+        </activity>
     </application>
 
 </manifest>

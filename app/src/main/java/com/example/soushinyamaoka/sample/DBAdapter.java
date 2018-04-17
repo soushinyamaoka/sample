@@ -86,6 +86,18 @@ public class DBAdapter extends AppCompatActivity {
         }
     }
 
+    public void backDB(int todoId, String box) {
+        ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
+        values.put(COL_BOX, box);
+        //空欄でも書き込めるようになっているので要修正
+        try {
+            db.update(DB_TABLE, values, "id = " + todoId, null);
+            db.close();
+        } catch (Exception e) {
+            Log.e(TAG, "SQLExcepption:" + e.toString());
+        }
+    }
+
     //データベースからの読み込み
     public ArrayList<String> readDB() throws Exception {
         listId = new ArrayList<Integer>();
@@ -167,8 +179,8 @@ public class DBAdapter extends AppCompatActivity {
         return boxList;
     }
 
-    public void deleteDB(int id){
-        db.delete(DB_TABLE, "id = " + id, null);
+    public void deleteDB(String boxName){
+        db.delete(DB_TABLE, "box = " + boxName, null);
         db.close();
     }
 
