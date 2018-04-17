@@ -49,7 +49,7 @@ public class TodoDetail extends Activity {
         showDetail();
         //-------------------------
 
-        //setSpinner();
+        setSpinner();
         spinner_button.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position,
