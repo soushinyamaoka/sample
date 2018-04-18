@@ -20,27 +20,22 @@ public class BoxDBAdapter extends AppCompatActivity {
     private static final String COL_TODO = "todo";
     private static final String COL_BOX = "box";
     private static final String COL_DATE = "date";
+    private static final String COL_TIME = "time";
     private static final String COL_MEMO = "memo";
-    private static final String[] cols = {COL_ID, COL_TODO, COL_BOX, COL_DATE, COL_MEMO};
+    private static final String BOX_ID = "boxid";
     private static final String ORDER_BY = "id desc";
-    private static final String delete = "削除";
 
     private SQLiteDatabase db = null;           // SQLiteDatabase
     private DBHelper dbHelper;// DBHepler
     protected Context context;
     ArrayList<Integer> listId;
-    ArrayList<String> listTodo;
     ArrayList<String> listBox;
-    ArrayList<String> listDate;
-    ArrayList<String> listMemo;
 
     int boxDataBaseId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.list_view_todo);
-        //listViewTodo = findViewById(R.id.list_view_todo);
     }
 
     public BoxDBAdapter(Context context) {
@@ -90,8 +85,8 @@ public class BoxDBAdapter extends AppCompatActivity {
             Cursor c = db.query(
                     DB_TABLE,
                     cols,
-                    "box != ? OR box != ?",
-                    where,
+                    null,
+                    null,
                     null,
                     null,
                     ORDER_BY);
@@ -117,8 +112,8 @@ public class BoxDBAdapter extends AppCompatActivity {
         try {
             Cursor c = db.query(DB_TABLE,
                     null,
-                    "box !=?",
-                    new String[]{"完了"},
+                    null,
+                    null,
                     null,
                     null,
                     ORDER_BY);
@@ -148,14 +143,71 @@ public class BoxDBAdapter extends AppCompatActivity {
         return boxDataBaseId;
     }
 
+    public String changeToBoxName(int boxId){
+        String setBoxName = null;
+        listBox = new ArrayList<>();
+        String[] cols = {COL_BOX};
+        String[] where = {"完了","今日"};
+        try {
+            Cursor c = db.query(
+                    DB_TABLE,
+                    cols,
+                    "id =" + boxId,
+                    null,
+                    null,
+                    null,
+                    ORDER_BY);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listBox.add(c.getString(0));
+                c.moveToNext();
+            }
+            c.close();
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        String[] array;
+        array = listBox.toArray(new String[listBox.size()]);
+        setBoxName = array[0];
+        return setBoxName;
+    }
+
+    public int changeToBoxId(int boxId){
+        int setBoxId;
+        listId = new ArrayList<>();
+        String[] cols = {COL_ID};
+        try {
+            Cursor c = db.query(
+                    DB_TABLE,
+                    cols,
+                    "id =" + boxId,
+                    null,
+                    null,
+                    null,
+                    ORDER_BY);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listId.add(c.getInt(0));
+                c.moveToNext();
+            }
+            c.close();
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        Integer[] array;
+        array = listId.toArray(new Integer[listId.size()]);
+        setBoxId = array[0];
+        return setBoxId;
+    }
+
     public ArrayList<Integer> getBoxDataBaseId() {
         ArrayList<Integer> listID = new ArrayList<>();
         String[] cols = {"id"};
         try {
             Cursor c = db.query(DB_TABLE,
                     cols,
-                    "box !=?",
-                    new String[]{"完了"},
+                    null,
+                    null,
                     null,
                     null,
                     ORDER_BY);

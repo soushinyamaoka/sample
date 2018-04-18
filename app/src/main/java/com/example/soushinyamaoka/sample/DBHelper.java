@@ -23,7 +23,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COL_TODO = "todo";
     private static final String COL_BOX = "box";
     private static final String COL_DATE = "date";
+    private static final String COL_TIME = "time";
     private static final String COL_MEMO = "memo";
+    private static final String COL_BOXID = "boxid";
 
     //データベースの生成
     //@Override
@@ -40,19 +42,22 @@ public class DBHelper extends SQLiteOpenHelper {
                         COL_TODO + " TEXT, " +
                         COL_BOX + " TEXT, " +
                         COL_DATE + " TEXT, " +
-                        COL_MEMO + " TEXT" +
+                        COL_TIME + " TEXT, " +
+                        COL_MEMO + " TEXT," +
+                        COL_BOXID + " INTEGER" +
                         ")";
         db.execSQL(createTable);
 
         String createBoxTable =
                 "CREATE TABLE IF NOT EXISTS " + DB_BOX_TABLE + " ( " +
                         COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        COL_BOX + " TEXT UNIQUE" +
+                        COL_BOX + " TEXT" +
                         ")";
         db.execSQL(createBoxTable);
 
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
-        values.put(COL_BOX, "今日");
+        values.put(COL_BOX, "完了");//id=0
+        values.put(COL_BOX, "今日");//id=1
 
         //空欄でも書き込めるようになっているので要修正
         try {

@@ -5,42 +5,36 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextPaint;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 public class ToDoComplete extends AppCompatActivity{
 
     int databaseId = 0;
     int spinnerPosition = 0;
     String boxName;
+    int boxId;
     int boxDataBaseId;
     private static final int TODO_DETAIL = 1001;
     private static final int TODO_DELETE = 1002;
     private Button deleteButton;
     public ListView listViewTodo;
     DBAdapter dbAdapter;
-    DialogFragment emptyTaskDialogFragment;
     DBHelper db;
+    BoxDBAdapter boxDBAdapter;
+    DialogFragment emptyTaskDialogFragment;
     ArrayAdapter<String> adapter;
 
     //アクティビティ起動時に呼ばれる
@@ -60,7 +54,8 @@ public class ToDoComplete extends AppCompatActivity{
         //Mainから渡された「選択されたカテゴリのDB上のID」を取得
         boxDataBaseId = intent.getIntExtra( "boxDataBaseId",-1);
         //Mainから渡された「選択されたカテゴリ名」を取得
-        boxName = intent.getStringExtra("boxName");
+        boxId = intent.getIntExtra("boxName",-1);
+        boxName = boxDBAdapter.changeToBoxName(boxId);
         //Mainから渡されたboxのposition(spinnerPosition)を取得
         spinnerPosition = intent.getIntExtra("spinnerPosition",0);
 
@@ -148,7 +143,7 @@ public class ToDoComplete extends AppCompatActivity{
         ArrayList<String> lvAdapter = new ArrayList<>();
         dbAdapter.openDB();
         try {
-            lvAdapter = dbAdapter.readDividedBoxDB(boxName);
+            lvAdapter = dbAdapter.readDividedBoxDB(boxId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -161,7 +156,7 @@ public class ToDoComplete extends AppCompatActivity{
         //dbAdapter = new DBAdapter(context);
         try {
             dbAdapter.openDB();
-            dbAdapter.deleteDB("完了");//DB上の値をDB上のidで削除。
+            dbAdapter.deleteDB(boxId);//DB上の値をDB上のidで削除。
         } catch (Exception e) {
             e.printStackTrace();
         }

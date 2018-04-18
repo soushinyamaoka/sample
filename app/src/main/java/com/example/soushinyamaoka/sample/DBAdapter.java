@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -20,28 +19,28 @@ public class DBAdapter extends AppCompatActivity {
     private static final String COL_TODO = "todo";
     private static final String COL_BOX = "box";
     private static final String COL_DATE = "date";
+    private static final String COL_TIME = "time";
     private static final String COL_MEMO = "memo";
+    private static final String COL_BOXID = "boxid";
     private static final String[] cols = {COL_ID, COL_TODO, COL_BOX, COL_DATE, COL_MEMO};
     private static final String ORDER_BY = "id desc";
-    private static final String delete = "削除";
 
     private SQLiteDatabase db = null;           // SQLiteDatabase
     private DBHelper dbHelper;// DBHepler
     protected Context context;
-    public ListView listViewTodo;
     ArrayList<Integer> listId;
     ArrayList<String> listTodo;
     ArrayList<String> listBox;
+    ArrayList<String> listTime;
     ArrayList<String> listDate;
     ArrayList<String> listMemo;
+    ArrayList<Integer> listBoxId;
 
     int databaseId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.list_view_todo);
-        //listViewTodo = findViewById(R.id.list_view_todo);
     }
 
     public DBAdapter(Context context) {
@@ -53,12 +52,15 @@ public class DBAdapter extends AppCompatActivity {
         db = dbHelper.getWritableDatabase();        // DBの読み書き
     }
 
-    public void writeDB(String todo, String box, String date, String memo) {
+    public void writeDB(String todo, String box, String date,
+                        String time, String memo, int boxId) {
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
         values.put(COL_TODO, todo);
         values.put(COL_BOX, box);
         values.put(COL_DATE, date);
+        values.put(COL_TIME, time);
         values.put(COL_MEMO, memo);
+        values.put(COL_BOXID, boxId);
 
         //空欄でも書き込めるようになっているので要修正
         try {
@@ -68,12 +70,15 @@ public class DBAdapter extends AppCompatActivity {
         }
     }
 
-    public void updateDB(int todoId, String todo, String box, String date, String memo) {
+    public void updateDB(int todoId, String todo, String box, String date,
+                         String time, String memo, int boxId) {
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
         values.put(COL_TODO, todo);
         values.put(COL_BOX, box);
         values.put(COL_DATE, date);
+        values.put(COL_TIME, time);
         values.put(COL_MEMO, memo);
+        values.put(COL_BOXID, boxId);
 
         //空欄でも書き込めるようになっているので要修正
         try {
@@ -104,8 +109,8 @@ public class DBAdapter extends AppCompatActivity {
         try {
             Cursor c = db.query(DB_TABLE,
                     cols,
-                    "box !=?",
-                    new String[]{"完了"},
+                    "boxId !=?",
+                    new String[]{String.valueOf(0)},
                     null,
                     null,
                     ORDER_BY);
@@ -123,7 +128,7 @@ public class DBAdapter extends AppCompatActivity {
         return listTodo;
     }
 
-    public ArrayList<String> readDividedBoxDB(String boxName) throws Exception {
+    public ArrayList<String> readDividedBoxDB(int boxId) throws Exception {
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
         String[] cols = {"todo"};
@@ -131,8 +136,8 @@ public class DBAdapter extends AppCompatActivity {
         try {
             Cursor c = db.query(DB_TABLE,
                     cols,
-                    "box =?",
-                    new String[]{boxName},
+                    "boxId !=" + boxId,
+                    null,
                     null,
                     null,
                     ORDER_BY);
@@ -153,13 +158,14 @@ public class DBAdapter extends AppCompatActivity {
     public ArrayList<String> readDBBox(){
         ArrayList<String> boxList = new ArrayList<>();
         String[] cols = {"box"};
+        int boxId = 0;
 
         try {
             Cursor c = db.query(true,
                                 DB_TABLE,
                                 cols,
-                      "box !=? or box !=?",
-                                new String[]{"", "完了"},
+                                "boxId !=" + boxId,
+                                null,
                                 null,
                                 null,
                                 ORDER_BY,
@@ -177,8 +183,8 @@ public class DBAdapter extends AppCompatActivity {
         return boxList;
     }
 
-    public void deleteDB(String boxName){
-        db.delete(DB_TABLE, "box = " + boxName, null);
+    public void deleteDB(int boxId){
+        db.delete(DB_TABLE, "boxId = " + boxId, null);
         db.close();
     }
 
@@ -255,6 +261,30 @@ public class DBAdapter extends AppCompatActivity {
         return setDate;
     }
 
+    public String[] getTime(int databaseId) {
+        listTime = new ArrayList<>();
+        String[] setTime = new String[0];
+        try {
+            Cursor c = db.query(DB_TABLE,
+                    new String[]{COL_TIME},
+                    "id = " + databaseId,
+                    null,
+                    null,
+                    null,
+                    ORDER_BY);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listTime.add(c.getString(0));
+                c.moveToNext();
+            }
+            c.close();
+            setTime = listTime.toArray(new String[0]);
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        return setTime;
+    }
+
     public String[] getMemo(int databaseId) {
         listMemo = new ArrayList<>();
         String[] setMemo = new String[0];
@@ -283,11 +313,12 @@ public class DBAdapter extends AppCompatActivity {
     public ArrayList<Integer> getDataBaseId() {
         ArrayList<Integer> listID = new ArrayList<>();
         String[] cols = {"id"};
+        int boxId = 0;
         try {
             Cursor c = db.query(DB_TABLE,
                                 cols,
-                                "box !=?",
-                                new String[]{"完了"},
+                                "boxId !=" + boxId,
+                                null,
                                 null,
                                 null,
                                 ORDER_BY);
@@ -308,13 +339,14 @@ public class DBAdapter extends AppCompatActivity {
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
         String[] cols = {"id"};
+        int boxId = 0;
         Integer[] array = new Integer[(int) listviewId];
         if (boxName.equals("全て")){
             try {
                 Cursor c = db.query(DB_TABLE,
                         cols,
-                        "box !=?",
-                        new String[]{"完了"},
+                        "boxId !=" + boxId,
+                        null,
                         null,
                         null,
                         ORDER_BY);
@@ -333,8 +365,8 @@ public class DBAdapter extends AppCompatActivity {
             try {
                 Cursor c = db.query(DB_TABLE,
                         cols,
-                        "box =?",
-                        new String[]{boxName},
+                        "boxId =" + boxId,
+                        null,
                         null,
                         null,
                         ORDER_BY);

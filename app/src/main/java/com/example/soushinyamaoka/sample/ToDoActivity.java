@@ -31,22 +31,23 @@ public class ToDoActivity extends AppCompatActivity {
     String editTodo;
     String editBox;
     String editDate;
+    String editTime;
     String editMemo;
+    int boxId;
 
     int databaseId = 0;
     int spinnerPosition = 0;
-    String today = "今日";
-    String delete = "削除";
-    private String allList = "全て";
-    private String archiveList = "アーカイブ";
-    String boxName;
+
     int boxDataBaseId;
+    String delete = "削除";
+    String boxName;
     private static final int TODO_DETAIL = 1001;
 
     private EditText editText;
     private Button editButton;
     public ListView listViewTodo;
     DBAdapter dbAdapter;
+    BoxDBAdapter boxDBAdapter;
     DialogFragment emptyTaskDialogFragment;
     DBHelper db;
     ArrayAdapter<String> adapter;
@@ -61,6 +62,7 @@ public class ToDoActivity extends AppCompatActivity {
         editButton = findViewById(R.id.edit_Button);
         listViewTodo = findViewById(R.id.list_view_todo);
         dbAdapter = new DBAdapter(this);
+        boxDBAdapter = new BoxDBAdapter(this);
         emptyTaskDialogFragment = new EmptyTaskDialogFragment();
         db = new DBHelper(this);
 
@@ -69,19 +71,21 @@ public class ToDoActivity extends AppCompatActivity {
         //Mainから渡された「選択されたカテゴリのDB上のID」を取得
         boxDataBaseId = intent.getIntExtra( "boxDataBaseId",-1);
         //Mainから渡された「選択されたカテゴリ名」を取得
-        boxName = intent.getStringExtra("boxName");
+        //boxName = intent.getStringExtra("boxName");
+        boxId = intent.getIntExtra("boxName",-1);
+        boxName =  boxDBAdapter.changeToBoxName(boxId);
         //Mainから渡されたboxのposition(spinnerPosition)を取得
         spinnerPosition = intent.getIntExtra("spinnerPosition",0);
 
         setToolbar(boxName);
 
         //リストの生成
-        if (boxName.equals("全て")){
+        if (boxId == -1){
             showList(this);
-        } else if (boxName.equals("完了")){
-            showDividedTodoList(this,boxName);
+        } else if (boxId == 0){
+            showDividedTodoList(this,boxId);
         } else {
-            showDividedTodoList(this,boxName);
+            showDividedTodoList(this,boxId);
         }
 
         editButton.setOnClickListener(new View.OnClickListener() {
@@ -95,9 +99,9 @@ public class ToDoActivity extends AppCompatActivity {
                     else {
                         //editBox = "今日";
                         dbAdapter.openDB();
-                        dbAdapter.writeDB(editTodo, boxName, editDate, editMemo);
+                        dbAdapter.writeDB(editTodo, boxName, editDate, editTime, editMemo, boxId);
                         //dbAdapter.readDB();
-                        showDividedTodoList(getApplicationContext(),boxName);
+                        showDividedTodoList(getApplicationContext(),boxId);
 
                         editText.getEditableText().clear();
                     }
@@ -115,7 +119,7 @@ public class ToDoActivity extends AppCompatActivity {
                                            int position, long listviewId) {
                 deleteList(getApplicationContext(), listviewId);
                 //deleteArchive(getApplicationContext(),listviewId);
-                showDividedTodoList(getApplicationContext(),boxName);
+                showDividedTodoList(getApplicationContext(),boxId);
                 Toast.makeText(ToDoActivity.this, "完了済みにしました", Toast.LENGTH_LONG).show();
 
                 return false;
@@ -131,7 +135,7 @@ public class ToDoActivity extends AppCompatActivity {
                 databaseId = dbAdapter.changeDividedId(id, boxName);
                 intent.putExtra( "databaseId", databaseId );
                 intent.putExtra("spinnerPosition", spinnerPosition);
-                intent.putExtra("boxName", boxName);
+                intent.putExtra("boxName", boxId);
 
                 startActivityForResult(intent, TODO_DETAIL);
             }
@@ -151,7 +155,7 @@ public class ToDoActivity extends AppCompatActivity {
                 if (boxName.equals("全て")){
                     showList(this);
                 } else {
-                    showDividedTodoList(this, boxName);
+                    showDividedTodoList(this, boxId);
                 }
             }
         }
@@ -170,17 +174,24 @@ public class ToDoActivity extends AppCompatActivity {
         listViewTodo.setAdapter(adapter);
     }
 
-    public void showDividedTodoList(Context context, String boxName){
+    public void showDividedTodoList(Context context, int boxId){
         ArrayList<String> lvAdapter = new ArrayList<>();
         dbAdapter.openDB();
         try {
-            lvAdapter = dbAdapter.readDividedBoxDB(boxName);
+            lvAdapter = dbAdapter.readDividedBoxDB(boxId);
         } catch (Exception e) {
             e.printStackTrace();
         }
         // Adapterの作成
         adapter = new ArrayAdapter<String>(context, R.layout.text_todo_list, (List<String>) lvAdapter);
         listViewTodo.setAdapter(adapter);
+    }
+
+    public String getBoxName(int boxId){
+        String setName;
+        setName = boxDBAdapter.changeToBoxName(boxId);
+
+        return setName;
     }
 
     public void deleteList(Context context, long listviewId){
@@ -192,15 +203,18 @@ public class ToDoActivity extends AppCompatActivity {
             String[] getTodo = dbAdapter.getTodo(databaseId);
             //String[] getBox = dbAdapter.getBox(databaseId);
             String[] getDate = dbAdapter.getDate(databaseId);
+            String[] getTime = dbAdapter.getTime(databaseId);
             String[] getMemo = dbAdapter.getMemo(databaseId);
 
             String setTodo = getTodo[0];
             String setBox = "完了";
             String setDate = getDate[0];
+            String setTime = getTime[0];
             String setMemo = getMemo[0];
+            int setBoxId = 0;
 
             dbAdapter.openDB();
-            dbAdapter.updateDB(databaseId, setTodo, setBox, setDate, setMemo);
+            dbAdapter.updateDB(databaseId, setTodo, setBox, setDate, setTime, setMemo,setBoxId);
         } catch (Exception e) {
             e.printStackTrace();
         }

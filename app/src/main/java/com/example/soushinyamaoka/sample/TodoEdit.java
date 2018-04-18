@@ -22,6 +22,7 @@ public class TodoEdit extends Activity {
     private EditText editTodo;
     private EditText editBox;
     private EditText editDate;
+    private EditText editTime;
     private EditText editMemo;
     public ListView listView;
     private EditText editText;
@@ -30,6 +31,7 @@ public class TodoEdit extends Activity {
     String setTextTodo;
     String setTextBox;
     String setTextDate;
+    String setTextTime;
     String setTextMemo;
     DBHelper db;
     DBAdapter dbAdapter;
@@ -38,6 +40,7 @@ public class TodoEdit extends Activity {
 
     long listviewId = 0;
     int databaseId = 0;
+    int boxId;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -45,6 +48,7 @@ public class TodoEdit extends Activity {
         setContentView(R.layout.activity_edit_todo);
         editTodo = findViewById(R.id.new_edit_Todo);
         editDate = findViewById(R.id.new_edit_Date);
+        editTime = findViewById(R.id.new_edit_Time);
         editMemo = findViewById(R.id.new_edit_Memo);
         editTodoButton = findViewById(R.id.edit_todo_button);
         db = new DBHelper(this);
@@ -79,18 +83,20 @@ public class TodoEdit extends Activity {
                 try {
                     if(setTextTodo.equals("")){
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
-                    } else if (setTextBox != null){
+                    } else if (setTextBox == null){
+                        setTextBox = "今日";
+                        boxId = 1;
                         dbAdapter.openDB();
-                        dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextMemo);
+                        dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
 
-                        boxDBAdapter.openBoxDB();
-                        boxDBAdapter.writeBoxDB(setTextBox);
+                        //boxDBAdapter.openBoxDB();
+                        //boxDBAdapter.writeBoxDB(setTextBox);
 
                         finish();
                     } else {
-                        setTextBox = "今日";
+                        boxId = boxDBAdapter.changeToBoxId(boxSpinner.getSelectedItemPosition());
                         dbAdapter.openDB();
-                        dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextMemo);
+                        dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
 
                         boxDBAdapter.openBoxDB();
                         boxDBAdapter.writeBoxDB(setTextBox);

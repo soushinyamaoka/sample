@@ -7,6 +7,15 @@
     android:layout_height="fill_parent"
     >
 
+    <TextView
+        android:id="@+id/todo_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/todo_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/new_edit_Todo"
         android:layout_width="match_parent"
@@ -19,35 +28,37 @@
         app:layout_constraintTop_toBottomOf="@+id/todo_text" />
 
     <TextView
-        android:id="@+id/todo_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/todo_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/box_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/box_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_edit_Todo" />
 
+    <Spinner
+        android:id="@+id/new_box_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/flame_style"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/box_text" />
+
     <TextView
         android:id="@+id/date_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="16dp"
+        android:layout_above="@+id/new_edit_Time"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="@string/date_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_box" />
+        app:layout_constraintTop_toBottomOf="@+id/new_box_spinner" />
 
     <EditText
         android:id="@+id/new_edit_Date"
-        android:layout_width="match_parent"
+        android:layout_width="160dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/flame_style"
@@ -57,9 +68,30 @@
         app:layout_constraintTop_toBottomOf="@+id/date_text" />
 
     <TextView
+        android:id="@+id/time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="132dp"
+        android:layout_marginRight="132dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/time_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_box_spinner" />
+
+    <EditText
+        android:id="@+id/new_edit_Time"
+        android:layout_width="160dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/flame_style"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time_text" />
+
+    <TextView
         android:id="@+id/memo_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/memo_text"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,23 +100,12 @@
     <EditText
         android:id="@+id/new_edit_Memo"
         android:layout_width="match_parent"
-        android:layout_height="157dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/flame_style"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/memo_text" />
-
-    <Spinner
-        android:id="@+id/spinner_box"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="175dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/flame_style"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/box_text" />
+        app:layout_constraintTop_toBottomOf="@+id/memo_text" />
 
 </android.support.constraint.ConstraintLayout>

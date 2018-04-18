@@ -1,6 +1,5 @@
 package com.example.soushinyamaoka.sample;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -26,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     DBAdapter dbAdapter;
     BoxDBAdapter boxDBAdapter;
     DBHelper db;
-    ArrayAdapter<String> adapter;
     CustomAdapter customAdapter;
     int boxDataBaseId;
 
@@ -54,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         allTodoView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
-                String boxName = "全て";
-                intent.putExtra("boxName", boxName);
+                int boxId = -1;
+                intent.putExtra("boxName",boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
                 startActivity(intent);
@@ -66,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
         completeView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ToDoComplete.class);
-                String boxName = "完了";
-                intent.putExtra("boxName", boxName);
+                int boxId = 0;
+                intent.putExtra("boxName", boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
                 startActivity(intent);
@@ -79,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //dateの値に合わせて設定したい
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
-                String boxName = "今日";
-                intent.putExtra("boxName", boxName);
+                int boxId = 1;
+                intent.putExtra("boxName", boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
                 startActivity(intent);
@@ -98,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                     ListView list = (ListView) adapterView;
                     int boxlistViewId = (int) list.getItemAtPosition(position);
                     deleteBoxList(boxlistViewId);
+                    showBox();
                     Toast.makeText(MainActivity.this, "削除しました。", Toast.LENGTH_SHORT).show();
                 } else if (view.getId() == R.id.text){
                     startTodoActivityClass((ListView)adapterView,position);
@@ -141,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
             boxDataBaseId = boxDBAdapter.changeBoxId(boxListViewId);//List上のIDをDB上のIDに変換
 
             String setBox = "完了";
+            int setBoxId = 0;
 
             //カテゴリ内にあるタスクのカテゴリを完了に変更
             boxDBAdapter.openBoxDB();
@@ -148,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
             //カテゴリ名を削除
             boxDBAdapter.openBoxDB();
             boxDBAdapter.deleteBoxDB(boxDataBaseId);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
