@@ -50,7 +50,6 @@ public class ToDoActivity extends AppCompatActivity {
     DialogFragment emptyTaskDialogFragment;
     DBHelper db;
     ArrayAdapter<String> adapter;
-    DeleteDialogFragment deleteDialogFragment;
 
     //アクティビティ起動時に呼ばれる
     @Override
@@ -188,7 +187,7 @@ public class ToDoActivity extends AppCompatActivity {
         dbAdapter = new DBAdapter(context);
         try {
             dbAdapter.openDB();
-            databaseId = dbAdapter.changeId(listviewId);//List上のIDをDB上のIDに変換
+            databaseId = dbAdapter.changeDividedId(listviewId,boxName);//List上のIDをDB上のIDに変換
 
             String[] getTodo = dbAdapter.getTodo(databaseId);
             //String[] getBox = dbAdapter.getBox(databaseId);
@@ -205,26 +204,6 @@ public class ToDoActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void deleteArchive(Context context, long listviewId){
-        dbAdapter = new DBAdapter(context);
-        try {
-            dbAdapter.openDB();
-            databaseId = dbAdapter.changeId(listviewId);//List上のIDをDB上のIDに変換
-            dbAdapter.openDB();
-            dbAdapter.deleteDB(databaseId);//DB上の値をDB上のidで削除。
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void deleteDialog(long listviewId){
-        deleteDialogFragment = new DeleteDialogFragment();
-        Bundle bundle = new Bundle();
-        bundle.putLong("deleteId", listviewId);
-        deleteDialogFragment.setArguments(bundle);
-        deleteDialogFragment.show(getFragmentManager(), "delete");
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -14,7 +15,12 @@ public class TodoDetail extends Activity {
     private EditText edit_Todo;
     private EditText edit_Date;
     private EditText edit_Memo;
-    Spinner spinner_box;
+    private EditText edit_Box;
+    private TextView text_Todo;
+    private TextView text_Date;
+    private TextView text_Memo;
+    private TextView text_Box;
+    private Spinner spinner_box;
     DBHelper db;
     DBAdapter dbAdapter;
     BoxDBAdapter boxDBAdapter;
@@ -27,65 +33,57 @@ public class TodoDetail extends Activity {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        setContentView(R.layout.activity_detail_todo);
-        edit_Todo = findViewById(R.id.new_edit_Todo);
-        edit_Date = findViewById(R.id.new_edit_Date);
-        edit_Memo = findViewById(R.id.new_edit_Memo);
-        spinner_box = (Spinner) findViewById(R.id.spinner_box);
+
+        Intent intent = getIntent();
+        databaseId = intent.getIntExtra( "databaseId", -1);
+        spinnerPosition = intent.getIntExtra("spinnerPosition", -1);
+        boxName = intent.getStringExtra("boxName");
+
+        if (boxName.equals("完了")){
+            setContentView(R.layout.complete_todo_detail);
+            text_Todo = findViewById(R.id.new_edit_Todo);
+            text_Date = findViewById(R.id.new_edit_Date);
+            text_Memo = findViewById(R.id.new_edit_Memo);
+            text_Box = findViewById(R.id.new_edit_box);
+        } else {
+            setContentView(R.layout.activity_detail_todo);
+            edit_Todo = findViewById(R.id.new_edit_Todo);
+            edit_Date = findViewById(R.id.new_edit_Date);
+            edit_Memo = findViewById(R.id.new_edit_Memo);
+            spinner_box = (Spinner) findViewById(R.id.spinner_box);
+        }
+
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
         boxDBAdapter = new BoxDBAdapter(this);
 
-        // 現在のintentを取得する
-        Intent intent = getIntent();
-        //intentからデータベースIDを取得する
-        databaseId = intent.getIntExtra( "databaseId", -1);
-        //現在のスピナーの位置を取得
-        spinnerPosition = intent.getIntExtra("spinnerPosition", -1);
-        //現在のカテゴリ名を取得
-        boxName = intent.getStringExtra("boxName");
-
         //todoの詳細を表示
         //-------------------------
-        showDetail();
+        showDetail(boxName);
         //-------------------------
-
-        setSpinner();
-        /*
-        spinner_button.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position,
-        long id) {
-        String setBox =  parent.getSelectedItem().toString();
-        edit_Box.setText(setBox);
-        }
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-        dbAdapter.openDB();
-        String[] setBox = dbAdapter.getBox(databaseId);
-        edit_Box.setText(setBox[0]);
-        }
-        });
-        */
     }
 
     @Override
     public void onBackPressed(){
+        if (boxName.equals("完了")){
+            finish();
+        } else{
+            dbAdapter.openDB();
+            dbAdapter.updateDB(databaseId,
+                    edit_Todo.getText().toString(),
+                    //edit_Box.getText().toString(),
+                    (String)spinner_box.getSelectedItem(),
+                    edit_Date.getText().toString(),
+                    edit_Memo.getText().toString());
+            Intent data = new Intent(TodoDetail.this,ToDoActivity.class);
+            data.putExtra("boxName",boxName);
+            setResult(RESULT_OK, data);
+            finish();
 
-        dbAdapter.openDB();
-        dbAdapter.updateDB(databaseId,
-                            edit_Todo.getText().toString(),
-                            //edit_Box.getText().toString(),
-                            (String)spinner_box.getSelectedItem(),
-                            edit_Date.getText().toString(),
-                            edit_Memo.getText().toString());
-        Intent data = new Intent(TodoDetail.this,ToDoActivity.class);
-        data.putExtra("boxName",boxName);
-        setResult(RESULT_OK, data);
-        finish();
+        }
     }
 
-    public void showDetail()  {
+    public void showDetail(String boxName)  {
         String[] setTodo;
         String[] setDate;
         String[] setMemo;
@@ -98,10 +96,18 @@ public class TodoDetail extends Activity {
         dbAdapter.openDB();
         setMemo = dbAdapter.getMemo(databaseId);
 
-        edit_Todo.setText(setTodo[0]);
-        edit_Date.setText(setDate[0]);
-        edit_Memo.setText(setMemo[0]);
-        //edit_Date.setText(databaseId);
+        if (boxName.equals("完了")){
+            text_Todo.setText(setTodo[0]);
+            text_Date.setText(setDate[0]);
+            text_Memo.setText(setMemo[0]);
+            text_Box.setText("完了");
+        } else {
+            edit_Todo.setText(setTodo[0]);
+            edit_Date.setText(setDate[0]);
+            edit_Memo.setText(setMemo[0]);
+            setSpinner();
+            //edit_Date.setText(databaseId);
+        }
     }
 
     public ArrayList<String> getSpinner(){
@@ -117,8 +123,6 @@ public class TodoDetail extends Activity {
 
     public void setSpinner(){
         ArrayList<String> lvAdapter = new ArrayList<>();
-        //dbAdapter.openDB();
-        //lvAdapter = dbAdapter.readDBBox();
         boxDBAdapter.openBoxDB();
         lvAdapter = boxDBAdapter.readBoxDB2();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, lvAdapter);

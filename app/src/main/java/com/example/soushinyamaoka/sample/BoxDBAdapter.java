@@ -15,9 +15,7 @@ import static android.content.ContentValues.TAG;
 
 public class BoxDBAdapter extends AppCompatActivity {
 
-    private final static String DB_NAME = "samplebox7.db";//DB名
-    private final static String DB_TABLE = "testbox7";//テーブル名
-    private final static int    DB_VERSION = 1;   //バージョン
+    private final static String DB_TABLE = "testbox8";//テーブル名
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";
     private static final String COL_BOX = "box";
@@ -84,36 +82,29 @@ public class BoxDBAdapter extends AppCompatActivity {
     }
 
     //データベースからの読み込み
-    //public ArrayList<String> readBoxDB() {
     public String[] readBoxDB() {
-        //listId = new ArrayList<Integer>();
         listBox = new ArrayList<>();
-        int[] listId;
-        //String[] stringBox = new String[];
-
+        String[] cols = {COL_BOX};
+        String[] where = {"完了","今日"};
         try {
             Cursor c = db.query(
                     DB_TABLE,
-                    null,
-                    "box !=? or box !=?",
-                    new String[]{"完了","今日"},
+                    cols,
+                    "box != ? OR box != ?",
+                    where,
                     null,
                     null,
                     ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
-                listBox.add(c.getString(1));
-                //listId.add(c.getInt(0));
-                //listBox.add(c.getString(1));
+                listBox.add(c.getString(0));
                 c.moveToNext();
             }
             c.close();
-            //stringBox = listBox.toArray(new String[0]);
-
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        String[] array = new String[listBox.size()];
+        String[] array;
         array = listBox.toArray(new String[listBox.size()]);
         return array;
     }

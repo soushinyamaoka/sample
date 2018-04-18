@@ -1,8 +1,12 @@
 package com.example.soushinyamaoka.sample;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by SoushinYamaoka on 2018/03/27.
@@ -10,9 +14,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private final static String DB_NAME = "sampletodo7.db";//DB名
-    private final static String DB_TABLE = "test7";//テーブル名
-    private final static String DB_BOX_TABLE = "testbox7";//テーブル名
+    private final static String DB_NAME = "sampletodo8.db";//DB名
+    private final static String DB_TABLE = "test8";//テーブル名
+    private final static String DB_BOX_TABLE = "testbox8";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     //private static final String COL_ID = "id";
@@ -46,6 +50,16 @@ public class DBHelper extends SQLiteOpenHelper {
                         COL_BOX + " TEXT UNIQUE" +
                         ")";
         db.execSQL(createBoxTable);
+
+        ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
+        values.put(COL_BOX, "今日");
+
+        //空欄でも書き込めるようになっているので要修正
+        try {
+            db.insert(DB_BOX_TABLE, null, values);
+        } catch (Exception e) {
+            Log.e(TAG, "SQLExcepption:" + e.toString());
+        }
     }
 
     //データベースヘルパーのコンストラクタ

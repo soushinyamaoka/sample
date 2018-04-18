@@ -1,11 +1,16 @@
 package com.example.soushinyamaoka.sample;
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -24,31 +30,18 @@ import static android.content.ContentValues.TAG;
 
 public class ToDoComplete extends AppCompatActivity{
 
-    String editTodo;
-    String editBox;
-    String editDate;
-    String editMemo;
-
     int databaseId = 0;
     int spinnerPosition = 0;
-    String today = "今日";
-    String delete = "削除";
-    private String allList = "全て";
-    private String archiveList = "アーカイブ";
     String boxName;
     int boxDataBaseId;
     private static final int TODO_DETAIL = 1001;
     private static final int TODO_DELETE = 1002;
-
-    private EditText editText;
-    private Button editButton;
     private Button deleteButton;
     public ListView listViewTodo;
     DBAdapter dbAdapter;
     DialogFragment emptyTaskDialogFragment;
     DBHelper db;
     ArrayAdapter<String> adapter;
-    DeleteDialogFragment deleteDialogFragment;
 
     //アクティビティ起動時に呼ばれる
     @Override
@@ -56,10 +49,8 @@ public class ToDoComplete extends AppCompatActivity{
         super.onCreate(bundle);
         setContentView(R.layout.complete_todo);
 
-        editText = findViewById(R.id.edit_Text);
-        editButton = findViewById(R.id.edit_Button);
         deleteButton = findViewById(R.id.delete_Button);
-        listViewTodo = findViewById(R.id.list_view_todo);
+        listViewTodo = findViewById(R.id.list_view_complete);
         dbAdapter = new DBAdapter(this);
         emptyTaskDialogFragment = new EmptyTaskDialogFragment();
         db = new DBHelper(this);
@@ -83,10 +74,24 @@ public class ToDoComplete extends AppCompatActivity{
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //deleteComplete();
-                Intent intent = new Intent(ToDoComplete.this, DeleteDialogFragment.class);
-                // intentへ添え字付で値を保持させる
-                startActivityForResult(intent, TODO_DELETE);
+                // 確認ダイアログの作成
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ToDoComplete.this);
+                alertDialog.setTitle("確認");
+                alertDialog.setMessage("完全に削除しますか？");
+                alertDialog.setPositiveButton("削除する", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteComplete();
+                        showDividedTodoList(ToDoComplete.this,boxName);
+                    }
+                });
+                alertDialog.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        showDividedTodoList(ToDoComplete.this,boxName);
+                    }
+                });
+                alertDialog.create().show();
             }
         });
 
@@ -148,7 +153,7 @@ public class ToDoComplete extends AppCompatActivity{
             e.printStackTrace();
         }
         // Adapterの作成
-        adapter = new ArrayAdapter<String>(context, R.layout.text_todo_list, (List<String>) lvAdapter);
+        adapter = new ArrayAdapter<String>(context, R.layout.text_complete_list, (List<String>) lvAdapter);
         listViewTodo.setAdapter(adapter);
     }
 
@@ -160,14 +165,6 @@ public class ToDoComplete extends AppCompatActivity{
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void deleteDialog(){
-        deleteDialogFragment = new DeleteDialogFragment();
-        Bundle bundle = new Bundle();
-        bundle.putLong("deleteId", listviewId);
-        deleteDialogFragment.setArguments(bundle);
-        deleteDialogFragment.show(getFragmentManager(), "delete");
     }
 
     @Override
@@ -189,7 +186,7 @@ public class ToDoComplete extends AppCompatActivity{
             return true;
         }
         else if (id == android.R.id.home){
-            Intent intent = new Intent(ToDoActivity.this, MainActivity.class);
+            Intent intent = new Intent(ToDoComplete.this, MainActivity.class);
             // intentへ添え字付で値を保持させる
             intent.putExtra( "todoId", id );
             startActivity(intent);

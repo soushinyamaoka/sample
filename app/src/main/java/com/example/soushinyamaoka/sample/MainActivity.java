@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         boxDBAdapter = new BoxDBAdapter(this);
         db = new DBHelper(this);
 
-        showBox(this);
+        showBox();
 
         allTodoView.setClickable(true);
         allTodoView.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         completeView.setClickable(true);
         completeView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
+                Intent intent = new Intent(MainActivity.this, ToDoComplete.class);
                 String boxName = "完了";
                 intent.putExtra("boxName", boxName);
                 int requestCode = 123;
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 boxDBAdapter.openBoxDB();
                 boxDBAdapter.writeBoxDB(setBoxName);
 
-                showBox(getApplicationContext());
+                showBox();
                 editBoxView.getEditableText().clear();
             }
         });
@@ -129,18 +129,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void showBox(Context context) {
-        //ArrayList<String> lvAdapter = new ArrayList<>();
-        String[] lvAdapter = new String[0];
-        //dbAdapter.openDB();
-        //lvAdapter = dbAdapter.readDBBox();
-        //String[] arr = lvAdapter.toArray(new String[lvAdapter.size()]);
+    public void showBox() {
         boxDBAdapter.openBoxDB();
-        //lvAdapter = boxDBAdapter.readBoxDB();
-        // Adapterの作成
-        //adapter = new ArrayAdapter<String>(context, R.layout.text_box_list, (List<String>) lvAdapter);
-        //listViewBox.setAdapter(adapter);
-        //customAdapter = new CustomAdapter(getApplicationContext(), R.layout.row_item, arr);
         customAdapter = new CustomAdapter(getApplicationContext(), R.layout.row_item, boxDBAdapter.readBoxDB());
         listViewBox.setAdapter(customAdapter);
     }
@@ -165,9 +155,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void startEditBoxClass(int position){
         boxDBAdapter.openBoxDB();
-        // Adapterの作成
-        //adapter = new ArrayAdapter<String>(context, R.layout.text_box_list, (List<String>) lvAdapter);
-        //listViewBox.setAdapter(adapter);
         customAdapter = new CustomAdapter(getApplicationContext(), R.layout.row_item, boxDBAdapter.readBoxDB());
         //editIntentにEditBox.classを入れる
         Intent editIntent = new Intent(MainActivity.this, EditBox.class);
