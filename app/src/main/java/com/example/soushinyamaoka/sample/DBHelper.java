@@ -14,9 +14,9 @@ import static android.content.ContentValues.TAG;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private final static String DB_NAME = "sampletodo8.db";//DB名
-    private final static String DB_TABLE = "test8";//テーブル名
-    private final static String DB_BOX_TABLE = "testbox8";//テーブル名
+    private final static String DB_NAME = "sampletodo9.db";//DB名
+    private final static String DB_TABLE = "test9";//テーブル名
+    private final static String DB_BOX_TABLE = "testbox9";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     //private static final String COL_ID = "id";

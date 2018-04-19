@@ -15,7 +15,7 @@ import static android.content.ContentValues.TAG;
 
 public class BoxDBAdapter extends AppCompatActivity {
 
-    private final static String DB_TABLE = "testbox8";//テーブル名
+    private final static String DB_TABLE = "testbox9";//テーブル名
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";
     private static final String COL_BOX = "box";
@@ -151,8 +151,8 @@ public class BoxDBAdapter extends AppCompatActivity {
         try {
             Cursor c = db.query(
                     DB_TABLE,
-                    cols,
-                    "id =" + boxId,
+                    cols,//cols
+                    "id =" + boxId,//"id =" + boxId,
                     null,
                     null,
                     null,

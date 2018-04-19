@@ -73,6 +73,7 @@ public class ToDoActivity extends AppCompatActivity {
         //Mainから渡された「選択されたカテゴリ名」を取得
         //boxName = intent.getStringExtra("boxName");
         boxId = intent.getIntExtra("boxName",-1);
+        boxDBAdapter.openBoxDB();
         boxName =  boxDBAdapter.changeToBoxName(boxId);
         //Mainから渡されたboxのposition(spinnerPosition)を取得
         spinnerPosition = intent.getIntExtra("spinnerPosition",0);

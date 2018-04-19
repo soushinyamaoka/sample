@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                     showBox();
                     Toast.makeText(MainActivity.this, "削除しました。", Toast.LENGTH_SHORT).show();
                 } else if (view.getId() == R.id.text){
+
                     startTodoActivityClass((ListView)adapterView,position);
                 }
             }
@@ -175,12 +176,15 @@ public class MainActivity extends AppCompatActivity {
         ListView list = (ListView) adapterView;
 
         int boxListViewId = (int)list.getItemAtPosition(position);
+
+        boxDBAdapter.openBoxDB();
         boxDataBaseId = boxDBAdapter.changeBoxId(boxListViewId);
 
         String[] setBoxName = boxDBAdapter.getBoxName(boxDataBaseId);
 
         todoActiveIntent.putExtra("boxDataBaseId", boxDataBaseId);
-        todoActiveIntent.putExtra("boxName", setBoxName[0]);
+        //todoActiveIntent.putExtra("boxName", setBoxName[0]);
+        todoActiveIntent.putExtra("boxName", boxDataBaseId);
         todoActiveIntent.putExtra("spinnerPosition", boxListViewId);
 
         int requestCode = 123;
