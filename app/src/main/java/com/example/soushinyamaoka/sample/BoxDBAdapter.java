@@ -80,12 +80,12 @@ public class BoxDBAdapter extends AppCompatActivity {
     public String[] readBoxDB() {
         listBox = new ArrayList<>();
         String[] cols = {COL_BOX};
-        String[] where = {"完了","今日"};
+        //String[] where = {"完了","今日"};
         try {
             Cursor c = db.query(
                     DB_TABLE,
                     cols,
-                    null,
+                    "id != 1 AND id != 2",//id.1の完了済みと、id.2の今日は表示させない
                     null,
                     null,
                     null,
@@ -105,22 +105,23 @@ public class BoxDBAdapter extends AppCompatActivity {
     }
 
     //データベースからの読み込み
-    public ArrayList<String> readBoxDB2() {
+    public ArrayList<String> readBoxSpinnerDB() {
         listId = new ArrayList<Integer>();
         listBox = new ArrayList<>();
+        String[] cols = {COL_BOX};
 
         try {
             Cursor c = db.query(DB_TABLE,
+                                cols,
+                    "id != 1",
                     null,
                     null,
                     null,
-                    null,
-                    null,
-                    ORDER_BY);
+                    null);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
-                listId.add(c.getInt(0));
-                listBox.add(c.getString(1));
+                //listId.add(c.getInt(0));
+                listBox.add(c.getString(0));
                 c.moveToNext();
             }
             c.close();
@@ -147,6 +148,8 @@ public class BoxDBAdapter extends AppCompatActivity {
         String setBoxName = null;
         listBox = new ArrayList<>();
         String[] cols = {COL_BOX};
+        String str = String.valueOf(boxId);
+        String[] selectionArgs = {str};
         String[] where = {"完了","今日"};
         try {
             Cursor c = db.query(

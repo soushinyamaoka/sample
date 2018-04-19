@@ -136,7 +136,7 @@ public class DBAdapter extends AppCompatActivity {
         try {
             Cursor c = db.query(DB_TABLE,
                     cols,
-                    "boxId !=" + boxId,
+                    "boxId =" + boxId,
                     null,
                     null,
                     null,
@@ -334,14 +334,14 @@ public class DBAdapter extends AppCompatActivity {
         return listID;
     }
 
-    public int changeDividedId(long listviewId, String boxName) {
+    public int changeDividedId(long listviewId, int boxId) {
         int databaseId = 0;
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
         String[] cols = {"id"};
-        int boxId = 1;
+        //int boxId = 1;
         Integer[] array = new Integer[(int) listviewId];
-        if (boxName.equals("全て")){
+        if (boxId == 0){//全てカテゴリが選択されていた場合
             try {
                 Cursor c = db.query(DB_TABLE,
                         cols,
@@ -361,7 +361,7 @@ public class DBAdapter extends AppCompatActivity {
             }catch(SQLException e) {
                 Log.e(TAG, "SQLExcepption:"+e.toString());
             }
-        } else{
+        } else{//特定のカテゴリが選択されていた場合
             try {
                 Cursor c = db.query(DB_TABLE,
                         cols,

@@ -94,7 +94,7 @@ public class ToDoComplete extends AppCompatActivity{
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent,View view,
                                                    int position, long listviewId) {
-                        databaseId = dbAdapter.changeDividedId(listviewId, boxName);
+                        databaseId = dbAdapter.changeDividedId(listviewId, boxId);
                         dbAdapter.backDB(databaseId,
                                         "今日");
                         //deleteArchive(getApplicationContext(),listviewId);
@@ -111,7 +111,7 @@ public class ToDoComplete extends AppCompatActivity{
                 // 遷移先のactivityを指定してintentを作成
                 Intent intent = new Intent(ToDoComplete.this, TodoDetail.class);
                 // intentへ添え字付で値を保持させる
-                databaseId = dbAdapter.changeDividedId(id, boxName);
+                databaseId = dbAdapter.changeDividedId(id, boxId);
                 intent.putExtra( "databaseId", databaseId );
                 intent.putExtra("spinnerPosition", spinnerPosition);
                 intent.putExtra("boxName", boxName);

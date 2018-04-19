@@ -132,7 +132,7 @@ public class ToDoActivity extends AppCompatActivity {
                 // 遷移先のactivityを指定してintentを作成
                 Intent intent = new Intent(ToDoActivity.this, TodoDetail.class);
                 // intentへ添え字付で値を保持させる
-                databaseId = dbAdapter.changeDividedId(id, boxName);
+                databaseId = dbAdapter.changeDividedId(id, boxId);//todoのidを取得
                 intent.putExtra( "databaseId", databaseId );
                 intent.putExtra("spinnerPosition", spinnerPosition);
                 intent.putExtra("boxName", boxId);
@@ -198,7 +198,7 @@ public class ToDoActivity extends AppCompatActivity {
         dbAdapter = new DBAdapter(context);
         try {
             dbAdapter.openDB();
-            databaseId = dbAdapter.changeDividedId(listviewId,boxName);//List上のIDをDB上のIDに変換
+            databaseId = dbAdapter.changeDividedId(listviewId,boxId);//List上のIDをDB上のIDに変換
 
             String[] getTodo = dbAdapter.getTodo(databaseId);
             //String[] getBox = dbAdapter.getBox(databaseId);
