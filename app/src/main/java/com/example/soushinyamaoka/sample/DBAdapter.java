@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 public class DBAdapter extends AppCompatActivity {
-    private final static String DB_TABLE = "test9";//テーブル名
+    private final static String DB_TABLE = "test10";//テーブル名
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";
     private static final String COL_BOX = "box";
@@ -339,7 +339,7 @@ public class DBAdapter extends AppCompatActivity {
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
         String[] cols = {"id"};
-        int boxId = 0;
+        int boxId = 1;
         Integer[] array = new Integer[(int) listviewId];
         if (boxName.equals("全て")){
             try {

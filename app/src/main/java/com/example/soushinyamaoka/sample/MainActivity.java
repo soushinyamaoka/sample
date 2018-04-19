@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         allTodoView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
-                int boxId = -1;
+                int boxId = 0;
                 intent.putExtra("boxName",boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         completeView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ToDoComplete.class);
-                int boxId = 0;
+                int boxId = 1;
                 intent.putExtra("boxName", boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //dateの値に合わせて設定したい
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
-                int boxId = 1;
+                int boxId = 2;
                 intent.putExtra("boxName", boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);

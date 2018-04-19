@@ -66,26 +66,25 @@ public class ToDoActivity extends AppCompatActivity {
         emptyTaskDialogFragment = new EmptyTaskDialogFragment();
         db = new DBHelper(this);
 
-        // 現在のintentを取得する
         Intent intent = getIntent();
-        //Mainから渡された「選択されたカテゴリのDB上のID」を取得
         boxDataBaseId = intent.getIntExtra( "boxDataBaseId",-1);
-        //Mainから渡された「選択されたカテゴリ名」を取得
-        //boxName = intent.getStringExtra("boxName");
-        boxId = intent.getIntExtra("boxName",-1);
-        boxDBAdapter.openBoxDB();
-        boxName =  boxDBAdapter.changeToBoxName(boxId);
-        //Mainから渡されたboxのposition(spinnerPosition)を取得
         spinnerPosition = intent.getIntExtra("spinnerPosition",0);
+        boxId = intent.getIntExtra("boxName",0);
+        boxDBAdapter.openBoxDB();
+        if (boxId == 0){
+            boxName = "全て";
+        } else {
+            boxName =  boxDBAdapter.changeToBoxName(boxId);
+        }
 
         setToolbar(boxName);
 
         //リストの生成
-        if (boxId == -1){
+        if (boxId == 0){//全ての場合
             showList(this);
-        } else if (boxId == 0){
+        } else if (boxId == 1){//今日の場合
             showDividedTodoList(this,boxId);
-        } else {
+        } else {//その他すべて
             showDividedTodoList(this,boxId);
         }
 

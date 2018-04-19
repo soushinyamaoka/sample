@@ -46,18 +46,16 @@ public class ToDoComplete extends AppCompatActivity{
         deleteButton = findViewById(R.id.delete_Button);
         listViewTodo = findViewById(R.id.list_view_complete);
         dbAdapter = new DBAdapter(this);
+        boxDBAdapter = new BoxDBAdapter(this);
         emptyTaskDialogFragment = new EmptyTaskDialogFragment();
         db = new DBHelper(this);
 
-        // 現在のintentを取得する
         Intent intent = getIntent();
-        //Mainから渡された「選択されたカテゴリのDB上のID」を取得
         boxDataBaseId = intent.getIntExtra( "boxDataBaseId",-1);
-        //Mainから渡された「選択されたカテゴリ名」を取得
-        boxId = intent.getIntExtra("boxName",-1);
-        boxName = boxDBAdapter.changeToBoxName(boxId);
-        //Mainから渡されたboxのposition(spinnerPosition)を取得
         spinnerPosition = intent.getIntExtra("spinnerPosition",0);
+        boxId = intent.getIntExtra("boxName",0);
+        boxDBAdapter.openBoxDB();
+        boxName = boxDBAdapter.changeToBoxName(boxId);
 
         setToolbar(boxName);
 

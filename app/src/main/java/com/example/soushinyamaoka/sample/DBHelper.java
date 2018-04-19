@@ -14,9 +14,9 @@ import static android.content.ContentValues.TAG;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private final static String DB_NAME = "sampletodo9.db";//DB名
-    private final static String DB_TABLE = "test9";//テーブル名
-    private final static String DB_BOX_TABLE = "testbox9";//テーブル名
+    private final static String DB_NAME = "sampletodo10.db";//DB名
+    private final static String DB_TABLE = "test10";//テーブル名
+    private final static String DB_BOX_TABLE = "testbox10";//テーブル名
     private final static int    DB_VERSION = 1;   //バージョン
     private static final String COL_ID = "id";
     //private static final String COL_ID = "id";
@@ -56,9 +56,16 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(createBoxTable);
 
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
-        values.put(COL_BOX, "完了");//id=0
-        values.put(COL_BOX, "今日");//id=1
+        values.put(COL_BOX, "完了済み" +
+                "");//id=1
+        //空欄でも書き込めるようになっているので要修正
+        try {
+            db.insert(DB_BOX_TABLE, null, values);
+        } catch (Exception e) {
+            Log.e(TAG, "SQLExcepption:" + e.toString());
+        }
 
+        values.put(COL_BOX, "今日");//id=2
         //空欄でも書き込めるようになっているので要修正
         try {
             db.insert(DB_BOX_TABLE, null, values);
