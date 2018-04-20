@@ -110,7 +110,7 @@ public class DBAdapter extends AppCompatActivity {
             Cursor c = db.query(DB_TABLE,
                     cols,
                     "boxId !=?",
-                    new String[]{String.valueOf(0)},
+                    new String[]{String.valueOf(0)},//空欄は取得しない
                     null,
                     null,
                     ORDER_BY);
@@ -309,6 +309,62 @@ public class DBAdapter extends AppCompatActivity {
         return setMemo;
     }
 
+    public Integer getBoxId(int databaseId) {
+        listBoxId = new ArrayList<>();
+        Integer setBoxId;
+        try {
+            Cursor c = db.query(DB_TABLE,
+                    new String[]{COL_BOXID},
+                    "boxId !=?",
+                    new String[]{String.valueOf(0)},//空欄は取得しない
+                    null,
+                    null,
+                    ORDER_BY);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listBoxId.add(c.getInt(0));
+                c.moveToNext();
+            }
+            c.close();
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        Integer[] array;
+        array = listBoxId.toArray(new Integer[listBoxId.size()]);
+        setBoxId = array[databaseId];
+        return setBoxId;
+    }
+
+    //タップしたTODOからDB上でのidを取得
+    public Integer getTodoId(int listViewId) {
+        listId = new ArrayList<Integer>();
+        listTodo = new ArrayList<>();
+        Integer setBoxId;
+        String[] cols = {COL_ID};
+        try {
+            Cursor c = db.query(DB_TABLE,
+                    cols,
+                    "boxId !=?",
+                    new String[]{String.valueOf(0)},
+                    null,
+                    null,
+                    ORDER_BY);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listId.add(c.getInt(0));
+                c.moveToNext();
+            }
+            c.close();
+
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        Integer[] array;
+        array = listId.toArray(new Integer[listId.size()]);
+        setBoxId = array[listViewId];
+        return setBoxId;
+    }
+
     //データベースからの読み込み
     public ArrayList<Integer> getDataBaseId() {
         ArrayList<Integer> listID = new ArrayList<>();
@@ -375,10 +431,10 @@ public class DBAdapter extends AppCompatActivity {
                     //listId.add(c.getInt(0));
                     listId.add(c.getInt(0));
                     c.moveToNext();
-                    array = listId.toArray(new Integer[0]);
+                    array = listId.toArray(new Integer[(int) listviewId]);
                 }
                 c.close();
-                databaseId = array[(int) listviewId];
+                databaseId = array[0];
             }catch(SQLException e) {
                 Log.e(TAG, "SQLExcepption:"+e.toString());
             }

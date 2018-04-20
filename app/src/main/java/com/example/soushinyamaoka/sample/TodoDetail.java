@@ -41,7 +41,7 @@ public class TodoDetail extends Activity {
         Intent intent = getIntent();
         databaseId = intent.getIntExtra( "databaseId", 0);
         spinnerPosition = intent.getIntExtra("spinnerPosition", -1);
-        boxId = intent.getIntExtra("boxName",0);
+        boxId = intent.getIntExtra("boxName",0);//Main画面で押された位置から取得
         boxDBAdapter.openBoxDB();
 
         if (boxId == 1){//完了済みのタスクの場合
@@ -51,7 +51,7 @@ public class TodoDetail extends Activity {
             text_Time = findViewById(R.id.new_edit_Time);
             text_Memo = findViewById(R.id.new_edit_Memo);
             text_Box = findViewById(R.id.new_edit_box);
-        } else {
+        } else {//完了済み以外の時
             boxName = boxDBAdapter.changeToBoxName(boxId);
             setContentView(R.layout.activity_detail_todo);
             edit_Todo = findViewById(R.id.new_edit_Todo);
@@ -113,12 +113,19 @@ public class TodoDetail extends Activity {
         dbAdapter.openDB();
         setMemo = dbAdapter.getMemo(databaseId);
 
-        if (boxId == 1){//完了済みのタスクの場合
+        if (boxId == 0){
             text_Todo.setText(setTodo[0]);
             text_Date.setText(setDate[0]);
             text_Date.setText(setTime[0]);
             text_Memo.setText(setMemo[0]);
             text_Box.setText(boxName);
+        } else if (boxId == 1){//完了済みのタスクの場合
+            text_Todo.setText(setTodo[0]);
+            text_Date.setText(setDate[0]);
+            text_Date.setText(setTime[0]);
+            text_Memo.setText(setMemo[0]);
+            text_Box.setText(boxName);
+
         } else {
             edit_Todo.setText(setTodo[0]);
             edit_Date.setText(setDate[0]);

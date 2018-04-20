@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     DBHelper db;
     CustomAdapter customAdapter;
     int boxDataBaseId;
+    int boxId;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -180,11 +181,14 @@ public class MainActivity extends AppCompatActivity {
         boxDBAdapter.openBoxDB();
         boxDataBaseId = boxDBAdapter.changeBoxId(boxListViewId);
 
+        boxDBAdapter.openBoxDB();
+        boxId = boxDBAdapter.getBoxId(boxListViewId);
+
         String[] setBoxName = boxDBAdapter.getBoxName(boxDataBaseId);
 
         todoActiveIntent.putExtra("boxDataBaseId", boxDataBaseId);
         //todoActiveIntent.putExtra("boxName", setBoxName[0]);
-        todoActiveIntent.putExtra("boxName", boxDataBaseId);
+        todoActiveIntent.putExtra("boxName", boxId);
         todoActiveIntent.putExtra("spinnerPosition", boxListViewId);
 
         int requestCode = 123;

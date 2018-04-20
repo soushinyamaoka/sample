@@ -131,12 +131,21 @@ public class ToDoActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 // 遷移先のactivityを指定してintentを作成
                 Intent intent = new Intent(ToDoActivity.this, TodoDetail.class);
-                // intentへ添え字付で値を保持させる
-                databaseId = dbAdapter.changeDividedId(id, boxId);//todoのidを取得
-                intent.putExtra( "databaseId", databaseId );
-                intent.putExtra("spinnerPosition", spinnerPosition);
-                intent.putExtra("boxName", boxId);
-
+                if (boxId == 0){//全てを選んだ場合
+                    int todoId = dbAdapter.getTodoId((int) id);//todoのidを取得
+                    boxId = dbAdapter.getBoxId((int) id);//todoのboxidを取得
+                    databaseId = dbAdapter.changeDividedId(id, boxId);//todoのidを取得
+                    spinnerPosition = boxDBAdapter.getSpinnerPosition(boxId);
+                    intent.putExtra( "databaseId", databaseId );
+                    intent.putExtra("spinnerPosition", spinnerPosition-2);
+                    intent.putExtra("boxName", boxId);//todoのboxidを取得
+                } else {
+                    // intentへ添え字付で値を保持させる
+                    databaseId = dbAdapter.changeDividedId(id, boxId);//todoのidを取得
+                    intent.putExtra( "databaseId", databaseId );
+                    intent.putExtra("spinnerPosition", spinnerPosition);
+                    intent.putExtra("boxName", boxId);//todoのboxidを取得
+                }
                 startActivityForResult(intent, TODO_DETAIL);
             }
         });

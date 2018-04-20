@@ -28,7 +28,7 @@ public class BoxDBAdapter extends AppCompatActivity {
     private SQLiteDatabase db = null;           // SQLiteDatabase
     private DBHelper dbHelper;// DBHepler
     protected Context context;
-    ArrayList<Integer> listId;
+    ArrayList<Integer> listBoxId;
     ArrayList<String> listBox;
 
     int boxDataBaseId = 0;
@@ -76,7 +76,7 @@ public class BoxDBAdapter extends AppCompatActivity {
         db.close();
     }
 
-    //データベースからの読み込み
+    //Mainで呼びだされるカテゴリ一覧
     public String[] readBoxDB() {
         listBox = new ArrayList<>();
         String[] cols = {COL_BOX};
@@ -106,7 +106,7 @@ public class BoxDBAdapter extends AppCompatActivity {
 
     //データベースからの読み込み
     public ArrayList<String> readBoxSpinnerDB() {
-        listId = new ArrayList<Integer>();
+        listBoxId = new ArrayList<Integer>();
         listBox = new ArrayList<>();
         String[] cols = {COL_BOX};
 
@@ -133,9 +133,10 @@ public class BoxDBAdapter extends AppCompatActivity {
     }
 
     //データベースからの読み込み
-    public int getBoxId() {
-        listId = new ArrayList<>();
+    public Integer getBoxId(int listViewId) {
+        listBoxId = new ArrayList<>();
         String[] cols = {COL_ID};
+        Integer setBoxId;
         //String[] where = {"完了","今日"};
         try {
             Cursor c = db.query(
@@ -148,17 +149,18 @@ public class BoxDBAdapter extends AppCompatActivity {
                     null);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
-                listId.add(c.getInt(0));
+                listBoxId.add(c.getInt(0));
                 c.moveToNext();
             }
             c.close();
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        String[] array;
-        array = listId.toArray(new String[listId.size()]);
+        Integer[] array;
+        array = listBoxId.toArray(new Integer[listBoxId.size()]);
+        setBoxId = array[listViewId];
 
-        return array;
+        return setBoxId;
     }
 
     public int changeBoxId(long boxListViewId){
@@ -207,7 +209,7 @@ public class BoxDBAdapter extends AppCompatActivity {
 
     public int changeToBoxId(int boxId){
         int setBoxId;
-        listId = new ArrayList<>();
+        listBoxId = new ArrayList<>();
         String[] cols = {COL_ID};
         try {
             Cursor c = db.query(
@@ -220,7 +222,7 @@ public class BoxDBAdapter extends AppCompatActivity {
                     ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
-                listId.add(c.getInt(0));
+                listBoxId.add(c.getInt(0));
                 c.moveToNext();
             }
             c.close();
@@ -228,7 +230,7 @@ public class BoxDBAdapter extends AppCompatActivity {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
         Integer[] array;
-        array = listId.toArray(new Integer[listId.size()]);
+        array = listBoxId.toArray(new Integer[listBoxId.size()]);
         setBoxId = array[0];
         return setBoxId;
     }
@@ -279,5 +281,39 @@ public class BoxDBAdapter extends AppCompatActivity {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
         return setBoxName;
+    }
+
+    public Integer getSpinnerPosition(int boxId){
+        Integer setSpinnerPosition = 0;
+        listBoxId = new ArrayList<>();
+        String[] cols = {COL_ID};
+        //String[] where = {"完了","今日"};
+        try {
+            Cursor c = db.query(
+                    DB_TABLE,
+                    cols,
+                    "id != 1 AND id != 2",//id.1の完了済みと、id.2の今日は表示させない
+                    null,
+                    null,
+                    null,
+                    null);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listBoxId.add(c.getInt(0));
+                c.moveToNext();
+            }
+            c.close();
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        Integer[] array;
+        array = listBoxId.toArray(new Integer[listBoxId.size()]);
+        for (int i=0; i<=listBoxId.size(); i++){
+            if (array[i] == boxId){
+                setSpinnerPosition = array[i];
+                break;
+            }
+        }
+        return setSpinnerPosition;
     }
 }
