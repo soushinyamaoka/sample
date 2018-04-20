@@ -89,7 +89,7 @@ public class BoxDBAdapter extends AppCompatActivity {
                     null,
                     null,
                     null,
-                    ORDER_BY);
+                    null);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
                 listBox.add(c.getString(0));
@@ -113,7 +113,7 @@ public class BoxDBAdapter extends AppCompatActivity {
         try {
             Cursor c = db.query(DB_TABLE,
                                 cols,
-                    "id != 1",
+                    "id != 1",//id.1の完了済みは出さないようにしている
                     null,
                     null,
                     null,
@@ -130,6 +130,35 @@ public class BoxDBAdapter extends AppCompatActivity {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
         return listBox;
+    }
+
+    //データベースからの読み込み
+    public int getBoxId() {
+        listId = new ArrayList<>();
+        String[] cols = {COL_ID};
+        //String[] where = {"完了","今日"};
+        try {
+            Cursor c = db.query(
+                    DB_TABLE,
+                    cols,
+                    "id != 1 AND id != 2",//id.1の完了済みと、id.2の今日は表示させない
+                    null,
+                    null,
+                    null,
+                    null);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                listId.add(c.getInt(0));
+                c.moveToNext();
+            }
+            c.close();
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        String[] array;
+        array = listId.toArray(new String[listId.size()]);
+
+        return array;
     }
 
     public int changeBoxId(long boxListViewId){

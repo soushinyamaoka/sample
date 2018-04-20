@@ -94,13 +94,13 @@ public class TodoDetail extends Activity {
             data.putExtra("boxName",boxName);
             setResult(RESULT_OK, data);
             finish();
-
         }
     }
 
     public void showDetail(String boxName)  {
         String[] setTodo;
         String[] setDate;
+        String[] setTime;
         String[] setMemo;
         Integer[] setId;
 
@@ -109,16 +109,20 @@ public class TodoDetail extends Activity {
         dbAdapter.openDB();
         setDate = dbAdapter.getDate(databaseId);
         dbAdapter.openDB();
+        setTime = dbAdapter.getTime(databaseId);
+        dbAdapter.openDB();
         setMemo = dbAdapter.getMemo(databaseId);
 
         if (boxId == 1){//完了済みのタスクの場合
             text_Todo.setText(setTodo[0]);
             text_Date.setText(setDate[0]);
+            text_Date.setText(setTime[0]);
             text_Memo.setText(setMemo[0]);
             text_Box.setText(boxName);
         } else {
             edit_Todo.setText(setTodo[0]);
             edit_Date.setText(setDate[0]);
+            edit_Time.setText(setTime[0]);
             edit_Memo.setText(setMemo[0]);
             setSpinner();
             //edit_Date.setText(databaseId);
@@ -143,7 +147,7 @@ public class TodoDetail extends Activity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, lvAdapter);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_box.setAdapter(adapter);
-        spinner_box.setSelection(spinnerPosition);
+        spinner_box.setSelection(spinnerPosition+1);//完了済みを抜いている分をマイナスする
     }
 }
 
