@@ -314,6 +314,6 @@ public class BoxDBAdapter extends AppCompatActivity {
                 break;
             }
         }
-        return setSpinnerPosition;
+        return setSpinnerPosition-3;
     }
 }

@@ -202,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
         if(resultCode == RESULT_OK && requestCode == 123 &&
                 null != intent) {
             String changedBoxName = intent.getStringExtra("changedBoxName");
-
         }
     }
 }

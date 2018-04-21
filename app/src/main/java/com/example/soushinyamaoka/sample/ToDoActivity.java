@@ -136,9 +136,11 @@ public class ToDoActivity extends AppCompatActivity {
                     boxId = dbAdapter.getBoxId((int) id);//todoのboxidを取得
                     databaseId = dbAdapter.changeDividedId(id, boxId);//todoのidを取得
                     spinnerPosition = boxDBAdapter.getSpinnerPosition(boxId);
+
                     intent.putExtra( "databaseId", databaseId );
-                    intent.putExtra("spinnerPosition", spinnerPosition-2);
+                    intent.putExtra("spinnerPosition", spinnerPosition);
                     intent.putExtra("boxName", boxId);//todoのboxidを取得
+                    intent.putExtra("allTodo", 0);
                 } else {
                     // intentへ添え字付で値を保持させる
                     databaseId = dbAdapter.changeDividedId(id, boxId);//todoのidを取得
@@ -160,8 +162,8 @@ public class ToDoActivity extends AppCompatActivity {
             // resultCodeがOKか確認する
             if (resultCode == RESULT_OK) {
                 // 結果を取得して, 表示する.
-                boxName = data.getStringExtra("boxName");
-                if (boxName.equals("全て")){
+                boxId = data.getIntExtra("boxName",0);
+                if (boxId == 0){
                     showList(this);
                 } else {
                     showDividedTodoList(this, boxId);
@@ -216,11 +218,11 @@ public class ToDoActivity extends AppCompatActivity {
             String[] getMemo = dbAdapter.getMemo(databaseId);
 
             String setTodo = getTodo[0];
-            String setBox = "完了";
+            String setBox = "完了済み";
             String setDate = getDate[0];
             String setTime = getTime[0];
             String setMemo = getMemo[0];
-            int setBoxId = 0;
+            int setBoxId = 1;
 
             dbAdapter.openDB();
             dbAdapter.updateDB(databaseId, setTodo, setBox, setDate, setTime, setMemo,setBoxId);

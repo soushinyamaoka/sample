@@ -61,8 +61,7 @@ public class ToDoComplete extends AppCompatActivity{
 
         //リストの生成
 
-        showDividedTodoList(this,boxName);
-
+        showDividedTodoList(this,boxId);
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,13 +74,13 @@ public class ToDoComplete extends AppCompatActivity{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         deleteComplete();
-                        showDividedTodoList(ToDoComplete.this,boxName);
+                        showDividedTodoList(ToDoComplete.this,boxId);
                     }
                 });
                 alertDialog.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        showDividedTodoList(ToDoComplete.this,boxName);
+                        showDividedTodoList(ToDoComplete.this,boxId);
                     }
                 });
                 alertDialog.create().show();
@@ -98,7 +97,7 @@ public class ToDoComplete extends AppCompatActivity{
                         dbAdapter.backDB(databaseId,
                                         "今日");
                         //deleteArchive(getApplicationContext(),listviewId);
-                        showDividedTodoList(getApplicationContext(),boxName);
+                        showDividedTodoList(getApplicationContext(),boxId);
                         Toast.makeText(ToDoComplete.this, "1件戻しました", Toast.LENGTH_LONG).show();
 
                         return false;
@@ -111,10 +110,11 @@ public class ToDoComplete extends AppCompatActivity{
                 // 遷移先のactivityを指定してintentを作成
                 Intent intent = new Intent(ToDoComplete.this, TodoDetail.class);
                 // intentへ添え字付で値を保持させる
-                databaseId = dbAdapter.changeDividedId(id, boxId);
+                boxId = dbAdapter.getBoxId((int) id);//todoのboxidを取得
+                databaseId = dbAdapter.changeDividedId(id, boxId-1);
                 intent.putExtra( "databaseId", databaseId );
                 intent.putExtra("spinnerPosition", spinnerPosition);
-                intent.putExtra("boxName", boxName);
+                intent.putExtra("boxName", boxId);
 
                 startActivityForResult(intent, TODO_DETAIL);
             }
@@ -132,12 +132,12 @@ public class ToDoComplete extends AppCompatActivity{
                 deleteComplete();
             } else {
                 boxName = data.getStringExtra("boxName");
-                showDividedTodoList(this, boxName);
+                showDividedTodoList(this, boxId);
             }
         }
     }
 
-    public void showDividedTodoList(Context context, String boxName){
+    public void showDividedTodoList(Context context, int boxId){
         ArrayList<String> lvAdapter = new ArrayList<>();
         dbAdapter.openDB();
         try {

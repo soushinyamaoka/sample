@@ -32,6 +32,7 @@ public class TodoDetail extends Activity {
     int spinnerPosition = 0;
     String boxName;
     int boxId;
+    int allTodo;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -42,6 +43,7 @@ public class TodoDetail extends Activity {
         databaseId = intent.getIntExtra( "databaseId", 0);
         spinnerPosition = intent.getIntExtra("spinnerPosition", -1);
         boxId = intent.getIntExtra("boxName",0);//Main画面で押された位置から取得
+        allTodo = intent.getIntExtra("allTodo",-1);//「全て」の画面からきている場合はこれが「0」になる
         boxDBAdapter.openBoxDB();
 
         if (boxId == 1){//完了済みのタスクの場合
@@ -75,7 +77,7 @@ public class TodoDetail extends Activity {
     public void onBackPressed(){
         if (boxId == 1){//完了済みのタスクの場合
             finish();
-        } else{
+        } else {
             boxDBAdapter.openBoxDB();
             boxName = (String)spinner_box.getSelectedItem();
             boxDBAdapter.openBoxDB();
@@ -91,7 +93,10 @@ public class TodoDetail extends Activity {
                     boxId
                     );
             Intent data = new Intent(TodoDetail.this,ToDoActivity.class);
-            data.putExtra("boxName",boxName);
+            if (allTodo == 0){//全てが選ばれていた場合はboxidを0に戻す
+                boxId = 0;
+            }
+            data.putExtra("boxName",boxId);
             setResult(RESULT_OK, data);
             finish();
         }
