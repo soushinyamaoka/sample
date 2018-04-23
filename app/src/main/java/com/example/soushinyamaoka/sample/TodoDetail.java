@@ -78,10 +78,12 @@ public class TodoDetail extends Activity {
         if (boxId == 1){//完了済みのタスクの場合
             finish();
         } else {
-            boxDBAdapter.openBoxDB();
-            boxName = (String)spinner_box.getSelectedItem();
+            //boxDBAdapter.openBoxDB();
+            //boxName = (String)spinner_box.getSelectedItem();
             boxDBAdapter.openBoxDB();
             int updateBoxId = boxDBAdapter.changeToBoxId(spinner_box.getSelectedItemPosition() + 2);//ListViewのずれ1と、完了済みを抜いてる分の１をプラス
+            boxDBAdapter.openBoxDB();
+            boxName = boxDBAdapter.changeToBoxName(updateBoxId);
             dbAdapter.openDB();
             dbAdapter.updateDB(todoId,
                     edit_Todo.getText().toString(),
@@ -121,13 +123,13 @@ public class TodoDetail extends Activity {
         if (boxId == 0){
             text_Todo.setText(setTodo[0]);
             text_Date.setText(setDate[0]);
-            text_Date.setText(setTime[0]);
+            text_Time.setText(setTime[0]);
             text_Memo.setText(setMemo[0]);
             text_Box.setText(boxName);
         } else if (boxId == 1){//完了済みのタスクの場合
             text_Todo.setText(setTodo[0]);
             text_Date.setText(setDate[0]);
-            text_Date.setText(setTime[0]);
+            text_Time.setText(setTime[0]);
             text_Memo.setText(setMemo[0]);
             text_Box.setText(boxName);
 

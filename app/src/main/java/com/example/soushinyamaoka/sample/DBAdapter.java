@@ -110,8 +110,8 @@ public class DBAdapter extends AppCompatActivity {
         try {
             Cursor c = db.query(DB_TABLE,
                     cols,
-                    "boxId !=?",
-                    new String[]{String.valueOf(0)},//空欄は取得しない
+                    "boxId != 1",//boxid.1=「完了済み」以外を表示
+                    null,
                     null,
                     null,
                     ORDER_BY);
@@ -284,8 +284,8 @@ public class DBAdapter extends AppCompatActivity {
         try {
             Cursor c = db.query(DB_TABLE,
                     new String[]{COL_BOXID},
-                    "boxId = " + todoId,
-                    new String[]{String.valueOf(0)},//空欄は取得しない
+                    "id = " + todoId,
+                    null,
                     null,
                     null,
                     ORDER_BY);
@@ -356,9 +356,9 @@ public class DBAdapter extends AppCompatActivity {
         }
         return listID;
     }
-
+    //Listで選択されたtodoのDB上でのidを取得
     public int changeDividedId(long listviewId, int boxId) {
-        int databaseId = 0;
+        int todoId = 0;
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
         String[] cols = {"id"};
@@ -380,7 +380,7 @@ public class DBAdapter extends AppCompatActivity {
                     array = listId.toArray(new Integer[0]);
                 }
                 c.close();
-                databaseId = array[(int) listviewId];
+                todoId = array[(int) listviewId];
             }catch(SQLException e) {
                 Log.e(TAG, "SQLExcepption:"+e.toString());
             }
@@ -405,8 +405,8 @@ public class DBAdapter extends AppCompatActivity {
             }
         }
         array = listId.toArray(new Integer[listId.size()]);
-        databaseId = array[(int) listviewId];
-        return databaseId;
+        todoId = array[(int) listviewId];
+        return todoId;
     }
 
     public int changeId(long listviewId){

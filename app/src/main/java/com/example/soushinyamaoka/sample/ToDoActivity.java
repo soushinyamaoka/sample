@@ -16,7 +16,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -94,9 +97,8 @@ public class ToDoActivity extends AppCompatActivity {
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
                     }
                     else {
-                        //editBox = "今日";
                         dbAdapter.openDB();
-                        dbAdapter.writeDB(editTodo, boxName, editDate, editTime, editMemo, boxId);
+                        dbAdapter.writeDB(editTodo, boxName, getNowDate(), getNowTime(), editMemo, boxId);
                         //dbAdapter.readDB();
                         showDividedTodoList(boxId);
 
@@ -114,7 +116,7 @@ public class ToDoActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,View view,
                                            int position, long listviewId) {
-
+                todoId = dbAdapter.getTodoId((int) listviewId);
                 deleteList(todoId);
                 //deleteArchive(getApplicationContext(),listviewId);
                 if (boxId == 0){//全てが選択されているとき
@@ -136,7 +138,7 @@ public class ToDoActivity extends AppCompatActivity {
                 if (boxId == 0){//全てを選んだ場合
                     int todoId = dbAdapter.getTodoId((int) id);//todoのidを取得
                     boxId = dbAdapter.getBoxIdData(todoId);//todoのboxidを取得
-                    todoId = dbAdapter.changeDividedId(id, boxId);//todoのidを取得
+                    //todoId = dbAdapter.changeDividedId(id, boxId);//todoのidを取得
                     spinnerPosition = boxDBAdapter.getSpinnerPosition(boxId);
 
                     intent.putExtra( "todoId", todoId );
@@ -172,6 +174,28 @@ public class ToDoActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public String getNowDate(){
+        // 現在日時の取得
+        Date now = new Date(System.currentTimeMillis());
+        // 日時のフォーマットオブジェクト作成
+        DateFormat formatterDate = new SimpleDateFormat("yyyy年MM月dd日");
+
+        // フォーマット
+        String nowText = formatterDate.format(now);
+        return nowText;
+    }
+
+    public String getNowTime(){
+        // 現在日時の取得
+        Date now = new Date(System.currentTimeMillis());
+        // 日時のフォーマットオブジェクト作成
+        DateFormat formatterTime = new SimpleDateFormat("HH時mm分");
+
+        // フォーマット
+        String nowText = formatterTime.format(now);
+        return nowText;
     }
 
     public void showList(){

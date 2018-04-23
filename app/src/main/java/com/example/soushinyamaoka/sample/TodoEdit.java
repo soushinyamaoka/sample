@@ -11,7 +11,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static android.content.ContentValues.TAG;
 
@@ -53,7 +56,7 @@ public class TodoEdit extends Activity {
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
         boxDBAdapter = new BoxDBAdapter(this);
-        final Spinner boxSpinner = (Spinner) findViewById(R.id.new_box_spinner);
+        final Spinner spinner_box = (Spinner) findViewById(R.id.new_box_spinner);
 
 
         // 現在のintentを取得する
@@ -76,8 +79,14 @@ public class TodoEdit extends Activity {
         editTodoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boxDBAdapter.openBoxDB();
+                boxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition()-1);
                 setTextTodo = editTodo.getText().toString();
-                setTextBox = (String)boxSpinner.getSelectedItem();
+                boxDBAdapter.openBoxDB();
+                setTextBox = boxDBAdapter.changeToBoxName(boxId);
+                setTextDate = editDate.getText().toString();
+                setTextTime = editTime.getText().toString();
+                setTextMemo = editMemo.getText().toString();
                 try {
                     if(setTextTodo.equals("")){
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
@@ -89,12 +98,10 @@ public class TodoEdit extends Activity {
 
                         finish();
                     } else {
-                        boxId = boxDBAdapter.changeToBoxId(boxSpinner.getSelectedItemPosition());
+                        boxId = boxDBAdapter.changeToBoxId(spinner_box.getSelectedItemPosition() + 1);
+
                         dbAdapter.openDB();
                         dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
-
-                        boxDBAdapter.openBoxDB();
-                        boxDBAdapter.writeBoxDB(setTextBox);
 
                         finish();
                     }
@@ -106,7 +113,7 @@ public class TodoEdit extends Activity {
 
         // Adapterの作成
         adapter = new ArrayAdapter<String>(this, R.layout.text_box_list, getSpinner());
-        boxSpinner.setAdapter(adapter);
+        spinner_box.setAdapter(adapter);
         //boxSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         //    @Override
         //    public void onItemSelected(AdapterView<?> parent, View view,
@@ -123,19 +130,42 @@ public class TodoEdit extends Activity {
         //});
     }
 
+    public String getNowDate(){
+        // 現在日時の取得
+        Date now = new Date(System.currentTimeMillis());
+        // 日時のフォーマットオブジェクト作成
+        DateFormat formatterDate = new SimpleDateFormat("yyyy年MM月dd日");
+
+        // フォーマット
+        String nowText = formatterDate.format(now);
+        return nowText;
+    }
+
+    public String getNowTime(){
+        // 現在日時の取得
+        Date now = new Date(System.currentTimeMillis());
+        // 日時のフォーマットオブジェクト作成
+        DateFormat formatterTime = new SimpleDateFormat("HH時mm分");
+
+        // フォーマット
+        String nowText = formatterTime.format(now);
+        return nowText;
+    }
+
     @Override
     public void onBackPressed(){
         super.onBackPressed();
     }
 
     public void showDetail()  {
-        String[] setTodo = dbAdapter.getTodoData(todoId);
-        String[] setDate = dbAdapter.getDateData(todoId);
-        String[] setMemo = dbAdapter.getMemoData(todoId);
+        //String[] setTodo = dbAdapter.getTodoData(todoId);
+        //String[] setDate = dbAdapter.getDateData(todoId);
+        //String[] setMemo = dbAdapter.getMemoData(todoId);
 
-        editTodo.setText(setTodo[0]);
-        editDate.setText(setDate[0]);
-        editMemo.setText(setMemo[0]);
+        //editTodo.setText(setTodo[0]);
+        editDate.setText(getNowDate());
+        editTime.setText(getNowTime());
+        //editMemo.setText(setMemo[0]);
     }
 
     public ArrayList<String> getSpinner(){

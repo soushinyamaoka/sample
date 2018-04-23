@@ -128,7 +128,7 @@ public class BoxDBAdapter extends AppCompatActivity {
         return listBox;
     }
 
-    //list上のidをDB上のidに変換
+    //list上のBoxのidをDB上のBoxのidに変換
     public Integer getBoxId(int listViewId) {
         listBoxId = new ArrayList<>();
         String[] cols = {COL_ID};
