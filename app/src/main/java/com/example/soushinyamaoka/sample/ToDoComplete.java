@@ -110,11 +110,11 @@ public class ToDoComplete extends AppCompatActivity{
                 // 遷移先のactivityを指定してintentを作成
                 Intent intent = new Intent(ToDoComplete.this, TodoDetail.class);
                 // intentへ添え字付で値を保持させる
-                boxId = dbAdapter.getBoxId((int) id);//todoのboxidを取得
-                databaseId = dbAdapter.changeDividedId(id, boxId-1);
+                //boxId = dbAdapter.getBoxId((int) id);//todoのboxid(カテゴリ)を取得
+                databaseId = dbAdapter.changeDividedId(id, boxId);
                 intent.putExtra( "databaseId", databaseId );
                 intent.putExtra("spinnerPosition", spinnerPosition);
-                intent.putExtra("boxName", boxId);
+                intent.putExtra("boxName", boxId);//これは「完了済み」なのでid.1のはず
 
                 startActivityForResult(intent, TODO_DETAIL);
             }

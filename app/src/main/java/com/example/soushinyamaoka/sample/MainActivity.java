@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("boxName",boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
-                startActivity(intent);
+                //startActivity(intent);
             }
         });
 
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("boxName", boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
-                startActivity(intent);
+                //startActivity(intent);
             }
         });
 
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("boxName", boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
-                startActivity(intent);
+                //startActivity(intent);
             }
         });
 
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, TodoEdit.class);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
-                startActivity(intent);
+                //startActivity(intent);
             }
         });
     }
@@ -165,8 +165,9 @@ public class MainActivity extends AppCompatActivity {
         boxDataBaseId = boxDBAdapter.changeBoxId(BoxListViewId);
         editIntent.putExtra("boxDataBaseId", boxDataBaseId);
         //選択されたカテゴリ名を取得し、Intentに格納
-        String[] setBoxName = boxDBAdapter.getBoxName(boxDataBaseId);
-        editIntent.putExtra("boxName", setBoxName);
+        //String[] setBoxName = boxDBAdapter.getBoxName(boxDataBaseId);
+        boxId = boxDBAdapter.getBoxId(position);
+        editIntent.putExtra("boxName", boxId);
         int requestCode = 123;
         startActivityForResult(editIntent, requestCode);
     }
@@ -201,7 +202,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(resultCode == RESULT_OK && requestCode == 123 &&
                 null != intent) {
-            String changedBoxName = intent.getStringExtra("changedBoxName");
+            //String changedBoxName = intent.getStringExtra("changedBoxName");
+            showBox();
         }
     }
 }

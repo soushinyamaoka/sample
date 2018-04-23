@@ -190,7 +190,7 @@ public class BoxDBAdapter extends AppCompatActivity {
                     null,
                     null,
                     null,
-                    ORDER_BY);
+                    null);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
                 //listId.add(c.getInt(0));

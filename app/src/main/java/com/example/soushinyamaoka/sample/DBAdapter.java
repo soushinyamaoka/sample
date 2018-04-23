@@ -335,7 +335,7 @@ public class DBAdapter extends AppCompatActivity {
         return setBoxId;
     }
 
-    //タップしたTODOからDB上でのidを取得
+    //タップしたTODOからDB上でのidを取得※全てのときのみ？
     public Integer getTodoId(int listViewId) {
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
@@ -431,14 +431,14 @@ public class DBAdapter extends AppCompatActivity {
                     //listId.add(c.getInt(0));
                     listId.add(c.getInt(0));
                     c.moveToNext();
-                    array = listId.toArray(new Integer[(int) listviewId]);
                 }
                 c.close();
-                databaseId = array[0];
             }catch(SQLException e) {
                 Log.e(TAG, "SQLExcepption:"+e.toString());
             }
         }
+        array = listId.toArray(new Integer[listId.size()]);
+        databaseId = array[(int) listviewId];
         return databaseId;
     }
 

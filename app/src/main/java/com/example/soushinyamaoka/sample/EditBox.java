@@ -14,6 +14,9 @@ public class EditBox extends AppCompatActivity{
     ArrayAdapter<String> adapter;
     EditText editEditBox;
     Button editEditButton;
+    int boxDataBaseId;
+    int boxId;
+    String boxName;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -26,10 +29,12 @@ public class EditBox extends AppCompatActivity{
         // 現在のintentを取得する
         Intent intent = getIntent();
         //Mainから渡された「選択されたカテゴリのDB上のID」を取得
-        final int boxDataBaseId = intent.getIntExtra( "boxDataBaseId",-1);
+        //boxDataBaseId = intent.getIntExtra( "boxDataBaseId",-1);
         //Mainから渡された「選択されたカテゴリ名」を取得
-        String[] setBox = intent.getStringArrayExtra( "boxName");
-        editEditBox.setText(setBox[0]);
+        //String[] setBox = intent.getStringArrayExtra( "boxName");
+        boxId = intent.getIntExtra("boxName", -1);
+        boxName = boxDBAdapter.changeToBoxName(boxId);
+        editEditBox.setText(boxName);
 
         editEditButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -38,13 +43,13 @@ public class EditBox extends AppCompatActivity{
                 String setBoxName = editEditBox.getText().toString();
                 boxDBAdapter.openBoxDB();
                 try {
-                    boxDBAdapter.updateBoxDB(boxDataBaseId,setBoxName);
+                    boxDBAdapter.updateBoxDB(boxId,setBoxName);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 //-------------------------
                 Intent intent = new Intent();
-                intent.putExtra("changedBoxName", setBoxName);
+                //intent.putExtra("changedBoxName", setBoxName);
                 setResult(RESULT_OK, intent);
                 finish();
             }
