@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     CustomAdapter customAdapter;
     int boxDataBaseId;
     int boxId;
+    int spinnerPosition;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -90,17 +91,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
+                spinnerPosition = position + 1;
+                boxDBAdapter.openBoxDB();
+                boxId = boxDBAdapter.getBoxId(position);
                 if (view.getId() == R.id.edit){
-                    startEditBoxClass(position);
+                    startEditBoxClass(boxId);
                 } else if (view.getId() == R.id.delete){
-                    ListView list = (ListView) adapterView;
-                    int boxlistViewId = (int) list.getItemAtPosition(position);
-                    deleteBoxList(boxlistViewId);
+                    deleteBoxList(boxId);
                     showBox();
                     Toast.makeText(MainActivity.this, "削除しました。", Toast.LENGTH_SHORT).show();
                 } else if (view.getId() == R.id.text){
-
-                    startTodoActivityClass((ListView)adapterView,position);
+                    startTodoActivityClass(spinnerPosition,boxId);
                 }
             }
         });
@@ -135,62 +136,41 @@ public class MainActivity extends AppCompatActivity {
         listViewBox.setAdapter(customAdapter);
     }
 
-    public void deleteBoxList(long boxListViewId){
+    public void deleteBoxList(int boxId){
         try {
-            boxDBAdapter.openBoxDB();
-            boxDataBaseId = boxDBAdapter.changeBoxId(boxListViewId);//List上のIDをDB上のIDに変換
-
-            String setBox = "完了";
-            int setBoxId = 0;
+            String setBox = "完了済み";
 
             //カテゴリ内にあるタスクのカテゴリを完了に変更
             boxDBAdapter.openBoxDB();
-            boxDBAdapter.updateBoxDB(boxDataBaseId,setBox);
+            boxDBAdapter.updateBoxDB(boxId,setBox);
             //カテゴリ名を削除
             boxDBAdapter.openBoxDB();
-            boxDBAdapter.deleteBoxDB(boxDataBaseId);
+            boxDBAdapter.deleteBoxDB(boxId);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void startEditBoxClass(int position){
+    public void startEditBoxClass(int boxId){
         boxDBAdapter.openBoxDB();
         customAdapter = new CustomAdapter(getApplicationContext(), R.layout.row_item, boxDBAdapter.readBoxDB());
         //editIntentにEditBox.classを入れる
         Intent editIntent = new Intent(MainActivity.this, EditBox.class);
-        //リスト上のIDをDB上のIDに変換し、Intentに格納
-        int BoxListViewId = (int) customAdapter.getItemId(position);
-        boxDataBaseId = boxDBAdapter.changeBoxId(BoxListViewId);
-        editIntent.putExtra("boxDataBaseId", boxDataBaseId);
-        //選択されたカテゴリ名を取得し、Intentに格納
-        //String[] setBoxName = boxDBAdapter.getBoxName(boxDataBaseId);
-        boxId = boxDBAdapter.getBoxId(position);
         editIntent.putExtra("boxName", boxId);
         int requestCode = 123;
         startActivityForResult(editIntent, requestCode);
     }
 
-    public void startTodoActivityClass(ListView adapterView,int position){
+    public void startTodoActivityClass(int spinnerPosition, int boxId){
         // 遷移先のactivityを指定してintentを作成
         Intent todoActiveIntent = new Intent(MainActivity.this, ToDoActivity.class);
-        ListView list = (ListView) adapterView;
 
-        int boxListViewId = (int)list.getItemAtPosition(position);
+        //boxDBAdapter.openBoxDB();
+        //boxId = boxDBAdapter.getBoxId(position);
 
-        boxDBAdapter.openBoxDB();
-        boxDataBaseId = boxDBAdapter.changeBoxId(boxListViewId);
-
-        boxDBAdapter.openBoxDB();
-        boxId = boxDBAdapter.getBoxId(boxListViewId);
-
-        String[] setBoxName = boxDBAdapter.getBoxName(boxDataBaseId);
-
-        todoActiveIntent.putExtra("boxDataBaseId", boxDataBaseId);
-        //todoActiveIntent.putExtra("boxName", setBoxName[0]);
         todoActiveIntent.putExtra("boxName", boxId);
-        todoActiveIntent.putExtra("spinnerPosition", boxListViewId);
+        todoActiveIntent.putExtra("spinnerPosition", spinnerPosition);//Detail表示の際に使用
 
         int requestCode = 123;
         startActivityForResult(todoActiveIntent, requestCode);

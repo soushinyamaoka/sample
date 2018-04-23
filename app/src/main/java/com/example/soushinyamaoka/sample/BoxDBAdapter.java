@@ -59,20 +59,20 @@ public class BoxDBAdapter extends AppCompatActivity {
         }
     }
 
-    public void updateBoxDB(int boxDataBaseId, String boxName) {
+    public void updateBoxDB(int boxId, String boxName) {
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
         values.put(COL_BOX, boxName);
 
         //空欄でも書き込めるようになっているので要修正
         try {
-            db.update(DB_TABLE, values, "id = " + boxDataBaseId, null);
+            db.update(DB_TABLE, values, "id = " + boxId, null);
         } catch (Exception e) {
             Log.e(TAG, "SQLExcepption:" + e.toString());
         }
     }
 
-    public void deleteBoxDB(int boxDataBaseId){
-        db.delete(DB_TABLE, "id = " + boxDataBaseId, null);
+    public void deleteBoxDB(int boxId){
+        db.delete(DB_TABLE, "id = " + boxId, null);
         db.close();
     }
 
@@ -106,10 +106,8 @@ public class BoxDBAdapter extends AppCompatActivity {
 
     //データベースからの読み込み
     public ArrayList<String> readBoxSpinnerDB() {
-        listBoxId = new ArrayList<Integer>();
         listBox = new ArrayList<>();
         String[] cols = {COL_BOX};
-
         try {
             Cursor c = db.query(DB_TABLE,
                                 cols,
@@ -120,24 +118,21 @@ public class BoxDBAdapter extends AppCompatActivity {
                     null);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
-                //listId.add(c.getInt(0));
                 listBox.add(c.getString(0));
                 c.moveToNext();
             }
             c.close();
-
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
         return listBox;
     }
 
-    //データベースからの読み込み
+    //list上のidをDB上のidに変換
     public Integer getBoxId(int listViewId) {
         listBoxId = new ArrayList<>();
         String[] cols = {COL_ID};
         Integer setBoxId;
-        //String[] where = {"完了","今日"};
         try {
             Cursor c = db.query(
                     DB_TABLE,
@@ -159,34 +154,17 @@ public class BoxDBAdapter extends AppCompatActivity {
         Integer[] array;
         array = listBoxId.toArray(new Integer[listBoxId.size()]);
         setBoxId = array[listViewId];
-
         return setBoxId;
     }
 
-    public int changeBoxId(long boxListViewId){
-        ArrayList<Integer> idAdapter = new ArrayList<>();
-        try {
-            openBoxDB();
-            idAdapter = getBoxDataBaseId();
-            boxDataBaseId = idAdapter.get((int)boxListViewId);//削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return boxDataBaseId;
-    }
-
     public String changeToBoxName(int boxId){
-        String setBoxName = null;
         listBox = new ArrayList<>();
         String[] cols = {COL_BOX};
-        String str = String.valueOf(boxId);
-        String[] selectionArgs = {str};
-        String[] where = {"完了","今日"};
         try {
             Cursor c = db.query(
                     DB_TABLE,
                     cols,//cols
-                    "id =" + boxId,//"id =" + boxId,
+                    "id = " + boxId,//id.1の完了済みと、id.2の今日は除外
                     null,
                     null,
                     null,
@@ -201,14 +179,11 @@ public class BoxDBAdapter extends AppCompatActivity {
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        String[] array;
-        array = listBox.toArray(new String[listBox.size()]);
-        setBoxName = array[0];
-        return setBoxName;
+        String[] setBoxName = listBox.toArray(new String[listBox.size()]);
+        return setBoxName[0];
     }
 
     public int changeToBoxId(int boxId){
-        int setBoxId;
         listBoxId = new ArrayList<>();
         String[] cols = {COL_ID};
         try {
@@ -229,58 +204,32 @@ public class BoxDBAdapter extends AppCompatActivity {
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        Integer[] array;
-        array = listBoxId.toArray(new Integer[listBoxId.size()]);
-        setBoxId = array[0];
-        return setBoxId;
+        Integer[] setBoxId = listBoxId.toArray(new Integer[listBoxId.size()]);
+        return setBoxId[0];
     }
 
-    public ArrayList<Integer> getBoxDataBaseId() {
-        ArrayList<Integer> listID = new ArrayList<>();
-        String[] cols = {"id"};
-        try {
-            Cursor c = db.query(DB_TABLE,
-                    cols,
-                    null,
-                    null,
-                    null,
-                    null,
-                    ORDER_BY);
-            c.moveToFirst();
-            for (int i = 0; i < c.getCount(); i++) {
-                listID.add(c.getInt(0));
-                c.moveToNext();
-            }
-            c.close();
-        }catch(SQLException e) {
-            Log.e(TAG, "SQLExcepption:"+e.toString());
-        }
-        return listID;
-    }
-
-    public String[] getBoxName(int boxDataBaseId) {
+    public String getBoxName(int boxId) {
         listBox = new ArrayList<>();
-        String[] setBoxName = new String[0];
-        String[] cols = {"box"};
+        String[] cols = {COL_BOX};
         try {
             Cursor c = db.query(DB_TABLE,
-                                new String[]{COL_BOX},
-                                "id = " + boxDataBaseId,
+                                cols,
+                                "id = " + boxId,
                                 null,
                                 null,
                                 null,
-                                ORDER_BY);
+                                null);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
                 listBox.add(c.getString(0));
                 c.moveToNext();
             }
             c.close();
-            setBoxName = listBox.toArray(new String[0]);
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        return setBoxName;
+        String[] setBoxName = listBox.toArray(new String[0]);
+        return setBoxName[0];
     }
 
     public Integer getSpinnerPosition(int boxId){
@@ -306,14 +255,13 @@ public class BoxDBAdapter extends AppCompatActivity {
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        Integer[] array;
-        array = listBoxId.toArray(new Integer[listBoxId.size()]);
+        Integer[] array = listBoxId.toArray(new Integer[listBoxId.size()]);
         for (int i=0; i<=listBoxId.size(); i++){
             if (array[i] == boxId){
                 setSpinnerPosition = array[i];
                 break;
             }
         }
-        return setSpinnerPosition-3;
+        return setSpinnerPosition - 3;
     }
 }

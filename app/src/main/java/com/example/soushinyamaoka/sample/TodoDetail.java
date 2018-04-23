@@ -28,7 +28,7 @@ public class TodoDetail extends Activity {
     BoxDBAdapter boxDBAdapter;
 
     long listviewId = 0;
-    int databaseId = 0;
+    int todoId = 0;
     int spinnerPosition = 0;
     String boxName;
     int boxId;
@@ -40,7 +40,7 @@ public class TodoDetail extends Activity {
         boxDBAdapter = new BoxDBAdapter(this);
 
         Intent intent = getIntent();
-        databaseId = intent.getIntExtra( "databaseId", 0);
+        todoId = intent.getIntExtra( "todoId", 0);
         spinnerPosition = intent.getIntExtra("spinnerPosition", -1);
         boxId = intent.getIntExtra("boxName",0);//Main画面で押された位置から取得
         allTodo = intent.getIntExtra("allTodo",-1);//「全て」の画面からきている場合はこれが「0」になる
@@ -81,16 +81,16 @@ public class TodoDetail extends Activity {
             boxDBAdapter.openBoxDB();
             boxName = (String)spinner_box.getSelectedItem();
             boxDBAdapter.openBoxDB();
-            boxId = boxDBAdapter.changeToBoxId(spinner_box.getSelectedItemPosition() + 2);//ListViewのずれ1と、完了済みを抜いてる分の１をプラス
+            int updateBoxId = boxDBAdapter.changeToBoxId(spinner_box.getSelectedItemPosition() + 2);//ListViewのずれ1と、完了済みを抜いてる分の１をプラス
             dbAdapter.openDB();
-            dbAdapter.updateDB(databaseId,
+            dbAdapter.updateDB(todoId,
                     edit_Todo.getText().toString(),
                     //edit_Box.getText().toString(),
                     (String)spinner_box.getSelectedItem(),
                     edit_Date.getText().toString(),
                     edit_Time.getText().toString(),
                     edit_Memo.getText().toString(),
-                    boxId
+                    updateBoxId
                     );
             Intent data = new Intent(TodoDetail.this,ToDoActivity.class);
             if (allTodo == 0){//全てが選ばれていた場合はboxidを0に戻す
@@ -110,13 +110,13 @@ public class TodoDetail extends Activity {
         Integer[] setId;
 
         dbAdapter.openDB();
-        setTodo = dbAdapter.getTodo(databaseId);
+        setTodo = dbAdapter.getTodoData(todoId);
         dbAdapter.openDB();
-        setDate = dbAdapter.getDate(databaseId);
+        setDate = dbAdapter.getDateData(todoId);
         dbAdapter.openDB();
-        setTime = dbAdapter.getTime(databaseId);
+        setTime = dbAdapter.getTimeData(todoId);
         dbAdapter.openDB();
-        setMemo = dbAdapter.getMemo(databaseId);
+        setMemo = dbAdapter.getMemoData(todoId);
 
         if (boxId == 0){
             text_Todo.setText(setTodo[0]);
@@ -137,7 +137,6 @@ public class TodoDetail extends Activity {
             edit_Time.setText(setTime[0]);
             edit_Memo.setText(setMemo[0]);
             setSpinner();
-            //edit_Date.setText(databaseId);
         }
     }
 
@@ -159,7 +158,7 @@ public class TodoDetail extends Activity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, lvAdapter);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_box.setAdapter(adapter);
-        spinner_box.setSelection(spinnerPosition+1);//完了済みを抜いている分をマイナスする
+        spinner_box.setSelection(spinnerPosition);//完了済みを抜いている分をマイナスする
     }
 }
 

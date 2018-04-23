@@ -5,13 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -38,8 +36,9 @@ public class TodoEdit extends Activity {
     BoxDBAdapter boxDBAdapter;
     ArrayAdapter<String> adapter;
 
-    long listviewId = 0;
+    //long listviewId = 0;
     int databaseId = 0;
+    int todoId;
     int boxId;
 
     @Override
@@ -54,16 +53,14 @@ public class TodoEdit extends Activity {
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
         boxDBAdapter = new BoxDBAdapter(this);
-        //editText = findViewById(R.id.editText);
-        //listView = findViewById(R.id.list_view_todo);
         final Spinner boxSpinner = (Spinner) findViewById(R.id.new_box_spinner);
 
 
         // 現在のintentを取得する
         Intent intent = getIntent();
         // intentから指定キーの文字列を取得する
-        listviewId = intent.getLongExtra( "todoId", -1);
-        databaseId = dbAdapter.changeId(listviewId);
+        todoId = intent.getIntExtra( "todoId", -1);
+        //databaseId = dbAdapter.changeId(listviewId);
 
         //todoの詳細を表示
         //-------------------------
@@ -74,11 +71,12 @@ public class TodoEdit extends Activity {
             e.printStackTrace();
         }
         //-------------------------
+
         final EmptyTaskDialogFragment emptyTaskDialogFragment = new EmptyTaskDialogFragment();
         editTodoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setTextTodo = editTodo.getText().toString();//書き込まれた内容(getText)をstrに格納
+                setTextTodo = editTodo.getText().toString();
                 setTextBox = (String)boxSpinner.getSelectedItem();
                 try {
                     if(setTextTodo.equals("")){
@@ -88,9 +86,6 @@ public class TodoEdit extends Activity {
                         boxId = 1;
                         dbAdapter.openDB();
                         dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
-
-                        //boxDBAdapter.openBoxDB();
-                        //boxDBAdapter.writeBoxDB(setTextBox);
 
                         finish();
                     } else {
@@ -112,20 +107,20 @@ public class TodoEdit extends Activity {
         // Adapterの作成
         adapter = new ArrayAdapter<String>(this, R.layout.text_box_list, getSpinner());
         boxSpinner.setAdapter(adapter);
-        boxSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-                Spinner spinner = (Spinner) parent;
-                // 選択されたアイテムを取得します
-                String item = (String) spinner.getSelectedItem();
-
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                Toast.makeText(TodoEdit.this, "選んでません", Toast.LENGTH_LONG).show();
-            }
-        });
+        //boxSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        //    @Override
+        //    public void onItemSelected(AdapterView<?> parent, View view,
+        //                               int position, long id) {
+        //        Spinner spinner = (Spinner) parent;
+        //        // 選択されたアイテムを取得します
+        //        String item = (String) spinner.getSelectedItem();
+        //
+        //    }
+        //    @Override
+        //    public void onNothingSelected(AdapterView<?> arg0) {
+        //        Toast.makeText(TodoEdit.this, "選んでません", Toast.LENGTH_LONG).show();
+        //    }
+        //});
     }
 
     @Override
@@ -134,21 +129,13 @@ public class TodoEdit extends Activity {
     }
 
     public void showDetail()  {
-        String[] setTodo;
-        String[] setBox;
-        String[] setDate;
-        String[] setMemo;
-
-        setTodo = dbAdapter.getTodo(databaseId);
-        setBox = dbAdapter.getBox(databaseId);
-        setDate = dbAdapter.getDate(databaseId);
-        setMemo = dbAdapter.getMemo(databaseId);
+        String[] setTodo = dbAdapter.getTodoData(todoId);
+        String[] setDate = dbAdapter.getDateData(todoId);
+        String[] setMemo = dbAdapter.getMemoData(todoId);
 
         editTodo.setText(setTodo[0]);
-        //editBox.setText(setBox[0]);
         editDate.setText(setDate[0]);
         editMemo.setText(setMemo[0]);
-        editText.setText(setTodo[0]);
     }
 
     public ArrayList<String> getSpinner(){

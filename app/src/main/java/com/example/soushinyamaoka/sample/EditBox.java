@@ -33,7 +33,9 @@ public class EditBox extends AppCompatActivity{
         //Mainから渡された「選択されたカテゴリ名」を取得
         //String[] setBox = intent.getStringArrayExtra( "boxName");
         boxId = intent.getIntExtra("boxName", -1);
-        boxName = boxDBAdapter.changeToBoxName(boxId);
+        boxDBAdapter.openBoxDB();
+        //boxName = boxDBAdapter.changeToBoxName(boxId);
+        boxName = boxDBAdapter.getBoxName(boxId);
         editEditBox.setText(boxName);
 
         editEditButton.setOnClickListener(new View.OnClickListener() {

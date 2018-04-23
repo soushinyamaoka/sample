@@ -2,7 +2,6 @@ package com.example.soushinyamaoka.sample;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -51,8 +50,6 @@ public class ToDoComplete extends AppCompatActivity{
         db = new DBHelper(this);
 
         Intent intent = getIntent();
-        boxDataBaseId = intent.getIntExtra( "boxDataBaseId",-1);
-        spinnerPosition = intent.getIntExtra("spinnerPosition",0);
         boxId = intent.getIntExtra("boxName",0);
         boxDBAdapter.openBoxDB();
         boxName = boxDBAdapter.changeToBoxName(boxId);
@@ -61,7 +58,7 @@ public class ToDoComplete extends AppCompatActivity{
 
         //リストの生成
 
-        showDividedTodoList(this,boxId);
+        showDividedTodoList(boxId);
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,13 +71,13 @@ public class ToDoComplete extends AppCompatActivity{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         deleteComplete();
-                        showDividedTodoList(ToDoComplete.this,boxId);
+                        showDividedTodoList(boxId);
                     }
                 });
                 alertDialog.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        showDividedTodoList(ToDoComplete.this,boxId);
+                        showDividedTodoList(boxId);
                     }
                 });
                 alertDialog.create().show();
@@ -97,7 +94,7 @@ public class ToDoComplete extends AppCompatActivity{
                         dbAdapter.backDB(databaseId,
                                         "今日");
                         //deleteArchive(getApplicationContext(),listviewId);
-                        showDividedTodoList(getApplicationContext(),boxId);
+                        showDividedTodoList(boxId);
                         Toast.makeText(ToDoComplete.this, "1件戻しました", Toast.LENGTH_LONG).show();
 
                         return false;
@@ -111,8 +108,10 @@ public class ToDoComplete extends AppCompatActivity{
                 Intent intent = new Intent(ToDoComplete.this, TodoDetail.class);
                 // intentへ添え字付で値を保持させる
                 //boxId = dbAdapter.getBoxId((int) id);//todoのboxid(カテゴリ)を取得
-                databaseId = dbAdapter.changeDividedId(id, boxId);
-                intent.putExtra( "databaseId", databaseId );
+                //databaseId = dbAdapter.changeDividedId(id, boxId);
+                //intent.putExtra( "databaseId", databaseId );
+                int todoId = dbAdapter.getTodoId((int) id);
+                intent.putExtra( "todoId", todoId);
                 intent.putExtra("spinnerPosition", spinnerPosition);
                 intent.putExtra("boxName", boxId);//これは「完了済み」なのでid.1のはず
 
@@ -132,12 +131,12 @@ public class ToDoComplete extends AppCompatActivity{
                 deleteComplete();
             } else {
                 boxName = data.getStringExtra("boxName");
-                showDividedTodoList(this, boxId);
+                showDividedTodoList(boxId);
             }
         }
     }
 
-    public void showDividedTodoList(Context context, int boxId){
+    public void showDividedTodoList(int boxId){
         ArrayList<String> lvAdapter = new ArrayList<>();
         dbAdapter.openDB();
         try {
@@ -146,7 +145,7 @@ public class ToDoComplete extends AppCompatActivity{
             e.printStackTrace();
         }
         // Adapterの作成
-        adapter = new ArrayAdapter<String>(context, R.layout.text_complete_list, (List<String>) lvAdapter);
+        adapter = new ArrayAdapter<String>(this, R.layout.text_complete_list, (List<String>) lvAdapter);
         listViewTodo.setAdapter(adapter);
     }
 

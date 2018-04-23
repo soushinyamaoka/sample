@@ -89,9 +89,10 @@ public class DBAdapter extends AppCompatActivity {
         }
     }
 
-    public void backDB(int todoId, String box) {
+    //完了済みtodoを元に戻す際に使用
+    public void backDB(int todoId, String boxName) {
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
-        values.put(COL_BOX, box);
+        values.put(COL_BOX, boxName);
         //空欄でも書き込めるようになっているので要修正
         try {
             db.update(DB_TABLE, values, "id = " + todoId, null);
@@ -102,10 +103,10 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     //データベースからの読み込み
-    public ArrayList<String> readDB() throws Exception {
-        listId = new ArrayList<Integer>();
+    public ArrayList<String> readDB() {
+        //listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
-
+        String[] cols = {"todo"};
         try {
             Cursor c = db.query(DB_TABLE,
                     cols,
@@ -116,23 +117,21 @@ public class DBAdapter extends AppCompatActivity {
                     ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
-                listId.add(c.getInt(0));
-                listTodo.add(c.getString(1));
+                //listId.add(c.getInt(0));
+                listTodo.add(c.getString(0));
                 c.moveToNext();
             }
             c.close();
-
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
         return listTodo;
     }
 
-    public ArrayList<String> readDividedBoxDB(int boxId) throws Exception {
+    public ArrayList<String> readDividedBoxDB(int boxId) {
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
         String[] cols = {"todo"};
-
         try {
             Cursor c = db.query(DB_TABLE,
                     cols,
@@ -143,44 +142,14 @@ public class DBAdapter extends AppCompatActivity {
                     ORDER_BY);
             c.moveToFirst();
             for (int i = 0; i < c.getCount(); i++) {
-                //listId.add(c.getInt(0));
                 listTodo.add(c.getString(0));
                 c.moveToNext();
             }
             c.close();
-
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
         return listTodo;
-    }
-
-    public ArrayList<String> readDBBox(){
-        ArrayList<String> boxList = new ArrayList<>();
-        String[] cols = {"box"};
-        int boxId = 0;
-
-        try {
-            Cursor c = db.query(true,
-                                DB_TABLE,
-                                cols,
-                                "boxId !=" + boxId,
-                                null,
-                                null,
-                                null,
-                                ORDER_BY,
-                                null);
-            c.moveToFirst();
-            for (int i = 0; i < c.getCount(); i++) {
-                //listId.add(c.getInt(0));
-                boxList.add(c.getString(0));
-                c.moveToNext();
-            }
-            c.close();
-        }catch(SQLException e) {
-            Log.e(TAG, "SQLExcepption:"+e.toString());
-        }
-        return boxList;
     }
 
     public void deleteDB(int boxId){
@@ -188,14 +157,14 @@ public class DBAdapter extends AppCompatActivity {
         db.close();
     }
 
-    public String[] getTodo(int databaseId) {
+    public String[] getTodoData(int todoId) {
         listTodo = new ArrayList<>();
         String[] setTodo = new String[0];
-
+        String[] cols = {"todo"};
         try {
             Cursor c = db.query(DB_TABLE,
-                                new String[]{COL_TODO},
-                                "id = " + databaseId,
+                                cols,
+                                "id = " + todoId,
                                 null,
                                 null,
                                 null,
@@ -213,13 +182,13 @@ public class DBAdapter extends AppCompatActivity {
         return setTodo;
     }
 
-    public String[] getBox(int databaseId) {
+    public String[] getBoxData(int todoId) {
         listBox = new ArrayList<>();
         String[] setBox = new String[0];
         try {
             Cursor c = db.query(DB_TABLE,
                                 new String[]{COL_BOX},
-                                "id = " + databaseId,
+                                "id = " + todoId,
                                 null,
                                 null,
                                 null,
@@ -237,7 +206,7 @@ public class DBAdapter extends AppCompatActivity {
         return setBox;
     }
 
-    public String[] getDate(int databaseId) {
+    public String[] getDateData(int databaseId) {
         listDate = new ArrayList<>();
         String[] setDate = new String[0];
         try {
@@ -261,7 +230,7 @@ public class DBAdapter extends AppCompatActivity {
         return setDate;
     }
 
-    public String[] getTime(int databaseId) {
+    public String[] getTimeData(int databaseId) {
         listTime = new ArrayList<>();
         String[] setTime = new String[0];
         try {
@@ -285,7 +254,7 @@ public class DBAdapter extends AppCompatActivity {
         return setTime;
     }
 
-    public String[] getMemo(int databaseId) {
+    public String[] getMemoData(int databaseId) {
         listMemo = new ArrayList<>();
         String[] setMemo = new String[0];
         try {
@@ -309,13 +278,13 @@ public class DBAdapter extends AppCompatActivity {
         return setMemo;
     }
 
-    public Integer getBoxId(int databaseId) {
+    public Integer getBoxIdData(int todoId) {
         listBoxId = new ArrayList<>();
-        Integer setBoxId;
+        Integer[] boxId;
         try {
             Cursor c = db.query(DB_TABLE,
                     new String[]{COL_BOXID},
-                    "boxId !=?",
+                    "boxId = " + todoId,
                     new String[]{String.valueOf(0)},//空欄は取得しない
                     null,
                     null,
@@ -329,10 +298,8 @@ public class DBAdapter extends AppCompatActivity {
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        Integer[] array;
-        array = listBoxId.toArray(new Integer[listBoxId.size()]);
-        setBoxId = array[databaseId];
-        return setBoxId;
+        boxId = listBoxId.toArray(new Integer[0]);
+        return boxId[0];
     }
 
     //タップしたTODOからDB上でのidを取得※全てのときのみ？
