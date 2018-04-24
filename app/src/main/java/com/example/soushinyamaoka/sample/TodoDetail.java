@@ -1,27 +1,34 @@
 package com.example.soushinyamaoka.sample;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class TodoDetail extends Activity {
 
-    private EditText edit_Todo;
-    private EditText edit_Date;
-    private EditText edit_Time;
-    private EditText edit_Memo;
-    private EditText edit_Box;
-    private TextView text_Todo;
-    private TextView text_Date;
-    private TextView text_Time;
-    private TextView text_Memo;
-    private TextView text_Box;
+    private EditText editTodo;
+    private TextView editDate;
+    private TextView editTime;
+    private EditText editMemo;
+    private EditText editBox;
+    private TextView textTodo;
+    private TextView textDate;
+    private TextView textTime;
+    private TextView textMemo;
+    private TextView textBox;
     private Spinner spinner_box;
     DBHelper db;
     DBAdapter dbAdapter;
@@ -35,6 +42,7 @@ public class TodoDetail extends Activity {
     boolean allTodo = false;
     boolean todayTodo = false;
 
+    @SuppressLint("ResourceType")
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -54,18 +62,18 @@ public class TodoDetail extends Activity {
 
         if (boxId == 1){//完了済みのタスクの場合
             setContentView(R.layout.complete_todo_detail);
-            text_Todo = findViewById(R.id.new_edit_Todo);
-            text_Date = findViewById(R.id.new_edit_Date);
-            text_Time = findViewById(R.id.new_edit_Time);
-            text_Memo = findViewById(R.id.new_edit_Memo);
-            text_Box = findViewById(R.id.new_edit_box);
+            textTodo = findViewById(R.id.new_edit_Todo);
+            textDate = findViewById(R.id.new_edit_Date);
+            textTime = findViewById(R.id.new_edit_Time);
+            textMemo = findViewById(R.id.new_edit_Memo);
+            textBox = findViewById(R.id.new_edit_box);
         } else {//完了済み以外の時
             boxName = boxDBAdapter.changeToBoxName(boxId);
             setContentView(R.layout.activity_detail_todo);
-            edit_Todo = findViewById(R.id.new_edit_Todo);
-            edit_Date = findViewById(R.id.new_edit_Date);
-            edit_Time = findViewById(R.id.new_edit_Time);
-            edit_Memo = findViewById(R.id.new_edit_Memo);
+            editTodo = findViewById(R.id.new_edit_Todo);
+            editDate = findViewById(R.id.new_edit_Date);
+            editTime = findViewById(R.id.new_edit_Time);
+            editMemo = findViewById(R.id.new_edit_Memo);
             spinner_box = (Spinner) findViewById(R.id.new_box_spinner);
         }
 
@@ -77,6 +85,48 @@ public class TodoDetail extends Activity {
         //-------------------------
         showDetail(boxName);
         //-------------------------
+
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                editTime.setText(hourOfDay + "時" + minute + "分");
+            }
+        };
+
+        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                editDate.setText(year + "年" + (monthOfYear + 1) + "月" + dayOfMonth + "日");
+            }
+        };
+        Calendar calendar = Calendar.getInstance();
+
+        final DatePickerDialog datePickerDialog;
+        final TimePickerDialog timePickerDialog;
+        int year = calendar.get(Calendar.YEAR); // 年
+        int monthOfYear = calendar.get(Calendar.MONTH); // 月
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH); // 日
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);//時間
+        int minute = calendar.get(Calendar.MINUTE);//分
+
+        datePickerDialog = new DatePickerDialog(this, R.layout.date_picker,
+                onDateSetListener, year, monthOfYear, dayOfMonth);
+        editDate.setClickable(true);
+        editDate.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                datePickerDialog.show();
+            }
+        });
+
+        timePickerDialog = new TimePickerDialog(this, R.layout.time_picker,
+                onTimeSetListener, hourOfDay, minute, true);
+        editTime.setClickable(true);
+        editTime.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // ダイアログを表示する
+                timePickerDialog.show();
+            }
+        });
     }
 
     @Override
@@ -92,12 +142,12 @@ public class TodoDetail extends Activity {
             boxName = boxDBAdapter.changeToBoxName(updateBoxId);
             dbAdapter.openDB();
             dbAdapter.updateDB(todoId,
-                    edit_Todo.getText().toString(),
+                    editTodo.getText().toString(),
                     //edit_Box.getText().toString(),
                     (String)spinner_box.getSelectedItem(),
-                    edit_Date.getText().toString(),
-                    edit_Time.getText().toString(),
-                    edit_Memo.getText().toString(),
+                    editDate.getText().toString(),
+                    editTime.getText().toString(),
+                    editMemo.getText().toString(),
                     updateBoxId
                     );
             Intent data = new Intent(TodoDetail.this,ToDoActivity.class);
@@ -129,23 +179,23 @@ public class TodoDetail extends Activity {
         setMemo = dbAdapter.getMemoData(todoId);
 
         if (boxId == 0){
-            text_Todo.setText(setTodo[0]);
-            text_Date.setText(setDate[0]);
-            text_Time.setText(setTime[0]);
-            text_Memo.setText(setMemo[0]);
-            text_Box.setText(boxName);
+            textTodo.setText(setTodo[0]);
+            textDate.setText(setDate[0]);
+            textTime.setText(setTime[0]);
+            textMemo.setText(setMemo[0]);
+            textBox.setText(boxName);
         } else if (boxId == 1){//完了済みのタスクの場合
-            text_Todo.setText(setTodo[0]);
-            text_Date.setText(setDate[0]);
-            text_Time.setText(setTime[0]);
-            text_Memo.setText(setMemo[0]);
-            text_Box.setText(boxName);
+            textTodo.setText(setTodo[0]);
+            textDate.setText(setDate[0]);
+            textTime.setText(setTime[0]);
+            textMemo.setText(setMemo[0]);
+            textBox.setText(boxName);
 
         } else {
-            edit_Todo.setText(setTodo[0]);
-            edit_Date.setText(setDate[0]);
-            edit_Time.setText(setTime[0]);
-            edit_Memo.setText(setMemo[0]);
+            editTodo.setText(setTodo[0]);
+            editDate.setText(setDate[0]);
+            editTime.setText(setTime[0]);
+            editMemo.setText(setMemo[0]);
             setSpinner();
         }
     }

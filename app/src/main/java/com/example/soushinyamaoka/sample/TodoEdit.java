@@ -1,6 +1,8 @@
 package com.example.soushinyamaoka.sample;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -46,6 +49,7 @@ public class TodoEdit extends Activity {
     int todoId;
     int boxId;
 
+    @SuppressLint("ResourceType")
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -127,44 +131,48 @@ public class TodoEdit extends Activity {
         //    }
         //});
 
-
         TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                // 設定した時間をトーストで表示
-                editDate.setText(hourOfDay + "時" + minute + "分");
+                editTime.setText(hourOfDay + "時" + minute + "分");
             }
         };
 
+        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                editDate.setText(year + "年" + (monthOfYear + 1) + "月" + dayOfMonth + "日");
+            }
+        };
         Calendar calendar = Calendar.getInstance();
-        // 現在の時間の取得
-        final int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-        // 現在の分の取得
-        int minute = calendar.get(Calendar.MINUTE);
-        final TimePickerDialog dialog;
-        // ダイアログの生成、及び初期値の設定
-        dialog = new TimePickerDialog(this, R.layout.date_picker,
-                onTimeSetListener, hourOfDay, minute, true);
 
+        final DatePickerDialog datePickerDialog;
+        final TimePickerDialog timePickerDialog;
+        int year = calendar.get(Calendar.YEAR); // 年
+        int monthOfYear = calendar.get(Calendar.MONTH); // 月
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH); // 日
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);//時間
+        int minute = calendar.get(Calendar.MINUTE);//分
+
+        datePickerDialog = new DatePickerDialog(this, R.layout.date_picker,
+                onDateSetListener, year, monthOfYear, dayOfMonth);
         editDate.setClickable(true);
         editDate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // ダイアログを表示する
-                dialog.show();
-
+                datePickerDialog.show();
             }
         });
 
+        timePickerDialog = new TimePickerDialog(this, R.layout.time_picker,
+                onTimeSetListener, hourOfDay, minute, true);
         editTime.setClickable(true);
         editTime.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                TimePickerDialogFragment timePicker = new TimePickerDialogFragment();
-                timePicker.show(getFragmentManager(), "timePicker");
+                // ダイアログを表示する
+                timePickerDialog.show();
             }
         });
     }
-
-
 
     public String getNowDate(){
         // 現在日時の取得
