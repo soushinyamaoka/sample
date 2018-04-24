@@ -73,6 +73,8 @@ public class ToDoActivity extends AppCompatActivity {
         boxDBAdapter.openBoxDB();
         if (boxId == 0){
             boxName = "全て";
+        } else if (boxId == -1){
+            boxName = "今日";
         } else {
             boxName =  boxDBAdapter.changeToBoxName(boxId);
         }
@@ -81,9 +83,9 @@ public class ToDoActivity extends AppCompatActivity {
 
         //リストの生成
         if (boxId == 0){//全ての場合
-            showList();
-        } else if (boxId == 1){//今日の場合
-            showDividedTodoList(boxId);
+            showList(boxId);
+        } else if (boxId == -1){//今日の場合
+            showList(boxId);
         } else {//その他すべて
             showDividedTodoList(boxId);
         }
@@ -115,12 +117,12 @@ public class ToDoActivity extends AppCompatActivity {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,View view,
-                                           int position, long listviewId) {
-                todoId = dbAdapter.getTodoId((int) listviewId);
+                                           int position, long id) {
+                todoId = dbAdapter.getTodoId(getNowDate(),boxId,id);
                 deleteList(todoId);
                 //deleteArchive(getApplicationContext(),listviewId);
                 if (boxId == 0){//全てが選択されているとき
-                    showList();
+                    showList(boxId);
                 } else {
                     showDividedTodoList(boxId);
                 }
@@ -135,23 +137,13 @@ public class ToDoActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 // 遷移先のactivityを指定してintentを作成
                 Intent intent = new Intent(ToDoActivity.this, TodoDetail.class);
-                if (boxId == 0){//全てを選んだ場合
-                    int todoId = dbAdapter.getTodoId((int) id);//todoのidを取得
-                    boxId = dbAdapter.getBoxIdData(todoId);//todoのboxidを取得
-                    //todoId = dbAdapter.changeDividedId(id, boxId);//todoのidを取得
-                    spinnerPosition = boxDBAdapter.getSpinnerPosition(boxId);
+                int todoId = dbAdapter.getTodoId(getNowDate(),boxId,id);//todoのidを取得
+                boxId = dbAdapter.getBoxIdData(todoId);//todoのboxidを取得
+                spinnerPosition = boxDBAdapter.getSpinnerPosition(boxId);
 
-                    intent.putExtra( "todoId", todoId );
-                    intent.putExtra("spinnerPosition", spinnerPosition);
-                    intent.putExtra("boxName", boxId);//todoのboxidを取得
-                    intent.putExtra("allTodo", 0);
-                } else {
-                    // intentへ添え字付で値を保持させる
-                    todoId = dbAdapter.changeDividedId(id, boxId);//todoのidを取得
-                    intent.putExtra( "todoId", todoId);
-                    intent.putExtra("spinnerPosition", spinnerPosition);
-                    intent.putExtra("boxName", boxId);//todoのboxidを取得
-                }
+                intent.putExtra( "todoId", todoId);
+                intent.putExtra("spinnerPosition", spinnerPosition);
+                intent.putExtra("boxName", boxId);//todoのboxidを取得
                 startActivityForResult(intent, TODO_DETAIL);
             }
         });
@@ -168,7 +160,7 @@ public class ToDoActivity extends AppCompatActivity {
                 // 結果を取得して, 表示する.
                 boxId = data.getIntExtra("boxName",0);
                 if (boxId == 0){
-                    showList();
+                    showList(boxId);
                 } else {
                     showDividedTodoList(boxId);
                 }
@@ -183,8 +175,8 @@ public class ToDoActivity extends AppCompatActivity {
         DateFormat formatterDate = new SimpleDateFormat("yyyy年MM月dd日");
 
         // フォーマット
-        String nowText = formatterDate.format(now);
-        return nowText;
+        String nowDate = formatterDate.format(now);
+        return nowDate;
     }
 
     public String getNowTime(){
@@ -194,17 +186,19 @@ public class ToDoActivity extends AppCompatActivity {
         DateFormat formatterTime = new SimpleDateFormat("HH時mm分");
 
         // フォーマット
-        String nowText = formatterTime.format(now);
-        return nowText;
+        String nowTime = formatterTime.format(now);
+        return nowTime;
     }
 
-    public void showList(){
+    public void showList(int boxId) {
         ArrayList<String> lvAdapter = new ArrayList<>();
-        dbAdapter.openDB();
-        try {
+        if (boxId == -1){
+            //当日日付と比較し、当日以前のdateのtodoを取得
+            dbAdapter.openDB();
+            lvAdapter = dbAdapter.readTodayDB(getNowDate());
+        } else {
+            dbAdapter.openDB();
             lvAdapter = dbAdapter.readDB();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         // Adapterの作成
         adapter = new ArrayAdapter<String>(this, R.layout.text_todo_list, (List<String>) lvAdapter);
@@ -214,11 +208,7 @@ public class ToDoActivity extends AppCompatActivity {
     public void showDividedTodoList(int boxId){
         ArrayList<String> lvAdapter = new ArrayList<>();
         dbAdapter.openDB();
-        try {
-            lvAdapter = dbAdapter.readDividedBoxDB(boxId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        lvAdapter = dbAdapter.readDividedBoxDB(boxId);
         // Adapterの作成
         adapter = new ArrayAdapter<String>(this, R.layout.text_todo_list, (List<String>) lvAdapter);
         listViewTodo.setAdapter(adapter);

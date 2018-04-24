@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //dateの値に合わせて設定したい
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
-                int boxId = 2;
+                int boxId = -1;
                 intent.putExtra("boxName", boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
@@ -91,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                spinnerPosition = position + 1;
+                spinnerPosition = position + 1;//スピナーには未分類が表示されるため、プラス１をする
                 boxDBAdapter.openBoxDB();
-                boxId = boxDBAdapter.getBoxId(position);
+                boxId = boxDBAdapter.getBoxId(spinnerPosition);//Mainの一覧には未分類が非表示のため、あらかじめプラス１した値を渡す
                 if (view.getId() == R.id.edit){
                     startEditBoxClass(boxId);
                 } else if (view.getId() == R.id.delete){

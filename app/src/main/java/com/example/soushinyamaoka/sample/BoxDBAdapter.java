@@ -15,7 +15,7 @@ import static android.content.ContentValues.TAG;
 
 public class BoxDBAdapter extends AppCompatActivity {
 
-    private final static String DB_TABLE = "testbox10";//テーブル名
+    private final static String DB_TABLE = "testbox11";//テーブル名
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";
     private static final String COL_BOX = "box";
@@ -129,6 +129,8 @@ public class BoxDBAdapter extends AppCompatActivity {
     }
 
     //list上のBoxのidをDB上のBoxのidに変換
+    //スピナーから選択した時と、Mainから選択した時では値が1異なっている
+    //スピナーでは未分類が表示されているが、Mainには表示されていないため
     public Integer getBoxId(int listViewId) {
         listBoxId = new ArrayList<>();
         String[] cols = {COL_ID};
@@ -137,7 +139,7 @@ public class BoxDBAdapter extends AppCompatActivity {
             Cursor c = db.query(
                     DB_TABLE,
                     cols,
-                    "id != 1 AND id != 2",//id.1の完了済みと、id.2の今日は表示させない
+                    "id != 1",//id.1の完了済みは表示させない
                     null,
                     null,
                     null,
@@ -241,7 +243,7 @@ public class BoxDBAdapter extends AppCompatActivity {
             Cursor c = db.query(
                     DB_TABLE,
                     cols,
-                    "id != 1 AND id != 2",//id.1の完了済みと、id.2の今日は表示させない
+                    "id != 1",//id.1の完了済みと、id.2の今日は表示させない
                     null,
                     null,
                     null,
@@ -262,6 +264,6 @@ public class BoxDBAdapter extends AppCompatActivity {
                 break;
             }
         }
-        return setSpinnerPosition - 3;
+        return setSpinnerPosition - 2;
     }
 }

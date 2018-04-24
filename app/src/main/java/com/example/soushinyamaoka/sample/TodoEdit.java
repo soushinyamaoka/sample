@@ -80,7 +80,7 @@ public class TodoEdit extends Activity {
             @Override
             public void onClick(View v) {
                 boxDBAdapter.openBoxDB();
-                boxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition()-1);
+                boxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition());
                 setTextTodo = editTodo.getText().toString();
                 boxDBAdapter.openBoxDB();
                 setTextBox = boxDBAdapter.changeToBoxName(boxId);
@@ -91,15 +91,13 @@ public class TodoEdit extends Activity {
                     if(setTextTodo.equals("")){
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
                     } else if (setTextBox == null){
-                        setTextBox = "今日";
-                        boxId = 1;
+                        setTextBox = "未分類";
+                        boxId = 2;
                         dbAdapter.openDB();
                         dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
 
                         finish();
                     } else {
-                        boxId = boxDBAdapter.changeToBoxId(spinner_box.getSelectedItemPosition() + 1);
-
                         dbAdapter.openDB();
                         dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
 

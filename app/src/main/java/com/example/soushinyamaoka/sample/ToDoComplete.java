@@ -16,7 +16,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ToDoComplete extends AppCompatActivity{
@@ -110,7 +113,7 @@ public class ToDoComplete extends AppCompatActivity{
                 //boxId = dbAdapter.getBoxId((int) id);//todoのboxid(カテゴリ)を取得
                 //databaseId = dbAdapter.changeDividedId(id, boxId);
                 //intent.putExtra( "databaseId", databaseId );
-                int todoId = dbAdapter.getTodoId((int) id);
+                int todoId = dbAdapter.getTodoId(getNowDate(),boxId,id);
                 intent.putExtra( "todoId", todoId);
                 intent.putExtra("spinnerPosition", spinnerPosition);
                 intent.putExtra("boxName", boxId);//これは「完了済み」なのでid.1のはず
@@ -118,6 +121,28 @@ public class ToDoComplete extends AppCompatActivity{
                 startActivityForResult(intent, TODO_DETAIL);
             }
         });
+    }
+
+    public String getNowDate(){
+        // 現在日時の取得
+        Date now = new Date(System.currentTimeMillis());
+        // 日時のフォーマットオブジェクト作成
+        DateFormat formatterDate = new SimpleDateFormat("yyyy年MM月dd日");
+
+        // フォーマット
+        String nowDate = formatterDate.format(now);
+        return nowDate;
+    }
+
+    public String getNowTime(){
+        // 現在日時の取得
+        Date now = new Date(System.currentTimeMillis());
+        // 日時のフォーマットオブジェクト作成
+        DateFormat formatterTime = new SimpleDateFormat("HH時mm分");
+
+        // フォーマット
+        String nowTime = formatterTime.format(now);
+        return nowTime;
     }
 
     @Override

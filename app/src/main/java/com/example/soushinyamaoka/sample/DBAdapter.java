@@ -10,11 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static android.content.ContentValues.TAG;
 
 public class DBAdapter extends AppCompatActivity {
-    private final static String DB_TABLE = "test10";//テーブル名
+    private final static String DB_TABLE = "test11";//テーブル名
     private static final String COL_ID = "id";
     private static final String COL_TODO = "todo";
     private static final String COL_BOX = "box";
@@ -126,6 +127,42 @@ public class DBAdapter extends AppCompatActivity {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
         return listTodo;
+    }
+
+    public ArrayList<String> readTodayDB(String nowDate){
+        listTodo = new ArrayList<>();
+        listDate = new ArrayList<>();
+        ArrayList<String> todayTodo = new ArrayList<>();
+        String[] cols = {"todo","date"};
+        try {
+            Cursor c = db.query(DB_TABLE,
+                    cols,
+                    "id != 1",//現在の日付以下のデータを抽出
+                    null,
+                    null,
+                    null,
+                    ORDER_BY);
+            c.moveToFirst();
+            for (int i = 0; i < c.getCount(); i++) {
+                //listId.add(c.getInt(0));
+                listTodo.add(c.getString(0));
+                listDate.add(c.getString(1));
+                c.moveToNext();
+            }
+            c.close();
+        }catch(SQLException e) {
+            Log.e(TAG, "SQLExcepption:"+e.toString());
+        }
+        String[] arrayTodo = new String[listDate.size()];
+        //String[] array = new String[listDate.size()];
+        for (int i=0; i<listDate.size(); i++){
+            String[] array = listDate.toArray(new String[listDate.size()]);
+            if (array[i].compareTo(nowDate)<=0){
+                arrayTodo = listTodo.toArray(new String[i]);
+            }
+        }
+        todayTodo = (ArrayList<String>) Arrays.asList(arrayTodo);
+        return todayTodo;
     }
 
     public ArrayList<String> readDividedBoxDB(int boxId) {
@@ -303,32 +340,71 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     //タップしたTODOからDB上でのidを取得※全てのときのみ？
-    public Integer getTodoId(int listViewId) {
+    public Integer getTodoId(String nowDate, int boxId ,long listViewId) {
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
         Integer setBoxId;
         String[] cols = {COL_ID};
-        try {
-            Cursor c = db.query(DB_TABLE,
-                    cols,
-                    "boxId !=?",
-                    new String[]{String.valueOf(0)},
-                    null,
-                    null,
-                    ORDER_BY);
-            c.moveToFirst();
-            for (int i = 0; i < c.getCount(); i++) {
-                listId.add(c.getInt(0));
-                c.moveToNext();
+        if (boxId == -1) {//今日が選択されているとき
+            try {
+                Cursor c = db.query(DB_TABLE,
+                        cols,
+                        "date <= " + nowDate,//現在の日付以下のデータを抽出
+                        null,
+                        null,
+                        null,
+                        ORDER_BY);
+                c.moveToFirst();
+                for (int i = 0; i < c.getCount(); i++) {
+                    //listId.add(c.getInt(0));
+                    listId.add(c.getInt(0));
+                    c.moveToNext();
+                }
+                c.close();
+            }catch(SQLException e) {
+                Log.e(TAG, "SQLExcepption:"+e.toString());
             }
-            c.close();
-
-        }catch(SQLException e) {
-            Log.e(TAG, "SQLExcepption:"+e.toString());
+        } else if (boxId == 0){//boxId==0で全てを選択しているとき
+            try {
+                Cursor c = db.query(DB_TABLE,
+                        cols,
+                        "boxId !=1",//id.1完了済み以外全て
+                        null,
+                        null,
+                        null,
+                        ORDER_BY);
+                c.moveToFirst();
+                for (int i = 0; i < c.getCount(); i++) {
+                    listId.add(c.getInt(0));
+                    c.moveToNext();
+                }
+                c.close();
+            }catch(SQLException e) {
+                Log.e(TAG, "SQLExcepption:"+e.toString());
+            }
+        } else {//特定のカテゴリor完了済みが選択されているとき
+            try {
+                Cursor c = db.query(DB_TABLE,
+                        cols,
+                        "boxId =" + boxId,
+                        null,
+                        null,
+                        null,
+                        ORDER_BY);
+                c.moveToFirst();
+                for (int i = 0; i < c.getCount(); i++) {
+                    //listId.add(c.getInt(0));
+                    listId.add(c.getInt(0));
+                    c.moveToNext();
+                }
+                c.close();
+            }catch(SQLException e) {
+                Log.e(TAG, "SQLExcepption:"+e.toString());
+            }
         }
         Integer[] array;
         array = listId.toArray(new Integer[listId.size()]);
-        setBoxId = array[listViewId];
+        setBoxId = array[(int) listViewId];
         return setBoxId;
     }
 
@@ -356,6 +432,7 @@ public class DBAdapter extends AppCompatActivity {
         }
         return listID;
     }
+
     //Listで選択されたtodoのDB上でのidを取得
     public int changeDividedId(long listviewId, int boxId) {
         int todoId = 0;
