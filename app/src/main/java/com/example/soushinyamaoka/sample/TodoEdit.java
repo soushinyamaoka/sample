@@ -1,6 +1,7 @@
 package com.example.soushinyamaoka.sample;
 
 import android.app.Activity;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,10 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import static android.content.ContentValues.TAG;
@@ -22,8 +26,8 @@ public class TodoEdit extends Activity {
 
     private EditText editTodo;
     private EditText editBox;
-    private EditText editDate;
-    private EditText editTime;
+    private TextView editDate;
+    private TextView editTime;
     private EditText editMemo;
     public ListView listView;
     private EditText editText;
@@ -39,8 +43,6 @@ public class TodoEdit extends Activity {
     BoxDBAdapter boxDBAdapter;
     ArrayAdapter<String> adapter;
 
-    //long listviewId = 0;
-    int databaseId = 0;
     int todoId;
     int boxId;
 
@@ -58,12 +60,10 @@ public class TodoEdit extends Activity {
         boxDBAdapter = new BoxDBAdapter(this);
         final Spinner spinner_box = (Spinner) findViewById(R.id.new_box_spinner);
 
-
         // 現在のintentを取得する
         Intent intent = getIntent();
         // intentから指定キーの文字列を取得する
         todoId = intent.getIntExtra( "todoId", -1);
-        //databaseId = dbAdapter.changeId(listviewId);
 
         //todoの詳細を表示
         //-------------------------
@@ -126,7 +126,45 @@ public class TodoEdit extends Activity {
         //        Toast.makeText(TodoEdit.this, "選んでません", Toast.LENGTH_LONG).show();
         //    }
         //});
+
+
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                // 設定した時間をトーストで表示
+                editDate.setText(hourOfDay + "時" + minute + "分");
+            }
+        };
+
+        Calendar calendar = Calendar.getInstance();
+        // 現在の時間の取得
+        final int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        // 現在の分の取得
+        int minute = calendar.get(Calendar.MINUTE);
+        final TimePickerDialog dialog;
+        // ダイアログの生成、及び初期値の設定
+        dialog = new TimePickerDialog(this, R.layout.date_picker,
+                onTimeSetListener, hourOfDay, minute, true);
+
+        editDate.setClickable(true);
+        editDate.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // ダイアログを表示する
+                dialog.show();
+
+            }
+        });
+
+        editTime.setClickable(true);
+        editTime.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                TimePickerDialogFragment timePicker = new TimePickerDialogFragment();
+                timePicker.show(getFragmentManager(), "timePicker");
+            }
+        });
     }
+
+
 
     public String getNowDate(){
         // 現在日時の取得

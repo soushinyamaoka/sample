@@ -56,7 +56,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_box_spinner" />
 
-    <EditText
+    <TextView
         android:id="@+id/new_edit_Date"
         android:layout_width="160dp"
         android:layout_height="40dp"
@@ -79,7 +79,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_box_spinner" />
 
-    <EditText
+    <TextView
         android:id="@+id/new_edit_Time"
         android:layout_width="160dp"
         android:layout_height="40dp"
