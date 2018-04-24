@@ -11,6 +11,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -132,7 +133,8 @@ public class DBAdapter extends AppCompatActivity {
     public ArrayList<String> readTodayDB(String nowDate){
         listTodo = new ArrayList<>();
         listDate = new ArrayList<>();
-        ArrayList<String> todayTodo = new ArrayList<>();
+        //ArrayList<String> todayTodo = new ArrayList<>();
+        List<String> todayTodo;
         String[] cols = {"todo","date"};
         try {
             Cursor c = db.query(DB_TABLE,
@@ -161,8 +163,9 @@ public class DBAdapter extends AppCompatActivity {
                 arrayTodo = listTodo.toArray(new String[i]);
             }
         }
-        todayTodo = (ArrayList<String>) Arrays.asList(arrayTodo);
-        return todayTodo;
+        listTodo = new ArrayList<>();//listTodoを初期化
+        listTodo.addAll(Arrays.asList(arrayTodo));
+        return listTodo;
     }
 
     public ArrayList<String> readDividedBoxDB(int boxId) {
