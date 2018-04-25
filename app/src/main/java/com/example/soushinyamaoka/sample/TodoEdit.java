@@ -116,20 +116,6 @@ public class TodoEdit extends Activity {
         // Adapterの作成
         adapter = new ArrayAdapter<String>(this, R.layout.text_box_list, getSpinner());
         spinner_box.setAdapter(adapter);
-        //boxSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-        //    @Override
-        //    public void onItemSelected(AdapterView<?> parent, View view,
-        //                               int position, long id) {
-        //        Spinner spinner = (Spinner) parent;
-        //        // 選択されたアイテムを取得します
-        //        String item = (String) spinner.getSelectedItem();
-        //
-        //    }
-        //    @Override
-        //    public void onNothingSelected(AdapterView<?> arg0) {
-        //        Toast.makeText(TodoEdit.this, "選んでません", Toast.LENGTH_LONG).show();
-        //    }
-        //});
 
         TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
@@ -148,6 +134,7 @@ public class TodoEdit extends Activity {
 
         final DatePickerDialog datePickerDialog;
         final TimePickerDialog timePickerDialog;
+        Date time = calendar.getTime();
         int year = calendar.get(Calendar.YEAR); // 年
         int monthOfYear = calendar.get(Calendar.MONTH); // 月
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH); // 日
@@ -178,7 +165,7 @@ public class TodoEdit extends Activity {
         // 現在日時の取得
         Date now = new Date(System.currentTimeMillis());
         // 日時のフォーマットオブジェクト作成
-        DateFormat formatterDate = new SimpleDateFormat("yyyy年MM月dd日");
+        DateFormat formatterDate = new SimpleDateFormat("yyyy年M月d日");
 
         // フォーマット
         String nowText = formatterDate.format(now);

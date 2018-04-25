@@ -243,7 +243,7 @@ public class BoxDBAdapter extends AppCompatActivity {
             Cursor c = db.query(
                     DB_TABLE,
                     cols,
-                    "id != 1",//id.1の完了済みと、id.2の今日は表示させない
+                    "id != 1",//id.1の完了済みは表示させない
                     null,
                     null,
                     null,

@@ -16,6 +16,7 @@ import android.widget.TimePicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class TodoDetail extends Activity {
 

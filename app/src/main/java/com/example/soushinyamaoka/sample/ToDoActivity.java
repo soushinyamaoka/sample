@@ -93,6 +93,9 @@ public class ToDoActivity extends AppCompatActivity {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (boxId == -1 || boxId == 0){
+                    boxName = "未分類";
+                }
                 try {
                     editTodo = editText.getText().toString();//書き込まれた内容(getText)をstrに格納
                     if(editTodo.equals("")){
@@ -159,7 +162,9 @@ public class ToDoActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // 結果を取得して, 表示する.
                 boxId = data.getIntExtra("boxName",0);
-                if (boxId == 0){
+                if (boxId == 0) {//カテゴリが全ての場合
+                    showList(boxId);
+                } else if (boxId == -1) {//カテゴリが今日の場合
                     showList(boxId);
                 } else {
                     showDividedTodoList(boxId);
@@ -172,7 +177,7 @@ public class ToDoActivity extends AppCompatActivity {
         // 現在日時の取得
         Date now = new Date(System.currentTimeMillis());
         // 日時のフォーマットオブジェクト作成
-        DateFormat formatterDate = new SimpleDateFormat("yyyy年MM月dd日");
+        DateFormat formatterDate = new SimpleDateFormat("yyyy年M月d日");
 
         // フォーマット
         String nowDate = formatterDate.format(now);

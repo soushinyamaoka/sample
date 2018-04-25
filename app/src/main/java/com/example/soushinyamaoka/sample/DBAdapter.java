@@ -139,7 +139,7 @@ public class DBAdapter extends AppCompatActivity {
         try {
             Cursor c = db.query(DB_TABLE,
                     cols,
-                    "id != 1",//現在の日付以下のデータを抽出
+                    "boxId != 1",//現在以前の日付けのデータを抽出
                     null,
                     null,
                     null,
@@ -159,7 +159,7 @@ public class DBAdapter extends AppCompatActivity {
         //String[] array = new String[listDate.size()];
         for (int i=0; i<listDate.size(); i++){
             String[] array = listDate.toArray(new String[listDate.size()]);
-            if (array[i].compareTo(nowDate)<=0){
+            if (array[i].compareTo(nowDate)>=0){//nowDateが大きければ+1/同じなら0/小さければ
                 arrayTodo = listTodo.toArray(new String[i]);
             }
         }
@@ -294,13 +294,13 @@ public class DBAdapter extends AppCompatActivity {
         return setTime;
     }
 
-    public String[] getMemoData(int databaseId) {
+    public String[] getMemoData(int todoId) {
         listMemo = new ArrayList<>();
         String[] setMemo = new String[0];
         try {
             Cursor c = db.query(DB_TABLE,
                                 new String[]{COL_MEMO},
-                                "id = " + databaseId,
+                                "id = " + todoId,
                                 null,
                                 null,
                                 null,
@@ -347,12 +347,13 @@ public class DBAdapter extends AppCompatActivity {
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
         Integer setBoxId;
-        String[] cols = {COL_ID};
+
         if (boxId == -1) {//今日が選択されているとき
+            String[] cols = {COL_ID,COL_DATE};
             try {
                 Cursor c = db.query(DB_TABLE,
                         cols,
-                        "date <= " + nowDate,//現在の日付以下のデータを抽出
+                        "boxId != 1",//現在以前の日付けのデータを抽出
                         null,
                         null,
                         null,
@@ -367,7 +368,18 @@ public class DBAdapter extends AppCompatActivity {
             }catch(SQLException e) {
                 Log.e(TAG, "SQLExcepption:"+e.toString());
             }
+            Integer[] arrayId = new Integer[listDate.size()];
+            //String[] array = new String[listDate.size()];
+            for (int i=0; i<listDate.size(); i++){
+                String[] array = listDate.toArray(new String[listDate.size()]);
+                if (array[i].compareTo(nowDate)>=0){
+                    arrayId = listId.toArray(new Integer[i]);
+                }
+            }
+            listId = new ArrayList<>();//listTodoを初期化
+            listId.addAll(Arrays.asList(arrayId));
         } else if (boxId == 0){//boxId==0で全てを選択しているとき
+            String[] cols = {COL_ID};
             try {
                 Cursor c = db.query(DB_TABLE,
                         cols,
@@ -386,6 +398,7 @@ public class DBAdapter extends AppCompatActivity {
                 Log.e(TAG, "SQLExcepption:"+e.toString());
             }
         } else {//特定のカテゴリor完了済みが選択されているとき
+            String[] cols = {COL_ID};
             try {
                 Cursor c = db.query(DB_TABLE,
                         cols,
@@ -487,17 +500,5 @@ public class DBAdapter extends AppCompatActivity {
         array = listId.toArray(new Integer[listId.size()]);
         todoId = array[(int) listviewId];
         return todoId;
-    }
-
-    public int changeId(long listviewId){
-        ArrayList<Integer> idAdapter = new ArrayList<>();
-        try {
-            openDB();
-            idAdapter = getDataBaseId();
-            databaseId = idAdapter.get((int)listviewId);//削除対象のリストと同じ位置にある、DB上のidを取得しdeleteIDに格納
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return databaseId;
     }
 }
