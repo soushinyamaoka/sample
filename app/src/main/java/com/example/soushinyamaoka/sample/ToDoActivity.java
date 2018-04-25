@@ -70,7 +70,6 @@ public class ToDoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         spinnerPosition = intent.getIntExtra("spinnerPosition",0);//detail表示の際に使用
         boxId = intent.getIntExtra("boxName",0);
-        boxDBAdapter.openBoxDB();
         if (boxId == 0){
             boxName = "全て";
         } else if (boxId == -1){
@@ -95,20 +94,27 @@ public class ToDoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (boxId == -1 || boxId == 0){
                     boxName = "未分類";
+                    boxId = 2;
                 }
                 try {
                     editTodo = editText.getText().toString();//書き込まれた内容(getText)をstrに格納
-                    if(editTodo.equals("")){
+                    if(editTodo.equals("")){//空欄と時
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
-                    }
-                    else {
-                        dbAdapter.openDB();
+                    } else if (boxId == -1) {
+                        boxName = "未分類";
+                        boxId = 2;
                         dbAdapter.writeDB(editTodo, boxName, getNowDate(), getNowTime(), editMemo, boxId);
-                        //dbAdapter.readDB();
-                        showDividedTodoList(boxId);
-
-                        editText.getEditableText().clear();
+                        boxId = -1;//元に戻す
+                    } else if (boxId == 0) {
+                        boxName = "未分類";
+                        boxId = 2;
+                        dbAdapter.writeDB(editTodo, boxName, getNowDate(), getNowTime(), editMemo, boxId);
+                        boxId = 0;//元に戻す
+                    } else {
+                        dbAdapter.writeDB(editTodo, boxName, getNowDate(), getNowTime(), editMemo, boxId);
                     }
+                    showDividedTodoList(boxId);
+                    editText.getEditableText().clear();
                 } catch (Exception e) {//エラーの場合
                     Log.e(TAG, "SQLExcepption:" + e.toString());
                 }
@@ -141,11 +147,12 @@ public class ToDoActivity extends AppCompatActivity {
                 // 遷移先のactivityを指定してintentを作成
                 Intent intent = new Intent(ToDoActivity.this, TodoDetail.class);
                 int todoId = dbAdapter.getTodoId(getNowDate(),boxId,id);//todoのidを取得
-                boxId = dbAdapter.getBoxIdData(todoId);//todoのboxidを取得
-                spinnerPosition = boxDBAdapter.getSpinnerPosition(boxId);
+                //boxId = dbAdapter.getBoxIdData(todoId);//todoのboxidを取得
+                spinnerPosition = boxDBAdapter.getSpinnerPosition(dbAdapter.getBoxIdData(todoId));
 
                 intent.putExtra( "todoId", todoId);
                 intent.putExtra("spinnerPosition", spinnerPosition);
+
                 intent.putExtra("boxName", boxId);//todoのboxidを取得
                 startActivityForResult(intent, TODO_DETAIL);
             }
@@ -199,10 +206,8 @@ public class ToDoActivity extends AppCompatActivity {
         ArrayList<String> lvAdapter = new ArrayList<>();
         if (boxId == -1){
             //当日日付と比較し、当日以前のdateのtodoを取得
-            dbAdapter.openDB();
             lvAdapter = dbAdapter.readTodayDB(getNowDate());
         } else {
-            dbAdapter.openDB();
             lvAdapter = dbAdapter.readDB();
         }
         // Adapterの作成
@@ -212,7 +217,6 @@ public class ToDoActivity extends AppCompatActivity {
 
     public void showDividedTodoList(int boxId){
         ArrayList<String> lvAdapter = new ArrayList<>();
-        dbAdapter.openDB();
         lvAdapter = dbAdapter.readDividedBoxDB(boxId);
         // Adapterの作成
         adapter = new ArrayAdapter<String>(this, R.layout.text_todo_list, (List<String>) lvAdapter);
@@ -220,7 +224,6 @@ public class ToDoActivity extends AppCompatActivity {
     }
 
     public void deleteList(int todoId){
-        dbAdapter.openDB();
         try {
             String[] getTodo = dbAdapter.getTodoData(todoId);
             String[] getDate = dbAdapter.getDateData(todoId);
@@ -229,7 +232,6 @@ public class ToDoActivity extends AppCompatActivity {
             String boxName = "完了済み";
             int boxId = 1;
 
-            dbAdapter.openDB();
             dbAdapter.updateDB(todoId, getTodo[0], boxName, getDate[0], getTime[0], getMemo[0],boxId);
         } catch (Exception e) {
             e.printStackTrace();

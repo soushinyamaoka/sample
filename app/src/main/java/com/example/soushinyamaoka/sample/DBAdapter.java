@@ -56,6 +56,7 @@ public class DBAdapter extends AppCompatActivity {
 
     public void writeDB(String todo, String box, String date,
                         String time, String memo, int boxId) {
+        openDB();
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
         values.put(COL_TODO, todo);
         values.put(COL_BOX, box);
@@ -74,6 +75,7 @@ public class DBAdapter extends AppCompatActivity {
 
     public void updateDB(int todoId, String todo, String box, String date,
                          String time, String memo, int boxId) {
+        openDB();
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
         values.put(COL_TODO, todo);
         values.put(COL_BOX, box);
@@ -93,6 +95,7 @@ public class DBAdapter extends AppCompatActivity {
 
     //完了済みtodoを元に戻す際に使用
     public void backDB(int todoId, String boxName) {
+        openDB();
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
         values.put(COL_BOX, boxName);
         //空欄でも書き込めるようになっているので要修正
@@ -106,6 +109,7 @@ public class DBAdapter extends AppCompatActivity {
 
     //データベースからの読み込み
     public ArrayList<String> readDB() {
+        openDB();
         //listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
         String[] cols = {"todo"};
@@ -131,6 +135,7 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     public ArrayList<String> readTodayDB(String nowDate){
+        openDB();
         listTodo = new ArrayList<>();
         listDate = new ArrayList<>();
         //ArrayList<String> todayTodo = new ArrayList<>();
@@ -169,6 +174,7 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     public ArrayList<String> readDividedBoxDB(int boxId) {
+        openDB();
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
         String[] cols = {"todo"};
@@ -193,11 +199,13 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     public void deleteDB(int boxId){
+        openDB();
         db.delete(DB_TABLE, "boxId = " + boxId, null);
         db.close();
     }
 
     public String[] getTodoData(int todoId) {
+        openDB();
         listTodo = new ArrayList<>();
         String[] setTodo = new String[0];
         String[] cols = {"todo"};
@@ -223,6 +231,7 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     public String[] getBoxData(int todoId) {
+        openDB();
         listBox = new ArrayList<>();
         String[] setBox = new String[0];
         try {
@@ -247,6 +256,7 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     public String[] getDateData(int databaseId) {
+        openDB();
         listDate = new ArrayList<>();
         String[] setDate = new String[0];
         try {
@@ -271,6 +281,7 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     public String[] getTimeData(int databaseId) {
+        openDB();
         listTime = new ArrayList<>();
         String[] setTime = new String[0];
         try {
@@ -295,6 +306,7 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     public String[] getMemoData(int todoId) {
+        openDB();
         listMemo = new ArrayList<>();
         String[] setMemo = new String[0];
         try {
@@ -319,6 +331,7 @@ public class DBAdapter extends AppCompatActivity {
     }
 
     public Integer getBoxIdData(int todoId) {
+        openDB();
         listBoxId = new ArrayList<>();
         Integer[] boxId;
         try {
@@ -344,6 +357,7 @@ public class DBAdapter extends AppCompatActivity {
 
     //タップしたTODOからDB上でのidを取得※全てのときのみ？
     public Integer getTodoId(String nowDate, int boxId ,long listViewId) {
+        openDB();
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
         Integer setBoxId;
@@ -426,6 +440,7 @@ public class DBAdapter extends AppCompatActivity {
 
     //データベースからの読み込み
     public ArrayList<Integer> getDataBaseId() {
+        openDB();
         ArrayList<Integer> listID = new ArrayList<>();
         String[] cols = {"id"};
         int boxId = 0;
@@ -451,6 +466,7 @@ public class DBAdapter extends AppCompatActivity {
 
     //Listで選択されたtodoのDB上でのidを取得
     public int changeDividedId(long listviewId, int boxId) {
+        openDB();
         int todoId = 0;
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();

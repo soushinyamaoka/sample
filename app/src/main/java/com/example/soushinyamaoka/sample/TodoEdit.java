@@ -71,7 +71,6 @@ public class TodoEdit extends Activity {
 
         //todoの詳細を表示
         //-------------------------
-        dbAdapter.openDB();
         try {
             showDetail();
         } catch (Exception e) {
@@ -83,10 +82,8 @@ public class TodoEdit extends Activity {
         editTodoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boxDBAdapter.openBoxDB();
                 boxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition());
                 setTextTodo = editTodo.getText().toString();
-                boxDBAdapter.openBoxDB();
                 setTextBox = boxDBAdapter.changeToBoxName(boxId);
                 setTextDate = editDate.getText().toString();
                 setTextTime = editTime.getText().toString();
@@ -97,12 +94,10 @@ public class TodoEdit extends Activity {
                     } else if (setTextBox == null){
                         setTextBox = "未分類";
                         boxId = 2;
-                        dbAdapter.openDB();
                         dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
 
                         finish();
                     } else {
-                        dbAdapter.openDB();
                         dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
 
                         finish();
@@ -201,7 +196,6 @@ public class TodoEdit extends Activity {
 
     public ArrayList<String> getSpinner(){
         ArrayList<String> lvAdapter = new ArrayList<>();
-        boxDBAdapter.openBoxDB();
         try {
             lvAdapter = boxDBAdapter.readBoxSpinnerDB();
         } catch (Exception e) {

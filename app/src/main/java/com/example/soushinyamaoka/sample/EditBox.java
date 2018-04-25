@@ -33,7 +33,6 @@ public class EditBox extends AppCompatActivity{
         //Mainから渡された「選択されたカテゴリ名」を取得
         //String[] setBox = intent.getStringArrayExtra( "boxName");
         boxId = intent.getIntExtra("boxName", -1);
-        boxDBAdapter.openBoxDB();
         //boxName = boxDBAdapter.changeToBoxName(boxId);
         boxName = boxDBAdapter.getBoxName(boxId);
         editEditBox.setText(boxName);
@@ -43,7 +42,6 @@ public class EditBox extends AppCompatActivity{
                 //todoの詳細を表示
                 //-------------------------
                 String setBoxName = editEditBox.getText().toString();
-                boxDBAdapter.openBoxDB();
                 try {
                     boxDBAdapter.updateBoxDB(boxId,setBoxName);
                 } catch (Exception e) {

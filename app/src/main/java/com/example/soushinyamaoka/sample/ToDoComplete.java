@@ -54,7 +54,6 @@ public class ToDoComplete extends AppCompatActivity{
 
         Intent intent = getIntent();
         boxId = intent.getIntExtra("boxName",0);
-        boxDBAdapter.openBoxDB();
         boxName = boxDBAdapter.changeToBoxName(boxId);
 
         setToolbar(boxName);
@@ -163,7 +162,6 @@ public class ToDoComplete extends AppCompatActivity{
 
     public void showDividedTodoList(int boxId){
         ArrayList<String> lvAdapter = new ArrayList<>();
-        dbAdapter.openDB();
         try {
             lvAdapter = dbAdapter.readDividedBoxDB(boxId);
         } catch (Exception e) {
@@ -177,7 +175,6 @@ public class ToDoComplete extends AppCompatActivity{
     public void deleteComplete(){
         //dbAdapter = new DBAdapter(context);
         try {
-            dbAdapter.openDB();
             dbAdapter.deleteDB(boxId);//DB上の値をDB上のidで削除。
         } catch (Exception e) {
             e.printStackTrace();

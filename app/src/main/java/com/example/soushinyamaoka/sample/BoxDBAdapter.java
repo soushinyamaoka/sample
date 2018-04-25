@@ -48,6 +48,7 @@ public class BoxDBAdapter extends AppCompatActivity {
     }
 
     public void writeBoxDB(String box) {
+        openBoxDB();
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
         values.put(COL_BOX, box);
 
@@ -60,6 +61,7 @@ public class BoxDBAdapter extends AppCompatActivity {
     }
 
     public void updateBoxDB(int boxId, String boxName) {
+        openBoxDB();
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
         values.put(COL_BOX, boxName);
 
@@ -72,12 +74,14 @@ public class BoxDBAdapter extends AppCompatActivity {
     }
 
     public void deleteBoxDB(int boxId){
+        openBoxDB();
         db.delete(DB_TABLE, "id = " + boxId, null);
         db.close();
     }
 
     //Mainで呼びだされるカテゴリ一覧
     public String[] readBoxDB() {
+        openBoxDB();
         listBox = new ArrayList<>();
         String[] cols = {COL_BOX};
         //String[] where = {"完了","今日"};
@@ -106,6 +110,7 @@ public class BoxDBAdapter extends AppCompatActivity {
 
     //データベースからの読み込み
     public ArrayList<String> readBoxSpinnerDB() {
+        openBoxDB();
         listBox = new ArrayList<>();
         String[] cols = {COL_BOX};
         try {
@@ -132,6 +137,7 @@ public class BoxDBAdapter extends AppCompatActivity {
     //スピナーから選択した時と、Mainから選択した時では値が1異なっている
     //スピナーでは未分類が表示されているが、Mainには表示されていないため
     public Integer getBoxId(int listViewId) {
+        openBoxDB();
         listBoxId = new ArrayList<>();
         String[] cols = {COL_ID};
         Integer setBoxId;
@@ -160,6 +166,7 @@ public class BoxDBAdapter extends AppCompatActivity {
     }
 
     public String changeToBoxName(int boxId){
+        openBoxDB();
         listBox = new ArrayList<>();
         String[] cols = {COL_BOX};
         try {
@@ -186,6 +193,7 @@ public class BoxDBAdapter extends AppCompatActivity {
     }
 
     public int changeToBoxId(int boxId){
+        openBoxDB();
         listBoxId = new ArrayList<>();
         String[] cols = {COL_ID};
         try {
@@ -211,6 +219,7 @@ public class BoxDBAdapter extends AppCompatActivity {
     }
 
     public String getBoxName(int boxId) {
+        openBoxDB();
         listBox = new ArrayList<>();
         String[] cols = {COL_BOX};
         try {
@@ -235,6 +244,7 @@ public class BoxDBAdapter extends AppCompatActivity {
     }
 
     public Integer getSpinnerPosition(int boxId){
+        openBoxDB();
         Integer setSpinnerPosition = 0;
         listBoxId = new ArrayList<>();
         String[] cols = {COL_ID};

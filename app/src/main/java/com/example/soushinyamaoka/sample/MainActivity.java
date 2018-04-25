@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
                 spinnerPosition = position + 1;//スピナーには未分類が表示されるため、プラス１をする
-                boxDBAdapter.openBoxDB();
                 boxId = boxDBAdapter.getBoxId(spinnerPosition);//Mainの一覧には未分類が非表示のため、あらかじめプラス１した値を渡す
                 if (view.getId() == R.id.edit){
                     startEditBoxClass(boxId);
@@ -110,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String setBoxName = editBoxView.getText().toString();
 
-                boxDBAdapter.openBoxDB();
                 boxDBAdapter.writeBoxDB(setBoxName);
 
                 showBox();
@@ -131,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showBox() {
-        boxDBAdapter.openBoxDB();
         customAdapter = new CustomAdapter(getApplicationContext(), R.layout.row_item, boxDBAdapter.readBoxDB());
         listViewBox.setAdapter(customAdapter);
     }
@@ -141,10 +138,8 @@ public class MainActivity extends AppCompatActivity {
             String setBox = "完了済み";
 
             //カテゴリ内にあるタスクのカテゴリを完了に変更
-            boxDBAdapter.openBoxDB();
             boxDBAdapter.updateBoxDB(boxId,setBox);
             //カテゴリ名を削除
-            boxDBAdapter.openBoxDB();
             boxDBAdapter.deleteBoxDB(boxId);
 
         } catch (Exception e) {
@@ -153,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startEditBoxClass(int boxId){
-        boxDBAdapter.openBoxDB();
         customAdapter = new CustomAdapter(getApplicationContext(), R.layout.row_item, boxDBAdapter.readBoxDB());
         //editIntentにEditBox.classを入れる
         Intent editIntent = new Intent(MainActivity.this, EditBox.class);
@@ -165,9 +159,6 @@ public class MainActivity extends AppCompatActivity {
     public void startTodoActivityClass(int spinnerPosition, int boxId){
         // 遷移先のactivityを指定してintentを作成
         Intent todoActiveIntent = new Intent(MainActivity.this, ToDoActivity.class);
-
-        //boxDBAdapter.openBoxDB();
-        //boxId = boxDBAdapter.getBoxId(position);
 
         todoActiveIntent.putExtra("boxName", boxId);
         todoActiveIntent.putExtra("spinnerPosition", spinnerPosition);//Detail表示の際に使用
