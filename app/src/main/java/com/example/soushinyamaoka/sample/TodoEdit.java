@@ -2,8 +2,11 @@ package com.example.soushinyamaoka.sample;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -142,6 +146,51 @@ public class TodoEdit extends Activity {
                 timePickerDialog.show();
             }
         });
+        editTime.setClickable(true);
+        editTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.add(Calendar.SECOND, 10);
+                scheduleNotification("10秒後に届く通知です", calendar);
+            }
+        });
+    }
+
+    private void scheduleNotification(String content, Calendar calendar){
+        Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+        notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_CONTENT, content);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    public static void main( String[] args ) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date dateTo = null;
+        Date dateFrom = null;
+
+        // 日付を作成します。
+        try {
+            dateFrom = sdf.parse("2013/08/01 13:00:00");
+            dateTo = sdf.parse("2013/08/01 15:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // 日付をlong値に変換します。
+        long dateTimeTo = dateTo.getTime();
+        long dateTimeFrom = dateFrom.getTime();
+
+        // 差分の時間を算出します。
+        long dayDiff = ( dateTimeTo - dateTimeFrom  ) / (1000 * 60 * 60 );
+
+        System.out.println( "日数(FROM) : " + sdf.format(dateFrom) );
+        System.out.println( "日数(TO) : " + sdf.format(dateTo) );
+        System.out.println( "差分時間 : " + dayDiff );
     }
 
     public String getNowDate(){
@@ -171,7 +220,7 @@ public class TodoEdit extends Activity {
 
     public void showDetail()  {
         editDate.setText(getNowDate());
-        editTime.setText(getNowTime());
+        //editTime.setText(getNowTime());
     }
 
     public ArrayList<String> getSpinner(){
