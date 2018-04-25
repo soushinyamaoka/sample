@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -28,13 +27,11 @@ import static android.content.ContentValues.TAG;
 public class TodoEdit extends Activity {
 
     private EditText editTodo;
-    private EditText editBox;
     private TextView editDate;
     private TextView editTime;
     private EditText editMemo;
-    public ListView listView;
-    private EditText editText;
     private Button editTodoButton;
+    private Spinner spinner_box;
 
     String setTextTodo;
     String setTextBox;
@@ -59,10 +56,10 @@ public class TodoEdit extends Activity {
         editTime = findViewById(R.id.new_edit_Time);
         editMemo = findViewById(R.id.new_edit_Memo);
         editTodoButton = findViewById(R.id.edit_todo_button);
+        spinner_box = (Spinner) findViewById(R.id.new_box_spinner);
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
         boxDBAdapter = new BoxDBAdapter(this);
-        final Spinner spinner_box = (Spinner) findViewById(R.id.new_box_spinner);
 
         // 現在のintentを取得する
         Intent intent = getIntent();
@@ -70,13 +67,7 @@ public class TodoEdit extends Activity {
         todoId = intent.getIntExtra( "todoId", -1);
 
         //todoの詳細を表示
-        //-------------------------
-        try {
-            showDetail();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //-------------------------
+        showDetail();
 
         final EmptyTaskDialogFragment emptyTaskDialogFragment = new EmptyTaskDialogFragment();
         editTodoButton.setOnClickListener(new View.OnClickListener() {
@@ -89,17 +80,15 @@ public class TodoEdit extends Activity {
                 setTextTime = editTime.getText().toString();
                 setTextMemo = editMemo.getText().toString();
                 try {
-                    if(setTextTodo.equals("")){
+                    if(setTextTodo.equals("")){//todoが空欄だった時の処理
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
-                    } else if (setTextBox == null){
+                    } else if (setTextBox == null){//分類がされていない時の処理
                         setTextBox = "未分類";
                         boxId = 2;
                         dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
-
                         finish();
-                    } else {
+                    } else {//通常処理
                         dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
-
                         finish();
                     }
                 } catch (Exception e) {//エラーの場合
@@ -112,13 +101,13 @@ public class TodoEdit extends Activity {
         adapter = new ArrayAdapter<String>(this, R.layout.text_box_list, getSpinner());
         spinner_box.setAdapter(adapter);
 
+        //日時が設定されたときの処理
         TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 editTime.setText(hourOfDay + "時" + minute + "分");
             }
         };
-
         DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
@@ -129,7 +118,6 @@ public class TodoEdit extends Activity {
 
         final DatePickerDialog datePickerDialog;
         final TimePickerDialog timePickerDialog;
-        Date time = calendar.getTime();
         int year = calendar.get(Calendar.YEAR); // 年
         int monthOfYear = calendar.get(Calendar.MONTH); // 月
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH); // 日
@@ -161,7 +149,6 @@ public class TodoEdit extends Activity {
         Date now = new Date(System.currentTimeMillis());
         // 日時のフォーマットオブジェクト作成
         DateFormat formatterDate = new SimpleDateFormat("yyyy年M月d日");
-
         // フォーマット
         String nowText = formatterDate.format(now);
         return nowText;
@@ -171,8 +158,7 @@ public class TodoEdit extends Activity {
         // 現在日時の取得
         Date now = new Date(System.currentTimeMillis());
         // 日時のフォーマットオブジェクト作成
-        DateFormat formatterTime = new SimpleDateFormat("HH時mm分");
-
+        DateFormat formatterTime = new SimpleDateFormat("H時m分");
         // フォーマット
         String nowText = formatterTime.format(now);
         return nowText;
@@ -184,14 +170,8 @@ public class TodoEdit extends Activity {
     }
 
     public void showDetail()  {
-        //String[] setTodo = dbAdapter.getTodoData(todoId);
-        //String[] setDate = dbAdapter.getDateData(todoId);
-        //String[] setMemo = dbAdapter.getMemoData(todoId);
-
-        //editTodo.setText(setTodo[0]);
         editDate.setText(getNowDate());
         editTime.setText(getNowTime());
-        //editMemo.setText(setMemo[0]);
     }
 
     public ArrayList<String> getSpinner(){

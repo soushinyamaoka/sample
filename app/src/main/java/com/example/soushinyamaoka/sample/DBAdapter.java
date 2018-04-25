@@ -11,7 +11,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -138,8 +137,8 @@ public class DBAdapter extends AppCompatActivity {
         openDB();
         listTodo = new ArrayList<>();
         listDate = new ArrayList<>();
-        //ArrayList<String> todayTodo = new ArrayList<>();
-        List<String> todayTodo;
+        ArrayList<String> todayTodo = new ArrayList<>();
+        //List<String> todayTodo;
         String[] cols = {"todo","date"};
         try {
             Cursor c = db.query(DB_TABLE,
@@ -160,17 +159,16 @@ public class DBAdapter extends AppCompatActivity {
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
-        String[] arrayTodo = new String[listDate.size()];
-        //String[] array = new String[listDate.size()];
         for (int i=0; i<listDate.size(); i++){
-            String[] array = listDate.toArray(new String[listDate.size()]);
-            if (array[i].compareTo(nowDate)>=0){//nowDateが大きければ+1/同じなら0/小さければ
-                arrayTodo = listTodo.toArray(new String[i]);
+            String[] arrayDate = new String[listDate.size()];
+            String[] arrayTodo = new String[listTodo.size()];
+            arrayDate[i] = listDate.get(i);
+            arrayTodo[i] = listTodo.get(i);
+            if (arrayDate[i].compareTo(nowDate)<=0){//nowDateが大きければ+1/同じなら0/小さければ
+                todayTodo.addAll(Arrays.asList(arrayTodo[i]));
             }
         }
-        listTodo = new ArrayList<>();//listTodoを初期化
-        listTodo.addAll(Arrays.asList(arrayTodo));
-        return listTodo;
+        return todayTodo;
     }
 
     public ArrayList<String> readDividedBoxDB(int boxId) {
@@ -382,16 +380,18 @@ public class DBAdapter extends AppCompatActivity {
             }catch(SQLException e) {
                 Log.e(TAG, "SQLExcepption:"+e.toString());
             }
-            Integer[] arrayId = new Integer[listDate.size()];
-            //String[] array = new String[listDate.size()];
+            ArrayList subListId = new ArrayList();
             for (int i=0; i<listDate.size(); i++){
-                String[] array = listDate.toArray(new String[listDate.size()]);
-                if (array[i].compareTo(nowDate)>=0){
-                    arrayId = listId.toArray(new Integer[i]);
+                String[] arrayDate = new String[listDate.size()];
+                Integer[] arrayId = new Integer[listId.size()];
+                arrayDate[i] = listDate.get(i);
+                arrayId[i] = listId.get(i);
+                if (arrayDate[i].compareTo(nowDate)<=0){//nowDateが大きければ+1/同じなら0/小さければ
+                    subListId.addAll(Arrays.asList(arrayId[i]));
                 }
             }
-            listId = new ArrayList<>();//listTodoを初期化
-            listId.addAll(Arrays.asList(arrayId));
+            listId = new ArrayList<>();
+            listId = subListId;//まとめてlistIdでreturnしているので、最後に代入しなおす
         } else if (boxId == 0){//boxId==0で全てを選択しているとき
             String[] cols = {COL_ID};
             try {
