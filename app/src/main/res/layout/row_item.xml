@@ -2,18 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:background="@drawable/flame_style_white"
-   >
+    android:gravity="center_horizontal"
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/text"
-        android:layout_width="wrap_content"
+        android:layout_width="251dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:clickable="true"
         android:focusable="true"
-         />
+        android:gravity="left|center_vertical"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/edit"
@@ -22,7 +23,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_marginEnd="71dp"
-        android:text="編集" />
+        android:text="編集"
+        android:textSize="14sp" />
 
     <Button
         android:id="@+id/delete"
@@ -30,6 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:text="削除" />
+        android:text="削除"
+        android:textSize="14sp" />
 
 </RelativeLayout>

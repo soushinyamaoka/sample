@@ -129,11 +129,6 @@ public class TodoEdit extends Activity {
 
         final DatePickerDialog datePickerDialog;
         final TimePickerDialog timePickerDialog;
-
-        //Date time = calendar.getTime();
-        //DateFormat formatterDate = new SimpleDateFormat("yyyy年M月d日H時m分");
-        //String nowTime = formatterDate.format(time);
-
         int year = calendar.get(Calendar.YEAR); // 年
         int monthOfYear = calendar.get(Calendar.MONTH); // 月
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH); // 日
@@ -177,9 +172,9 @@ public class TodoEdit extends Activity {
                 if (checked) {
                     // チェックボックス1がチェックされる
                     //設定された時間
-                    setTextDate = editDate.getText().toString();//"yyyy年MM月dd日"
-                    setTextTime = editTime.getText().toString();//"HH時mm分"
-                    String str1 = setTextDate + setTextTime;
+                    String strDate = editDate.getText().toString();//"yyyy年MM月dd日"
+                    String strTime = editTime.getText().toString();//"HH時mm分"
+                    String str1 = strDate + strTime;
                     String str2 = str1.replace("年", "/");
                     String str3 = str2.replace("月", "/");
                     String str4 = str3.replace("日", " ");
@@ -201,11 +196,11 @@ public class TodoEdit extends Activity {
                     calendar.add(Calendar.SECOND, (int) triggerAtTime);
                     scheduleNotification("10秒後に届く通知です", calendar);
                     Toast.makeText(TodoEdit.this,triggerAtTime + "後に設定",Toast.LENGTH_SHORT).show();
-                } else {
-                    // チェックボックス1のチェックが外される
-                    Toast.makeText(TodoEdit.this,
-                            "チェックがはずされました",
-                            Toast.LENGTH_SHORT).show();
+                //} else {
+                    //    // チェックボックス1のチェックが外される
+                    //    Toast.makeText(TodoEdit.this,
+                    //        "チェックがはずされました",
+                    //        Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -222,24 +217,12 @@ public class TodoEdit extends Activity {
     }
 
     public long getTriggerAtTime(Date nowTime, Date setTime ) {
-        long triggerAtTime = 0;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
-        // 日付を作成します。
-        try {
-            nowTime = sdf.parse("2013/08/01 13:00:00");
-            setTime = sdf.parse("2013/08/01 15:00:00");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
         // 日付をlong値に変換します。
         long dateTimeTo = setTime.getTime();
         long dateTimeFrom = nowTime.getTime();
 
         // 差分の時間を算出します。
-        long dayDiff = ( dateTimeTo - dateTimeFrom  ) / (1000 * 60 * 60 );
-
+        long dayDiff = ( dateTimeTo - dateTimeFrom  ) / (1000);
         return dayDiff;
     }
 

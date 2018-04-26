@@ -123,13 +123,12 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, TodoEdit.class);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
-                //startActivity(intent);
             }
         });
     }
 
     public void showBox() {
-        customAdapter = new CustomAdapter(getApplicationContext(), R.layout.row_item, boxDBAdapter.readBoxDB());
+        customAdapter = new CustomAdapter(this, R.layout.row_item, boxDBAdapter.readBoxDB());
         listViewBox.setAdapter(customAdapter);
     }
 

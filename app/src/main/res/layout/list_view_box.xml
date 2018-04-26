@@ -3,7 +3,9 @@
     android:id="@+id/list_view_box"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:gravity="left|center_vertical"
+    android:textSize="20sp">
 
 </ListView>
 

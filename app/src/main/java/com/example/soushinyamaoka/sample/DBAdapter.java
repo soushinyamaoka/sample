@@ -253,14 +253,14 @@ public class DBAdapter extends AppCompatActivity {
         return setBox;
     }
 
-    public String[] getDateData(int databaseId) {
+    public String[] getDateData(int todoId) {
         openDB();
         listDate = new ArrayList<>();
         String[] setDate = new String[0];
         try {
             Cursor c = db.query(DB_TABLE,
                                 new String[]{COL_DATE},
-                                "id = " + databaseId,
+                                "id = " + todoId,
                                 null,
                                 null,
                                 null,
@@ -278,14 +278,14 @@ public class DBAdapter extends AppCompatActivity {
         return setDate;
     }
 
-    public String[] getTimeData(int databaseId) {
+    public String[] getTimeData(int todoId) {
         openDB();
         listTime = new ArrayList<>();
         String[] setTime = new String[0];
         try {
             Cursor c = db.query(DB_TABLE,
                     new String[]{COL_TIME},
-                    "id = " + databaseId,
+                    "id = " + todoId,
                     null,
                     null,
                     null,

@@ -23,13 +23,24 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
         </android.support.design.widget.AppBarLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:gravity="left|center_vertical"
             android:text="@string/back_text"
-            android:textSize="16sp"
-            android:gravity="left|center_vertical"/>
+            android:textSize="16sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -38,8 +49,8 @@
 
             <include
                 layout="@layout/list_view_complete"
-                android:layout_height="400dp"
-                android:layout_width="match_parent" />
+                android:layout_width="match_parent"
+                android:layout_height="400dp" />
 
         </RelativeLayout>
 
@@ -55,9 +66,11 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:text="@string/delete_text"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
         </RelativeLayout>
+
+    </LinearLayout>
 
     </LinearLayout>
 

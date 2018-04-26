@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,14 +25,27 @@
 
         </android.support.design.widget.AppBarLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:gravity="center_horizontal"
             android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/edit_box_view"
-                android:layout_width="323dp"
+                android:layout_width="289dp"
                 android:layout_height="50dp"
                 android:background="@drawable/flame_style"
                 android:clickable="true"
@@ -41,22 +55,23 @@
 
             <Button
                 android:id="@+id/edit_box_button"
-                android:layout_width="wrap_content"
+                android:layout_width="41dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/edit_text" />
+                android:text="@string/edit_text"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
         <TextView
-        android:id="@+id/all_todo_view"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/flame_style_white"
-        android:clickable="true"
-        android:gravity="left|center_vertical"
-        android:text="@string/all_text"
-        android:textSize="16sp" />
+            android:id="@+id/all_todo_view"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/flame_style_white"
+            android:clickable="true"
+            android:gravity="left|center_vertical"
+            android:text="@string/all_text"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/today_todo_view"
@@ -66,7 +81,7 @@
             android:clickable="true"
             android:gravity="left|center_vertical"
             android:text="@string/today_text"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/complete_view"
@@ -76,9 +91,13 @@
             android:clickable="true"
             android:gravity="left|center_vertical"
             android:text="@string/complete_text"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
-        <include layout="@layout/list_view_box" />
+        <include
+            layout="@layout/list_view_box"
+            android:layout_width="match_parent" />
+
+    </LinearLayout>
 
     </LinearLayout>
 
