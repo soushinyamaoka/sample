@@ -9,6 +9,7 @@
     <string name="box_text">ジャンル</string>
     <string name="date_text">日付</string>
     <string name="time_text">時間</string>
+    <string name="limit_text">期限</string>
     <string name="memo_text">メモ</string>
     <string name="archive_text">アーカイブ</string>
     <string name="all_text">全て</string>
@@ -20,4 +21,5 @@
     <string name="delete_text">完全に削除</string>
     <string name="back_text">長押しで元に戻す</string>
     <string name="reminder_text">リマインダーを設定</string>
+    <string name="date_reminder_text">日付けとリマインダーを設定</string>
 </resources>

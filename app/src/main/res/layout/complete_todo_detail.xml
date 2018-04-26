@@ -51,7 +51,7 @@
         android:id="@+id/date_text"
         android:layout_width="wrap_content"
         android:layout_height="16dp"
-        android:layout_above="@+id/new_edit_Time"
+        android:layout_above="@+id/new_edit_Date"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="@string/date_text"
@@ -84,7 +84,7 @@
         app:layout_constraintTop_toBottomOf="@+id/new_edit_box" />
 
     <TextView
-        android:id="@+id/new_edit_Time"
+        android:id="@+id/new_edit_Date"
         android:layout_width="160dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"

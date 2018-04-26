@@ -16,7 +16,6 @@ import android.widget.TimePicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class TodoDetail extends Activity {
 
@@ -64,7 +63,7 @@ public class TodoDetail extends Activity {
             setContentView(R.layout.complete_todo_detail);
             textTodo = findViewById(R.id.new_edit_Todo);
             textDate = findViewById(R.id.new_edit_Date);
-            textTime = findViewById(R.id.new_edit_Time);
+            textTime = findViewById(R.id.new_edit_Date);
             textMemo = findViewById(R.id.new_edit_Memo);
             textBox = findViewById(R.id.new_edit_box);
         } else {//完了済み以外の時
@@ -72,7 +71,7 @@ public class TodoDetail extends Activity {
             setContentView(R.layout.activity_detail_todo);
             editTodo = findViewById(R.id.new_edit_Todo);
             editDate = findViewById(R.id.new_edit_Date);
-            editTime = findViewById(R.id.new_edit_Time);
+            editTime = findViewById(R.id.new_edit_Date);
             editMemo = findViewById(R.id.new_edit_Memo);
             spinner_box = (Spinner) findViewById(R.id.new_box_spinner);
         }

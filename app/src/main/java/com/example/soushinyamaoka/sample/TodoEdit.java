@@ -13,11 +13,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -36,6 +38,7 @@ public class TodoEdit extends Activity {
     private EditText editMemo;
     private Button editTodoButton;
     private Spinner spinner_box;
+    private CheckBox reminderButton;
 
     String setTextTodo;
     String setTextBox;
@@ -61,6 +64,7 @@ public class TodoEdit extends Activity {
         editMemo = findViewById(R.id.new_edit_Memo);
         editTodoButton = findViewById(R.id.edit_todo_button);
         spinner_box = (Spinner) findViewById(R.id.new_box_spinner);
+        reminderButton = findViewById(R.id.reminder_button);
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
         boxDBAdapter = new BoxDBAdapter(this);
@@ -105,11 +109,14 @@ public class TodoEdit extends Activity {
         adapter = new ArrayAdapter<String>(this, R.layout.text_box_list, getSpinner());
         spinner_box.setAdapter(adapter);
 
+        //---------------------------
         //日時が設定されたときの処理
         TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                editTime.setText(hourOfDay + "時" + minute + "分");
+                String strHourOfDay = String.format("%02d", hourOfDay);
+                String strMinute = String.format("%02d", minute);
+                editTime.setText(strHourOfDay + "時" + strMinute + "分");
             }
         };
         DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
@@ -122,6 +129,11 @@ public class TodoEdit extends Activity {
 
         final DatePickerDialog datePickerDialog;
         final TimePickerDialog timePickerDialog;
+
+        //Date time = calendar.getTime();
+        //DateFormat formatterDate = new SimpleDateFormat("yyyy年M月d日H時m分");
+        //String nowTime = formatterDate.format(time);
+
         int year = calendar.get(Calendar.YEAR); // 年
         int monthOfYear = calendar.get(Calendar.MONTH); // 月
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH); // 日
@@ -146,16 +158,57 @@ public class TodoEdit extends Activity {
                 timePickerDialog.show();
             }
         });
-        editTime.setClickable(true);
-        editTime.setOnClickListener(new View.OnClickListener() {
+
+        // チェックボックスがクリックされた時に呼び出されるコールバックリスナーを登録します
+        reminderButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            // チェックボックスがクリックされた時に呼び出されます
             public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.add(Calendar.SECOND, 10);
-                scheduleNotification("10秒後に届く通知です", calendar);
+                onCheckboxClicked(v);
             }
         });
+        //---------------------------
+    }
+
+    public void onCheckboxClicked(View view) {
+        final boolean checked = ((CheckBox) view).isChecked();
+        switch(view.getId()) {
+            case R.id.reminder_button:
+                if (checked) {
+                    // チェックボックス1がチェックされる
+                    //設定された時間
+                    setTextDate = editDate.getText().toString();//"yyyy年MM月dd日"
+                    setTextTime = editTime.getText().toString();//"HH時mm分"
+                    String str1 = setTextDate + setTextTime;
+                    String str2 = str1.replace("年", "/");
+                    String str3 = str2.replace("月", "/");
+                    String str4 = str3.replace("日", " ");
+                    String str5 = str4.replace("時", ":");
+                    String str6 = str5.replace("分", "");//"yyyy/MM/dd HH:mm"
+
+                    Date dDate = null;
+                    DateFormat df2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");// 変換
+                    try {
+                        dDate = df2.parse(str6);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    //現在の時間
+                    Date now = new Date(System.currentTimeMillis());
+                    long triggerAtTime = getTriggerAtTime(now,dDate);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(System.currentTimeMillis());
+                    calendar.add(Calendar.SECOND, (int) triggerAtTime);
+                    scheduleNotification("10秒後に届く通知です", calendar);
+                    Toast.makeText(TodoEdit.this,triggerAtTime + "後に設定",Toast.LENGTH_SHORT).show();
+                } else {
+                    // チェックボックス1のチェックが外される
+                    Toast.makeText(TodoEdit.this,
+                            "チェックがはずされました",
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 
     private void scheduleNotification(String content, Calendar calendar){
@@ -168,36 +221,33 @@ public class TodoEdit extends Activity {
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
-    public static void main( String[] args ) {
+    public long getTriggerAtTime(Date nowTime, Date setTime ) {
+        long triggerAtTime = 0;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date dateTo = null;
-        Date dateFrom = null;
 
         // 日付を作成します。
         try {
-            dateFrom = sdf.parse("2013/08/01 13:00:00");
-            dateTo = sdf.parse("2013/08/01 15:00:00");
+            nowTime = sdf.parse("2013/08/01 13:00:00");
+            setTime = sdf.parse("2013/08/01 15:00:00");
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         // 日付をlong値に変換します。
-        long dateTimeTo = dateTo.getTime();
-        long dateTimeFrom = dateFrom.getTime();
+        long dateTimeTo = setTime.getTime();
+        long dateTimeFrom = nowTime.getTime();
 
         // 差分の時間を算出します。
         long dayDiff = ( dateTimeTo - dateTimeFrom  ) / (1000 * 60 * 60 );
 
-        System.out.println( "日数(FROM) : " + sdf.format(dateFrom) );
-        System.out.println( "日数(TO) : " + sdf.format(dateTo) );
-        System.out.println( "差分時間 : " + dayDiff );
+        return dayDiff;
     }
 
     public String getNowDate(){
         // 現在日時の取得
         Date now = new Date(System.currentTimeMillis());
         // 日時のフォーマットオブジェクト作成
-        DateFormat formatterDate = new SimpleDateFormat("yyyy年M月d日");
+        DateFormat formatterDate = new SimpleDateFormat("yyyy年MM月dd日");
         // フォーマット
         String nowText = formatterDate.format(now);
         return nowText;
@@ -207,7 +257,7 @@ public class TodoEdit extends Activity {
         // 現在日時の取得
         Date now = new Date(System.currentTimeMillis());
         // 日時のフォーマットオブジェクト作成
-        DateFormat formatterTime = new SimpleDateFormat("H時m分");
+        DateFormat formatterTime = new SimpleDateFormat("HH時mm分");
         // フォーマット
         String nowText = formatterTime.format(now);
         return nowText;
@@ -220,7 +270,7 @@ public class TodoEdit extends Activity {
 
     public void showDetail()  {
         editDate.setText(getNowDate());
-        //editTime.setText(getNowTime());
+        editTime.setText(getNowTime());
     }
 
     public ArrayList<String> getSpinner(){
