@@ -94,7 +94,7 @@ public class TodoDetail extends Activity {
 
         //todoの詳細を表示
         //-------------------------
-        showDetail(boxName);
+        showDetail(todoId,boxId);
         //-------------------------
 
         TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
@@ -122,31 +122,33 @@ public class TodoDetail extends Activity {
 
         datePickerDialog = new DatePickerDialog(this, R.layout.date_picker,
                 onDateSetListener, year, monthOfYear, dayOfMonth);
-        editDate.setClickable(true);
-        editDate.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                datePickerDialog.show();
-            }
-        });
+        if (boxId != 1){
+            editDate.setClickable(true);
+            editDate.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    datePickerDialog.show();
+                }
+            });
 
-        timePickerDialog = new TimePickerDialog(this, R.layout.time_picker,
-                onTimeSetListener, hourOfDay, minute, true);
-        editTime.setClickable(true);
-        editTime.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // ダイアログを表示する
-                timePickerDialog.show();
-            }
-        });
+            timePickerDialog = new TimePickerDialog(this, R.layout.time_picker,
+                    onTimeSetListener, hourOfDay, minute, true);
+            editTime.setClickable(true);
+            editTime.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // ダイアログを表示する
+                    timePickerDialog.show();
+                }
+            });
 
-        // チェックボックスがクリックされた時に呼び出されるコールバックリスナーを登録します
-        reminderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            // チェックボックスがクリックされた時に呼び出されます
-            public void onClick(View v) {
-                onCheckboxClicked(v);
-            }
-        });
+            // チェックボックスがクリックされた時に呼び出されるコールバックリスナーを登録します
+            reminderButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                // チェックボックスがクリックされた時に呼び出されます
+                public void onClick(View v) {
+                    onCheckboxClicked(v);
+                }
+            });
+        }
     }
 
     public void onCheckboxClicked(View view) {
@@ -154,39 +156,53 @@ public class TodoDetail extends Activity {
         switch(view.getId()) {
             case R.id.reminder_button:
                 if (checked) {
-                    // チェックボックス1がチェックされる
-                    //設定された時間
-                    String strDate = editDate.getText().toString();//"yyyy年MM月dd日"
-                    String strTime = editTime.getText().toString();//"HH時mm分"
-                    String str1 = strDate + strTime;
-                    String str2 = str1.replace("年", "/");
-                    String str3 = str2.replace("月", "/");
-                    String str4 = str3.replace("日", " ");
-                    String str5 = str4.replace("時", ":");
-                    String str6 = str5.replace("分", "");//"yyyy/MM/dd HH:mm"
+                    if (editDate.equals("")){
+                        Toast.makeText(TodoDetail.this,
+                                "日付けを設定してください",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    } else if (editTime.equals("")){
+                        Toast.makeText(TodoDetail.this,
+                                "時間を設定してください",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    } else {
+                        // チェックボックス1がチェックされる
+                        //設定された時間
+                        String strDate = editDate.getText().toString();//"yyyy年MM月dd日"
+                        String strTime = editTime.getText().toString();//"HH時mm分"
+                        String str1 = strDate + strTime;
+                        String str2 = str1.replace("年", "/");
+                        String str3 = str2.replace("月", "/");
+                        String str4 = str3.replace("日", " ");
+                        String str5 = str4.replace("時", ":");
+                        String str6 = str5.replace("分", "");//"yyyy/MM/dd HH:mm"
 
-                    Date dDate = null;
-                    DateFormat df2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");// 変換
-                    try {
-                        dDate = df2.parse(str6);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                        Date dDate = null;
+                        DateFormat df2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");// 変換
+                        try {
+                            dDate = df2.parse(str6);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        //現在の時間
+                        Date now = new Date(System.currentTimeMillis());
+                        long triggerAtTime = getTriggerAtTime(now,dDate);
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis(System.currentTimeMillis());
+                        calendar.add(Calendar.SECOND, (int) triggerAtTime);
+                        scheduleNotification(editTodo.getText().toString(), calendar);
+                        Toast.makeText(TodoDetail.this,"リマインダーを設定しました",Toast.LENGTH_SHORT).show();
+                        break;
                     }
-                    //現在の時間
-                    Date now = new Date(System.currentTimeMillis());
-                    long triggerAtTime = getTriggerAtTime(now,dDate);
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(System.currentTimeMillis());
-                    calendar.add(Calendar.SECOND, (int) triggerAtTime);
-                    scheduleNotification(editTodo.getText().toString(), calendar);
-                    Toast.makeText(TodoDetail.this,triggerAtTime + "後に設定",Toast.LENGTH_SHORT).show();
-                    //} else {
-                    //    // チェックボックス1のチェックが外される
-                    //    Toast.makeText(TodoEdit.this,
-                    //        "チェックがはずされました",
-                    //        Toast.LENGTH_SHORT).show();
+                } else {
+                    // チェックボックス1のチェックが外される
+                    Toast.makeText(TodoDetail.this,
+                            "リマインダーを解除しました",
+                            Toast.LENGTH_SHORT).show();
                 }
                 break;
+            default:break;
         }
     }
 
@@ -238,7 +254,7 @@ public class TodoDetail extends Activity {
         }
     }
 
-    public void showDetail(String boxName)  {
+    public void showDetail(int todoId, int boxId)  {
         String[] setTodo;
         String[] setDate;
         String[] setTime;
@@ -278,7 +294,7 @@ public class TodoDetail extends Activity {
     public void setSpinner(){
         ArrayList<String> lvAdapter = new ArrayList<>();
         lvAdapter = boxDBAdapter.readBoxSpinnerDB();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, lvAdapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.text_box_list, lvAdapter);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_box.setAdapter(adapter);
         spinner_box.setSelection(spinnerPosition);//完了済みを抜いている分をマイナスする

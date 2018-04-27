@@ -98,17 +98,17 @@ public class ToDoActivity extends AppCompatActivity {
                 }
                 try {
                     editTodo = editText.getText().toString();//書き込まれた内容(getText)をstrに格納
-                    if(editTodo.equals("")){//空欄と時
+                    if(editTodo.equals("")){//空欄の時:入力するようにとのメッセージ
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
-                    } else if (boxId == -1) {
+                    } else if (boxId == -1) {//今日の時:今日の日付を自動設定
                         boxName = "未分類";
                         boxId = 2;
-                        dbAdapter.writeDB(editTodo, boxName, getNowDate(), getNowTime(), editMemo, boxId);
+                        dbAdapter.writeDB(editTodo, boxName, getNowDate(), null, editMemo, boxId);
                         boxId = -1;//元に戻す
-                    } else if (boxId == 0) {
+                    } else if (boxId == 0) {//全ての時
                         boxName = "未分類";
                         boxId = 2;
-                        dbAdapter.writeDB(editTodo, boxName, getNowDate(), getNowTime(), editMemo, boxId);
+                        dbAdapter.writeDB(editTodo, boxName, null, null, editMemo, boxId);
                         boxId = 0;//元に戻す
                     } else {
                         dbAdapter.writeDB(editTodo, boxName, getNowDate(), getNowTime(), editMemo, boxId);
@@ -127,9 +127,9 @@ public class ToDoActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,View view,
                                            int position, long id) {
+
                 todoId = dbAdapter.getTodoId(getNowDate(),boxId,id);
                 deleteList(todoId);
-                //deleteArchive(getApplicationContext(),listviewId);
                 if (boxId == 0){//全てが選択されているとき
                     showList(boxId);
                 } else {
@@ -137,7 +137,7 @@ public class ToDoActivity extends AppCompatActivity {
                 }
                 Toast.makeText(ToDoActivity.this, "完了済みにしました", Toast.LENGTH_LONG).show();
 
-                return false;
+                return true;
             }
         });
 
@@ -161,9 +161,7 @@ public class ToDoActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        //super.onActivityResult(requestCode, resultCode, data);
-        // startActivityForResult()の際に指定した識別コードとの比較
-        // requestCodeがサブ画面か確認する
+        // requestCodeがDETAILか確認する
         if(requestCode == TODO_DETAIL) {
             // resultCodeがOKか確認する
             if (resultCode == RESULT_OK) {

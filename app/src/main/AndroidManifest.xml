@@ -12,7 +12,8 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,10 +21,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TodoDetail">
+            android:name=".TodoDetail"
+            android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
         <activity
-        android:name=".ToDoActivity">
+        android:name=".ToDoActivity"
+            android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
         <activity
             android:name=".TodoEdit">
@@ -32,7 +35,8 @@
             android:name=".EditBox">
         </activity>
         <activity
-            android:name=".ToDoComplete">
+            android:name=".ToDoComplete"
+            android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
         <receiver android:name=".AlarmReceiver" android:process=":remote" />

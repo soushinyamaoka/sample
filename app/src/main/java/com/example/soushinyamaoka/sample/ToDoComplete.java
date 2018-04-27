@@ -24,7 +24,7 @@ import java.util.List;
 
 public class ToDoComplete extends AppCompatActivity{
 
-    int databaseId = 0;
+    int todoId = 0;
     int spinnerPosition = 0;
     String boxName;
     int boxId;
@@ -92,14 +92,14 @@ public class ToDoComplete extends AppCompatActivity{
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent,View view,
                                                    int position, long listviewId) {
-                        databaseId = dbAdapter.changeDividedId(listviewId, boxId);
-                        dbAdapter.backDB(databaseId,
-                                        "今日");
+                        todoId = dbAdapter.getTodoId(null,boxId,listviewId);
+                        //todoId = dbAdapter.changeDividedId(listviewId, boxId);
+                        dbAdapter.playBackDB(todoId, "未分類",2);//未分類id=2
                         //deleteArchive(getApplicationContext(),listviewId);
                         showDividedTodoList(boxId);
-                        Toast.makeText(ToDoComplete.this, "1件戻しました", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ToDoComplete.this, "完了済みを解除しました", Toast.LENGTH_LONG).show();
 
-                        return false;
+                        return true;
                     }
                 });
 
@@ -108,10 +108,6 @@ public class ToDoComplete extends AppCompatActivity{
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 // 遷移先のactivityを指定してintentを作成
                 Intent intent = new Intent(ToDoComplete.this, TodoDetail.class);
-                // intentへ添え字付で値を保持させる
-                //boxId = dbAdapter.getBoxId((int) id);//todoのboxid(カテゴリ)を取得
-                //databaseId = dbAdapter.changeDividedId(id, boxId);
-                //intent.putExtra( "databaseId", databaseId );
                 int todoId = dbAdapter.getTodoId(getNowDate(),boxId,id);
                 intent.putExtra( "todoId", todoId);
                 intent.putExtra("spinnerPosition", spinnerPosition);
@@ -146,9 +142,6 @@ public class ToDoComplete extends AppCompatActivity{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        //super.onActivityResult(requestCode, resultCode, data);
-        // startActivityForResult()の際に指定した識別コードとの比較
-        // requestCodeがサブ画面か確認する
         if(requestCode == TODO_DELETE) {
             // resultCodeがOKか確認する
             if (resultCode == RESULT_OK) {

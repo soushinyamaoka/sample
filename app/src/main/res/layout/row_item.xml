@@ -14,7 +14,9 @@
         android:clickable="true"
         android:focusable="true"
         android:gravity="left|center_vertical"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:paddingLeft="10dp"
+        />
 
     <Button
         android:id="@+id/edit"

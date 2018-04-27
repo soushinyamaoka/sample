@@ -5,6 +5,7 @@
     android:layout_height="50dp"
     android:background="#FFFFFF"
     android:gravity="left|center_vertical"
-    android:textSize="20sp">
+    android:textSize="20sp"
+    android:paddingLeft="10dp">
 
 </TextView>

@@ -170,39 +170,53 @@ public class TodoEdit extends Activity {
         switch(view.getId()) {
             case R.id.reminder_button:
                 if (checked) {
-                    // チェックボックス1がチェックされる
-                    //設定された時間
-                    String strDate = editDate.getText().toString();//"yyyy年MM月dd日"
-                    String strTime = editTime.getText().toString();//"HH時mm分"
-                    String str1 = strDate + strTime;
-                    String str2 = str1.replace("年", "/");
-                    String str3 = str2.replace("月", "/");
-                    String str4 = str3.replace("日", " ");
-                    String str5 = str4.replace("時", ":");
-                    String str6 = str5.replace("分", "");//"yyyy/MM/dd HH:mm"
+                    if (editDate.equals("")){
+                        Toast.makeText(TodoEdit.this,
+                                "日付けを設定してください",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    } else if (editTime.equals("")){
+                        Toast.makeText(TodoEdit.this,
+                                "時間を設定してください",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    } else {
+                        // チェックボックス1がチェックされる
+                        //設定された時間
+                        String strDate = editDate.getText().toString();//"yyyy年MM月dd日"
+                        String strTime = editTime.getText().toString();//"HH時mm分"
+                        String str1 = strDate + strTime;
+                        String str2 = str1.replace("年", "/");
+                        String str3 = str2.replace("月", "/");
+                        String str4 = str3.replace("日", " ");
+                        String str5 = str4.replace("時", ":");
+                        String str6 = str5.replace("分", "");//"yyyy/MM/dd HH:mm"
 
-                    Date dDate = null;
-                    DateFormat df2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");// 変換
-                    try {
-                        dDate = df2.parse(str6);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                        Date dDate = null;
+                        DateFormat df2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");// 変換
+                        try {
+                            dDate = df2.parse(str6);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        //現在の時間
+                        Date now = new Date(System.currentTimeMillis());
+                        long triggerAtTime = getTriggerAtTime(now,dDate);
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis(System.currentTimeMillis());
+                        calendar.add(Calendar.SECOND, (int) triggerAtTime);
+                        scheduleNotification(editTodo.getText().toString(), calendar);
+                        Toast.makeText(TodoEdit.this,"リマインダーを設定しました",Toast.LENGTH_SHORT).show();
+                        break;
                     }
-                    //現在の時間
-                    Date now = new Date(System.currentTimeMillis());
-                    long triggerAtTime = getTriggerAtTime(now,dDate);
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(System.currentTimeMillis());
-                    calendar.add(Calendar.SECOND, (int) triggerAtTime);
-                    scheduleNotification("10秒後に届く通知です", calendar);
-                    Toast.makeText(TodoEdit.this,triggerAtTime + "後に設定",Toast.LENGTH_SHORT).show();
-                //} else {
-                    //    // チェックボックス1のチェックが外される
-                    //    Toast.makeText(TodoEdit.this,
-                    //        "チェックがはずされました",
-                    //        Toast.LENGTH_SHORT).show();
+                } else {
+                    // チェックボックス1のチェックが外される
+                    Toast.makeText(TodoEdit.this,
+                            "リマインダーを解除しました",
+                            Toast.LENGTH_SHORT).show();
                 }
                 break;
+            default:break;
         }
     }
 
@@ -210,7 +224,11 @@ public class TodoEdit extends Activity {
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_CONTENT, content);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
@@ -252,8 +270,8 @@ public class TodoEdit extends Activity {
     }
 
     public void showDetail()  {
-        editDate.setText(getNowDate());
-        editTime.setText(getNowTime());
+        //editDate.setText(getNowDate());
+        //editTime.setText(getNowTime());
     }
 
     public ArrayList<String> getSpinner(){

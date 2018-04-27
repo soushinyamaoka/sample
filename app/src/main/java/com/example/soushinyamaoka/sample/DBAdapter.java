@@ -92,11 +92,12 @@ public class DBAdapter extends AppCompatActivity {
         }
     }
 
-    //完了済みtodoを元に戻す際に使用
-    public void backDB(int todoId, String boxName) {
+    //完了済みtodoを元に戻す際に使用「未分類」に戻される
+    public void playBackDB(int todoId, String boxName, int boxId) {
         openDB();
         ContentValues values = new ContentValues();//値を格納するためのvaluesを宣言
         values.put(COL_BOX, boxName);
+        values.put(COL_BOXID, boxId);
         //空欄でも書き込めるようになっているので要修正
         try {
             db.update(DB_TABLE, values, "id = " + todoId, null);
@@ -438,31 +439,6 @@ public class DBAdapter extends AppCompatActivity {
         return setBoxId;
     }
 
-    //データベースからの読み込み
-    public ArrayList<Integer> getDataBaseId() {
-        openDB();
-        ArrayList<Integer> listID = new ArrayList<>();
-        String[] cols = {"id"};
-        int boxId = 0;
-        try {
-            Cursor c = db.query(DB_TABLE,
-                                cols,
-                                "boxId !=" + boxId,
-                                null,
-                                null,
-                                null,
-                                ORDER_BY);
-            c.moveToFirst();
-            for (int i = 0; i < c.getCount(); i++) {
-                listID.add(c.getInt(0));
-                c.moveToNext();
-            }
-            c.close();
-        }catch(SQLException e) {
-            Log.e(TAG, "SQLExcepption:"+e.toString());
-        }
-        return listID;
-    }
 
     //Listで選択されたtodoのDB上でのidを取得
     public int changeDividedId(long listviewId, int boxId) {

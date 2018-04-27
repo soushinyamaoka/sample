@@ -1,5 +1,7 @@
 package com.example.soushinyamaoka.sample;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView todayView;
     private EditText editBoxView;
     private Button editBoxButton;
+    private Toolbar toolbar;
     DBAdapter dbAdapter;
     BoxDBAdapter boxDBAdapter;
     DBHelper db;
@@ -33,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_box);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_box);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_box);
         setSupportActionBar(toolbar);
         setTitle("受信箱");
 
@@ -96,9 +99,25 @@ public class MainActivity extends AppCompatActivity {
                 if (view.getId() == R.id.edit){
                     startEditBoxClass(boxId);
                 } else if (view.getId() == R.id.delete){
-                    deleteBoxList(boxId);
-                    showBox();
-                    Toast.makeText(MainActivity.this, "削除しました。", Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                    alertDialog.setTitle("確認");
+                    alertDialog.setMessage("カテゴリを削除しますか？"+ "\n" +"(タスクは「完了済み」になります)");
+                    alertDialog.setPositiveButton("削除する", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteBoxList(boxId);
+                            showBox();
+                            Toast.makeText(MainActivity.this, "削除しました。", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    alertDialog.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            showBox();
+                        }
+                    });
+                    alertDialog.create().show();
+
                 } else if (view.getId() == R.id.text){
                     startTodoActivityClass(spinnerPosition,boxId);
                 }
@@ -135,12 +154,10 @@ public class MainActivity extends AppCompatActivity {
     public void deleteBoxList(int boxId){
         try {
             String setBox = "完了済み";
-
             //カテゴリ内にあるタスクのカテゴリを完了に変更
             boxDBAdapter.updateBoxDB(boxId,setBox);
             //カテゴリ名を削除
             boxDBAdapter.deleteBoxDB(boxId);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
