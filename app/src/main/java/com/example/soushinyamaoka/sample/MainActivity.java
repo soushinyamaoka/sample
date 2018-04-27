@@ -154,10 +154,36 @@ public class MainActivity extends AppCompatActivity {
     public void deleteBoxList(int boxId){
         try {
             String setBox = "完了済み";
+            //boxId = 1;//完了
             //カテゴリ内にあるタスクのカテゴリを完了に変更
-            boxDBAdapter.updateBoxDB(boxId,setBox);
+            //boxDBAdapter.updateBoxDB(boxId,setBox);
             //カテゴリ名を削除
             boxDBAdapter.deleteBoxDB(boxId);
+
+            //カテゴリ内にあるタスクのカテゴリを完了に変更
+            //-------------------------
+            Integer[] integerArray = dbAdapter.getTodoIdAsArray(null,boxId);
+            int[] todoIdArray = new int[integerArray.length];
+            String[] todoArray = new String[integerArray.length];
+            String[] boxArray = new String[integerArray.length];
+            String[] dateArray = new String[integerArray.length];
+            String[] timeArray = new String[integerArray.length];
+            String[] memoArray = new String[integerArray.length];
+            for (int i=0;i<integerArray.length;i++){
+                todoIdArray[i] = integerArray[i];
+                todoArray[i] = dbAdapter.getTodoData(todoIdArray[i]);
+                dateArray[i] = dbAdapter.getDateData(todoIdArray[i]);
+                timeArray[i] = dbAdapter.getTimeData(todoIdArray[i]);
+                memoArray[i] = dbAdapter.getMemoData(todoIdArray[i]);
+                dbAdapter.updateDB(todoIdArray[i],
+                        todoArray[i],
+                        "完了済み",
+                        dateArray[i],
+                        timeArray[i],
+                        memoArray[i],
+                        1);
+            }
+            //-------------------------
         } catch (Exception e) {
             e.printStackTrace();
         }

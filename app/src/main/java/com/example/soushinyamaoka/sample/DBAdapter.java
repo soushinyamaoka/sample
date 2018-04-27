@@ -169,9 +169,6 @@ public class DBAdapter extends AppCompatActivity {
                 if (arrayDate[i].compareTo(nowDate)<=0){//nowDateが大きければ+1/同じなら0/小さければ
                     todayTodo.addAll(Arrays.asList(arrayTodo[i]));
                 }
-            } else {
-                ArrayList<String> subtodayTodo = new ArrayList<>();
-                subtodayTodo.addAll(Arrays.asList(arrayTodo[i]));
             }
         }
         return todayTodo;
@@ -208,10 +205,11 @@ public class DBAdapter extends AppCompatActivity {
         db.close();
     }
 
-    public String[] getTodoData(int todoId) {
+    public String getTodoData(int todoId) {
         openDB();
         listTodo = new ArrayList<>();
-        String[] setTodo = new String[0];
+        String setTodo;
+        String[] array = new String[0];
         String[] cols = {"todo"};
         try {
             Cursor c = db.query(DB_TABLE,
@@ -227,17 +225,19 @@ public class DBAdapter extends AppCompatActivity {
                 c.moveToNext();
             }
             c.close();
-            setTodo = listTodo.toArray(new String[0]);
+            array = listTodo.toArray(new String[0]);
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
+        setTodo = array[0];
         return setTodo;
     }
 
-    public String[] getBoxData(int todoId) {
+    public String getBoxData(int todoId) {
         openDB();
         listBox = new ArrayList<>();
-        String[] setBox = new String[0];
+        String setBox;
+        String[] array = new String[0];
         try {
             Cursor c = db.query(DB_TABLE,
                                 new String[]{COL_BOX},
@@ -252,17 +252,19 @@ public class DBAdapter extends AppCompatActivity {
                 c.moveToNext();
             }
             c.close();
-            setBox = listBox.toArray(new String[0]);
+            array = listBox.toArray(new String[0]);
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
+        setBox = array[0];
         return setBox;
     }
 
-    public String[] getDateData(int todoId) {
+    public String getDateData(int todoId) {
         openDB();
         listDate = new ArrayList<>();
-        String[] setDate = new String[0];
+        String[] array = new String[0];
+        String setDate;
         try {
             Cursor c = db.query(DB_TABLE,
                                 new String[]{COL_DATE},
@@ -277,17 +279,19 @@ public class DBAdapter extends AppCompatActivity {
                 c.moveToNext();
             }
             c.close();
-            setDate = listDate.toArray(new String[0]);
+            array = listDate.toArray(new String[0]);
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
+        setDate = array[0];
         return setDate;
     }
 
-    public String[] getTimeData(int todoId) {
+    public String getTimeData(int todoId) {
         openDB();
         listTime = new ArrayList<>();
-        String[] setTime = new String[0];
+        String[] array = new String[0];
+        String setTime;
         try {
             Cursor c = db.query(DB_TABLE,
                     new String[]{COL_TIME},
@@ -302,17 +306,19 @@ public class DBAdapter extends AppCompatActivity {
                 c.moveToNext();
             }
             c.close();
-            setTime = listTime.toArray(new String[0]);
+            array = listTime.toArray(new String[0]);
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
+        setTime = array[0];
         return setTime;
     }
 
-    public String[] getMemoData(int todoId) {
+    public String getMemoData(int todoId) {
         openDB();
         listMemo = new ArrayList<>();
-        String[] setMemo = new String[0];
+        String[] array = new String[0];
+        String setMemo;
         try {
             Cursor c = db.query(DB_TABLE,
                                 new String[]{COL_MEMO},
@@ -327,10 +333,11 @@ public class DBAdapter extends AppCompatActivity {
                 c.moveToNext();
             }
             c.close();
-            setMemo = listMemo.toArray(new String[0]);
+            array = listMemo.toArray(new String[0]);
         }catch(SQLException e) {
             Log.e(TAG, "SQLExcepption:"+e.toString());
         }
+        setMemo = array[0];
         return setMemo;
     }
 
@@ -364,7 +371,7 @@ public class DBAdapter extends AppCompatActivity {
         openDB();
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
-        Integer setBoxId;
+        Integer setTodoId;
 
         if (boxId == -1) {//今日が選択されているとき
             String[] cols = {COL_ID,COL_DATE};
@@ -392,9 +399,11 @@ public class DBAdapter extends AppCompatActivity {
                 Integer[] arrayId = new Integer[listId.size()];
                 arrayDate[i] = listDate.get(i);
                 arrayId[i] = listId.get(i);
-                if (arrayDate[i] != null){
-                    if (arrayDate[i].compareTo(nowDate)<=0){//nowDateが大きければ+1/同じなら0/小さければ
-                        subListId.addAll(Arrays.asList(arrayId[i]));
+                if (!arrayDate[i].isEmpty()){
+                    if (arrayDate[i] != null){
+                        if (arrayDate[i].compareTo(nowDate)<=0){//nowDateが大きければ+1/同じなら0/小さければ
+                            subListId.addAll(Arrays.asList(arrayId[i]));
+                        }
                     }
                 }
             }
@@ -442,25 +451,58 @@ public class DBAdapter extends AppCompatActivity {
         }
         Integer[] array;
         array = listId.toArray(new Integer[listId.size()]);
-        setBoxId = array[(int) listViewId];
-        return setBoxId;
+        setTodoId = array[(int) listViewId];
+        return setTodoId;
     }
 
-
-    //Listで選択されたtodoのDB上でのidを取得
-    public int changeDividedId(long listviewId, int boxId) {
+    public Integer[] getTodoIdAsArray(String nowDate, int boxId) {
         openDB();
-        int todoId = 0;
         listId = new ArrayList<Integer>();
         listTodo = new ArrayList<>();
-        String[] cols = {"id"};
-        //int boxId = 1;
-        Integer[] array = new Integer[(int) listviewId];
-        if (boxId == 0){//全てカテゴリが選択されていた場合
+        Integer[] setTodoId;
+
+        if (boxId == -1) {//今日が選択されているとき
+            String[] cols = {COL_ID,COL_DATE};
             try {
                 Cursor c = db.query(DB_TABLE,
                         cols,
-                        "boxId !=" + boxId,
+                        "boxId != 1",//現在以前の日付けのデータを抽出
+                        null,
+                        null,
+                        null,
+                        ORDER_BY);
+                c.moveToFirst();
+                for (int i = 0; i < c.getCount(); i++) {
+                    //listId.add(c.getInt(0));
+                    listId.add(c.getInt(0));
+                    c.moveToNext();
+                }
+                c.close();
+            }catch(SQLException e) {
+                Log.e(TAG, "SQLExcepption:"+e.toString());
+            }
+            ArrayList subListId = new ArrayList();
+            for (int i=0; i<listDate.size(); i++){
+                String[] arrayDate = new String[listDate.size()];
+                Integer[] arrayId = new Integer[listId.size()];
+                arrayDate[i] = listDate.get(i);
+                arrayId[i] = listId.get(i);
+                if (!arrayDate[i].isEmpty()){
+                    if (arrayDate[i] != null){
+                        if (arrayDate[i].compareTo(nowDate)<=0){//nowDateが大きければ+1/同じなら0/小さければ
+                            subListId.addAll(Arrays.asList(arrayId[i]));
+                        }
+                    }
+                }
+            }
+            listId = new ArrayList<>();
+            listId = subListId;//まとめてlistIdでreturnしているので、最後に代入しなおす
+        } else if (boxId == 0){//boxId==0で全てを選択しているとき
+            String[] cols = {COL_ID};
+            try {
+                Cursor c = db.query(DB_TABLE,
+                        cols,
+                        "boxId !=1",//id.1完了済み以外全て
                         null,
                         null,
                         null,
@@ -469,14 +511,13 @@ public class DBAdapter extends AppCompatActivity {
                 for (int i = 0; i < c.getCount(); i++) {
                     listId.add(c.getInt(0));
                     c.moveToNext();
-                    array = listId.toArray(new Integer[0]);
                 }
                 c.close();
-                todoId = array[(int) listviewId];
             }catch(SQLException e) {
                 Log.e(TAG, "SQLExcepption:"+e.toString());
             }
-        } else{//特定のカテゴリが選択されていた場合
+        } else {//特定のカテゴリor完了済みが選択されているとき
+            String[] cols = {COL_ID};
             try {
                 Cursor c = db.query(DB_TABLE,
                         cols,
@@ -496,8 +537,7 @@ public class DBAdapter extends AppCompatActivity {
                 Log.e(TAG, "SQLExcepption:"+e.toString());
             }
         }
-        array = listId.toArray(new Integer[listId.size()]);
-        todoId = array[(int) listviewId];
-        return todoId;
+        setTodoId = listId.toArray(new Integer[listId.size()]);
+        return setTodoId;
     }
 }

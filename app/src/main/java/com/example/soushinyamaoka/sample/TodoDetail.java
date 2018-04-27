@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -40,6 +41,7 @@ public class TodoDetail extends Activity {
     private TextView textBox;
     private Spinner spinner_box;
     private CheckBox reminderButton;
+    private Button limitClearButton;
     DBHelper db;
     DBAdapter dbAdapter;
     BoxDBAdapter boxDBAdapter;
@@ -49,8 +51,8 @@ public class TodoDetail extends Activity {
     int spinnerPosition = 0;
     String boxName;
     int boxId;
-    static boolean allTodo = false;
-    static boolean todayTodo = false;
+    boolean allTodo = false;
+    boolean todayTodo = false;
 
     @SuppressLint("ResourceType")
     @Override
@@ -86,6 +88,7 @@ public class TodoDetail extends Activity {
             editMemo = findViewById(R.id.new_edit_Memo);
             spinner_box = (Spinner) findViewById(R.id.new_box_spinner);
             reminderButton = findViewById(R.id.reminder_button);
+            limitClearButton = findViewById(R.id.limit_clear_button);
         }
 
         db = new DBHelper(this);
@@ -150,6 +153,15 @@ public class TodoDetail extends Activity {
                     onCheckboxClicked(v);
                 }
             });
+
+            limitClearButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                // チェックボックスがクリックされた時に呼び出されます
+                public void onClick(View v) {
+                    editDate.setText("");
+                    editTime.setText("");
+                }
+            });
         }
     }
 
@@ -158,15 +170,17 @@ public class TodoDetail extends Activity {
         switch(view.getId()) {
             case R.id.reminder_button:
                 if (checked) {
-                    if (editDate.equals("")){
+                    if (editDate.getText().toString().equals("")){
                         Toast.makeText(TodoDetail.this,
                                 "日付けを設定してください",
                                 Toast.LENGTH_SHORT).show();
+                        reminderButton.setChecked(false);
                         break;
-                    } else if (editTime.equals("")){
+                    } else if (editTime.getText().toString().equals("")){
                         Toast.makeText(TodoDetail.this,
                                 "時間を設定してください",
                                 Toast.LENGTH_SHORT).show();
+                        reminderButton.setChecked(false);
                         break;
                     } else {
                         // チェックボックス1がチェックされる
@@ -263,11 +277,11 @@ public class TodoDetail extends Activity {
     }
 
     public void showDetail(int todoId, int boxId)  {
-        String[] setTodo;
-        String[] setDate;
-        String[] setTime;
-        String[] setMemo;
-        Integer[] setId;
+        String setTodo;
+        String setDate;
+        String setTime;
+        String setMemo;
+        Integer setId;
 
         setTodo = dbAdapter.getTodoData(todoId);
         setDate = dbAdapter.getDateData(todoId);
@@ -275,16 +289,16 @@ public class TodoDetail extends Activity {
         setMemo = dbAdapter.getMemoData(todoId);
 
         if (boxId == 1){//完了済みのタスクの場合
-            textTodo.setText(setTodo[0]);
-            textDate.setText(setDate[0]);
-            textTime.setText(setTime[0]);
-            textMemo.setText(setMemo[0]);
+            textTodo.setText(setTodo);
+            textDate.setText(setDate);
+            textTime.setText(setTime);
+            textMemo.setText(setMemo);
             textBox.setText(boxName);
         } else {
-            editTodo.setText(setTodo[0]);
-            editDate.setText(setDate[0]);
-            editTime.setText(setTime[0]);
-            editMemo.setText(setMemo[0]);
+            editTodo.setText(setTodo);
+            editDate.setText(setDate);
+            editTime.setText(setTime);
+            editMemo.setText(setMemo);
             setSpinner();
         }
     }

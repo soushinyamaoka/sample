@@ -17,6 +17,7 @@ public class EditBox extends AppCompatActivity{
     int boxDataBaseId;
     int boxId;
     String boxName;
+    DBAdapter dbAdapter;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -24,6 +25,7 @@ public class EditBox extends AppCompatActivity{
         setContentView(R.layout.edit_box);
         editEditBox = findViewById(R.id.edit_edit_box);
         editEditButton = findViewById(R.id.edit_edit_button);
+        dbAdapter = new DBAdapter(this);
         boxDBAdapter = new BoxDBAdapter(this);
 
         // 現在のintentを取得する
@@ -46,6 +48,27 @@ public class EditBox extends AppCompatActivity{
                     boxDBAdapter.updateBoxDB(boxId,setBoxName);
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+                Integer[] integerArray = dbAdapter.getTodoIdAsArray(null,boxId);
+                int[] todoIdArray = new int[integerArray.length];
+                String[] todoArray = new String[integerArray.length];
+                String[] boxArray = new String[integerArray.length];
+                String[] dateArray = new String[integerArray.length];
+                String[] timeArray = new String[integerArray.length];
+                String[] memoArray = new String[integerArray.length];
+                for (int i=0;i<integerArray.length;i++){
+                    todoIdArray[i] = integerArray[i];
+                    todoArray[i] = dbAdapter.getTodoData(todoIdArray[i]);
+                    dateArray[i] = dbAdapter.getDateData(todoIdArray[i]);
+                    timeArray[i] = dbAdapter.getTimeData(todoIdArray[i]);
+                    memoArray[i] = dbAdapter.getMemoData(todoIdArray[i]);
+                    dbAdapter.updateDB(todoIdArray[i],
+                                        todoArray[i],
+                                        "完了済み",
+                                        dateArray[i],
+                                        timeArray[i],
+                                        memoArray[i],
+                                        1);
                 }
                 //-------------------------
                 Intent intent = new Intent();

@@ -39,6 +39,7 @@ public class TodoEdit extends Activity {
     private Button editTodoButton;
     private Spinner spinner_box;
     private CheckBox reminderButton;
+    private Button limitClearButton;
 
     String setTextTodo = null;
     String setTextBox = null;
@@ -65,6 +66,7 @@ public class TodoEdit extends Activity {
         editTodoButton = findViewById(R.id.edit_todo_button);
         spinner_box = (Spinner) findViewById(R.id.new_box_spinner);
         reminderButton = findViewById(R.id.reminder_button);
+        limitClearButton = findViewById(R.id.limit_clear_button);
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
         boxDBAdapter = new BoxDBAdapter(this);
@@ -163,6 +165,15 @@ public class TodoEdit extends Activity {
             }
         });
         //---------------------------
+
+        limitClearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // チェックボックスがクリックされた時に呼び出されます
+            public void onClick(View v) {
+                editDate.setText("");
+                editTime.setText("");
+            }
+        });
     }
 
     public void onCheckboxClicked(View view) {
@@ -170,15 +181,17 @@ public class TodoEdit extends Activity {
         switch(view.getId()) {
             case R.id.reminder_button:
                 if (checked) {
-                    if (editDate.equals("")){
+                    if (editDate.getText().toString().equals("")){
                         Toast.makeText(TodoEdit.this,
                                 "日付けを設定してください",
                                 Toast.LENGTH_SHORT).show();
+                        reminderButton.setChecked(false);
                         break;
-                    } else if (editTime.equals("")){
+                    } else if (editTime.getText().toString().equals("")){
                         Toast.makeText(TodoEdit.this,
                                 "時間を設定してください",
                                 Toast.LENGTH_SHORT).show();
+                        reminderButton.setChecked(false);
                         break;
                     } else {
                         // チェックボックス1がチェックされる

@@ -170,6 +170,21 @@ public class ToDoActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // 結果を取得して, 表示する.
                 boxId = data.getIntExtra("boxName",0);
+                //-----------でバック
+                if (boxId == -1) {
+                    Toast.makeText(ToDoActivity.this,
+                            "boxID:"+boxId+"カテゴリ:今日",
+                            Toast.LENGTH_LONG).show();
+                } else if (boxId == 0) {
+                    Toast.makeText(ToDoActivity.this,
+                            "boxID:"+boxId+"カテゴリ:全て",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ToDoActivity.this,
+                            "boxID:"+boxId+"カテゴリ:"+boxDBAdapter.getBoxName(boxId),
+                            Toast.LENGTH_LONG).show();
+                }
+                //-----------
                 if (boxId == 0) {//カテゴリが全ての場合
                     showList(boxId);
                 } else if (boxId == -1) {//カテゴリが今日の場合
@@ -226,14 +241,14 @@ public class ToDoActivity extends AppCompatActivity {
 
     public void deleteList(int todoId){
         try {
-            String[] getTodo = dbAdapter.getTodoData(todoId);
-            String[] getDate = dbAdapter.getDateData(todoId);
-            String[] getTime = dbAdapter.getTimeData(todoId);
-            String[] getMemo = dbAdapter.getMemoData(todoId);
+            String getTodo = dbAdapter.getTodoData(todoId);
+            String getDate = dbAdapter.getDateData(todoId);
+            String getTime = dbAdapter.getTimeData(todoId);
+            String getMemo = dbAdapter.getMemoData(todoId);
             String boxName = "完了済み";
             int boxId = 1;
 
-            dbAdapter.updateDB(todoId, getTodo[0], boxName, getDate[0], getTime[0], getMemo[0],boxId);
+            dbAdapter.updateDB(todoId, getTodo, boxName, getDate, getTime, getMemo,boxId);
         } catch (Exception e) {
             e.printStackTrace();
         }
