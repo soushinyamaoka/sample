@@ -97,14 +97,16 @@ public class TodoDetail extends Activity {
         showDetail(todoId,boxId);
         //-------------------------
 
-        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+        TimePickerDialog.OnTimeSetListener onTimeSetListener
+                = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 editTime.setText(hourOfDay + "時" + minute + "分");
             }
         };
 
-        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog.OnDateSetListener onDateSetListener
+                = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
                 editDate.setText(year + "年" + (monthOfYear + 1) + "月" + dayOfMonth + "日");
@@ -192,7 +194,9 @@ public class TodoDetail extends Activity {
                         calendar.setTimeInMillis(System.currentTimeMillis());
                         calendar.add(Calendar.SECOND, (int) triggerAtTime);
                         scheduleNotification(editTodo.getText().toString(), calendar);
-                        Toast.makeText(TodoDetail.this,"リマインダーを設定しました",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TodoDetail.this,
+                                        "リマインダーを設定しました",
+                                        Toast.LENGTH_SHORT).show();
                         break;
                     }
                 } else {
@@ -210,7 +214,11 @@ public class TodoDetail extends Activity {
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_CONTENT, content);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
@@ -244,7 +252,7 @@ public class TodoDetail extends Activity {
                     );
             if (allTodo){//全てが選ばれていた場合はboxidを0に戻す
                 boxId = 0;
-            } else if (todayTodo) {
+            } else if (todayTodo) {//今日が選ばれているとき
                 boxId = -1;
             }
             Intent data = new Intent(TodoDetail.this,ToDoActivity.class);

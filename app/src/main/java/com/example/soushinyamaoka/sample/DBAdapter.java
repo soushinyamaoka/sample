@@ -165,8 +165,13 @@ public class DBAdapter extends AppCompatActivity {
             String[] arrayTodo = new String[listTodo.size()];
             arrayDate[i] = listDate.get(i);
             arrayTodo[i] = listTodo.get(i);
-            if (arrayDate[i].compareTo(nowDate)<=0){//nowDateが大きければ+1/同じなら0/小さければ
-                todayTodo.addAll(Arrays.asList(arrayTodo[i]));
+            if (!arrayDate[i].isEmpty()){
+                if (arrayDate[i].compareTo(nowDate)<=0){//nowDateが大きければ+1/同じなら0/小さければ
+                    todayTodo.addAll(Arrays.asList(arrayTodo[i]));
+                }
+            } else {
+                ArrayList<String> subtodayTodo = new ArrayList<>();
+                subtodayTodo.addAll(Arrays.asList(arrayTodo[i]));
             }
         }
         return todayTodo;
@@ -387,8 +392,10 @@ public class DBAdapter extends AppCompatActivity {
                 Integer[] arrayId = new Integer[listId.size()];
                 arrayDate[i] = listDate.get(i);
                 arrayId[i] = listId.get(i);
-                if (arrayDate[i].compareTo(nowDate)<=0){//nowDateが大きければ+1/同じなら0/小さければ
-                    subListId.addAll(Arrays.asList(arrayId[i]));
+                if (arrayDate[i] != null){
+                    if (arrayDate[i].compareTo(nowDate)<=0){//nowDateが大きければ+1/同じなら0/小さければ
+                        subListId.addAll(Arrays.asList(arrayId[i]));
+                    }
                 }
             }
             listId = new ArrayList<>();

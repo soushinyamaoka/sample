@@ -30,11 +30,11 @@ import static android.content.ContentValues.TAG;
 
 public class ToDoActivity extends AppCompatActivity {
 
-    String editTodo;
-    String editBox;
-    String editDate;
-    String editTime;
-    String editMemo;
+    String editTodo = "";
+    String editBox = "";
+    String editDate = "";
+    String editTime = "";
+    String editMemo = "";
     int boxId;
 
     int todoId = 0;
@@ -88,6 +88,9 @@ public class ToDoActivity extends AppCompatActivity {
         } else {//その他すべて
             showDividedTodoList(boxId);
         }
+        Toast.makeText(ToDoActivity.this,
+                "boxID:"+boxId+"カテゴリ:"+boxName,
+                Toast.LENGTH_LONG).show();
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,15 +106,15 @@ public class ToDoActivity extends AppCompatActivity {
                     } else if (boxId == -1) {//今日の時:今日の日付を自動設定
                         boxName = "未分類";
                         boxId = 2;
-                        dbAdapter.writeDB(editTodo, boxName, getNowDate(), null, editMemo, boxId);
+                        dbAdapter.writeDB(editTodo, boxName, getNowDate(), editTime, editMemo, boxId);
                         boxId = -1;//元に戻す
                     } else if (boxId == 0) {//全ての時
                         boxName = "未分類";
                         boxId = 2;
-                        dbAdapter.writeDB(editTodo, boxName, null, null, editMemo, boxId);
+                        dbAdapter.writeDB(editTodo, boxName, editDate, editTime, editMemo, boxId);
                         boxId = 0;//元に戻す
                     } else {
-                        dbAdapter.writeDB(editTodo, boxName, getNowDate(), getNowTime(), editMemo, boxId);
+                        dbAdapter.writeDB(editTodo, boxName, editDate, editTime, editMemo, boxId);
                     }
                     showDividedTodoList(boxId);
                     editText.getEditableText().clear();

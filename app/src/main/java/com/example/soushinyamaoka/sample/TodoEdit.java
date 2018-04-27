@@ -40,11 +40,11 @@ public class TodoEdit extends Activity {
     private Spinner spinner_box;
     private CheckBox reminderButton;
 
-    String setTextTodo;
-    String setTextBox;
-    String setTextDate;
-    String setTextTime;
-    String setTextMemo;
+    String setTextTodo = null;
+    String setTextBox = null;
+    String setTextDate = null;
+    String setTextTime = null;
+    String setTextMemo = null;
     DBHelper db;
     DBAdapter dbAdapter;
     BoxDBAdapter boxDBAdapter;

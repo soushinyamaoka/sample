@@ -93,7 +93,7 @@
         android:background="@drawable/flame_style"
         android:gravity="left|center_vertical"
         android:paddingLeft="10dp"
-        android:text="@string/date_text"
+        android:hint="@string/date_text"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date_text" />
@@ -108,7 +108,7 @@
         android:background="@drawable/flame_style"
         android:gravity="left|center_vertical"
         android:paddingLeft="10dp"
-        android:text="@string/time_text"
+        android:hint="@string/time_text"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date_text" />
