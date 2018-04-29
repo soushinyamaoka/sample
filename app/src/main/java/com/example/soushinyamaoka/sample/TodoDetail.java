@@ -78,7 +78,6 @@ public class TodoDetail extends Activity {
             textTime = findViewById(R.id.new_edit_Time);
             textMemo = findViewById(R.id.new_edit_Memo);
             textBox = findViewById(R.id.new_edit_box);
-            reminderButton = findViewById(R.id.reminder_button);
         } else {//完了済み以外の時
             boxName = boxDBAdapter.getBoxName(dbAdapter.getBoxIdData(todoId));//todo内のboxIdを取得し渡す。
             setContentView(R.layout.activity_detail_todo);
@@ -87,7 +86,6 @@ public class TodoDetail extends Activity {
             editTime = findViewById(R.id.new_edit_Time);
             editMemo = findViewById(R.id.new_edit_Memo);
             spinner_box = (Spinner) findViewById(R.id.new_box_spinner);
-            reminderButton = findViewById(R.id.reminder_button);
             limitClearButton = findViewById(R.id.limit_clear_button);
         }
 
@@ -145,15 +143,6 @@ public class TodoDetail extends Activity {
                 }
             });
 
-            // チェックボックスがクリックされた時に呼び出されるコールバックリスナーを登録します
-            reminderButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                // チェックボックスがクリックされた時に呼び出されます
-                public void onClick(View v) {
-                    onCheckboxClicked(v);
-                }
-            });
-
             limitClearButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 // チェックボックスがクリックされた時に呼び出されます
@@ -167,60 +156,35 @@ public class TodoDetail extends Activity {
 
     public void onCheckboxClicked(View view) {
         final boolean checked = ((CheckBox) view).isChecked();
-        switch(view.getId()) {
-            case R.id.reminder_button:
-                if (checked) {
-                    if (editDate.getText().toString().equals("")){
-                        Toast.makeText(TodoDetail.this,
-                                "日付けを設定してください",
-                                Toast.LENGTH_SHORT).show();
-                        reminderButton.setChecked(false);
-                        break;
-                    } else if (editTime.getText().toString().equals("")){
-                        Toast.makeText(TodoDetail.this,
-                                "時間を設定してください",
-                                Toast.LENGTH_SHORT).show();
-                        reminderButton.setChecked(false);
-                        break;
-                    } else {
-                        // チェックボックス1がチェックされる
-                        //設定された時間
-                        String strDate = editDate.getText().toString();//"yyyy年MM月dd日"
-                        String strTime = editTime.getText().toString();//"HH時mm分"
-                        String str1 = strDate + strTime;
-                        String str2 = str1.replace("年", "/");
-                        String str3 = str2.replace("月", "/");
-                        String str4 = str3.replace("日", " ");
-                        String str5 = str4.replace("時", ":");
-                        String str6 = str5.replace("分", "");//"yyyy/MM/dd HH:mm"
+        if (editDate.getText().toString().equals("")){
+            // チェックボックス1がチェックされる
+            //設定された時間
+            String strDate = editDate.getText().toString();//"yyyy年MM月dd日"
+            String strTime = editTime.getText().toString();//"HH時mm分"
+            String str1 = strDate + strTime;
+            String str2 = str1.replace("年", "/");
+            String str3 = str2.replace("月", "/");
+            String str4 = str3.replace("日", " ");
+            String str5 = str4.replace("時", ":");
+            String str6 = str5.replace("分", "");//"yyyy/MM/dd HH:mm"
 
-                        Date dDate = null;
-                        DateFormat df2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");// 変換
-                        try {
-                            dDate = df2.parse(str6);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        //現在の時間
-                        Date now = new Date(System.currentTimeMillis());
-                        long triggerAtTime = getTriggerAtTime(now,dDate);
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTimeInMillis(System.currentTimeMillis());
-                        calendar.add(Calendar.SECOND, (int) triggerAtTime);
-                        scheduleNotification(editTodo.getText().toString(), calendar);
-                        Toast.makeText(TodoDetail.this,
-                                        "リマインダーを設定しました",
-                                        Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-                } else {
-                    // チェックボックス1のチェックが外される
-                    Toast.makeText(TodoDetail.this,
-                            "リマインダーを解除しました",
-                            Toast.LENGTH_SHORT).show();
-                }
-                break;
-            default:break;
+            Date dDate = null;
+            DateFormat df2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");// 変換
+            try {
+                dDate = df2.parse(str6);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            //現在の時間
+            Date now = new Date(System.currentTimeMillis());
+            long triggerAtTime = getTriggerAtTime(now,dDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.add(Calendar.SECOND, (int) triggerAtTime);
+            scheduleNotification(editTodo.getText().toString(), calendar);
+            Toast.makeText(TodoDetail.this,
+                    "リマインダーを設定しました",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
