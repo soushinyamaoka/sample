@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         allTodoView.setClickable(true);
         allTodoView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                spinnerPosition =
+                startTodoActivityClass(spinnerPosition,boxId);
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
                 int boxId = 0;
                 intent.putExtra("boxName",boxId);
