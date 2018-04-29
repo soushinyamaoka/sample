@@ -38,8 +38,8 @@ public class TodoEdit extends Activity {
     private EditText editMemo;
     private Button editTodoButton;
     private Spinner spinner_box;
-    private ImageButton timeClearButton;
-    private ImageButton dateClearButton;
+    private Button timeClearButton;
+    private Button dateClearButton;
 
     String setTextTodo = null;
     String setTextBox = null;
