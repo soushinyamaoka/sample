@@ -7,6 +7,48 @@
     android:layout_height="fill_parent"
     >
 
+    <ImageButton
+        android:id="@+id/date_clear_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="13dp"
+        android:background="#ffffff"
+        app:layout_constraintStart_toEndOf="@+id/new_edit_Date"
+        app:layout_constraintTop_toBottomOf="@+id/date_text"
+        app:srcCompat="@android:drawable/btn_dialog" />
+
+    <TextView
+        android:id="@+id/reminder_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/new_edit_Time"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:gravity="left|center_vertical"
+        android:text="@string/reminder_text"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_edit_Date" />
+
+    <TextView
+        android:id="@+id/new_edit_Time"
+        android:layout_width="160dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/flame_style"
+        android:gravity="left|center_vertical"
+        android:hint="@string/time_text"
+        android:paddingLeft="10dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reminder_text" />
+
     <TextView
         android:id="@+id/todo_text"
         android:layout_width="wrap_content"
@@ -104,12 +146,12 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:gravity="left|center_vertical"
         android:text="@string/memo_text"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
+        app:layout_constraintTop_toBottomOf="@+id/new_edit_Time" />
 
     <EditText
         android:id="@+id/new_edit_Memo"
@@ -130,35 +172,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/memo_text" />
 
-    <Button
-        android:id="@+id/limit_clear_button"
-        android:layout_width="76dp"
-        android:layout_height="25dp"
+    <ImageButton
+        android:id="@+id/time_clear_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:paddingBottom="0dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
-        android:paddingTop="0dp"
-        android:text="@string/limit_clear_text"
-        android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/include"
-        app:layout_constraintTop_toBottomOf="@+id/new_edit_Date" />
-
-    <include
-        android:id="@+id/include"
-        layout="@layout/time_reminder"
-        android:layout_width="226dp"
-        android:layout_height="52dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/flame_style"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="0dp"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_edit_Date" />
+        android:layout_marginTop="13dp"
+        android:background="#ffffff"
+        app:layout_constraintStart_toEndOf="@+id/new_edit_Time"
+        app:layout_constraintTop_toBottomOf="@+id/reminder_text"
+        app:srcCompat="@android:drawable/btn_dialog" />
 
 </android.support.constraint.ConstraintLayout>

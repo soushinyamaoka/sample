@@ -4,17 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
 public class EditBox extends AppCompatActivity{
 
     BoxDBAdapter boxDBAdapter;
-    ArrayAdapter<String> adapter;
     EditText editEditBox;
     Button editEditButton;
-    int boxDataBaseId;
     int boxId;
     String boxName;
     DBAdapter dbAdapter;
@@ -30,12 +27,7 @@ public class EditBox extends AppCompatActivity{
 
         // 現在のintentを取得する
         Intent intent = getIntent();
-        //Mainから渡された「選択されたカテゴリのDB上のID」を取得
-        //boxDataBaseId = intent.getIntExtra( "boxDataBaseId",-1);
-        //Mainから渡された「選択されたカテゴリ名」を取得
-        //String[] setBox = intent.getStringArrayExtra( "boxName");
         boxId = intent.getIntExtra("boxName", -1);
-        //boxName = boxDBAdapter.changeToBoxName(boxId);
         boxName = boxDBAdapter.getBoxName(boxId);
         editEditBox.setText(boxName);
 
@@ -72,7 +64,6 @@ public class EditBox extends AppCompatActivity{
                 }
                 //-------------------------
                 Intent intent = new Intent();
-                //intent.putExtra("changedBoxName", setBoxName);
                 setResult(RESULT_OK, intent);
                 finish();
             }

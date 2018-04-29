@@ -13,9 +13,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -38,8 +38,8 @@ public class TodoEdit extends Activity {
     private EditText editMemo;
     private Button editTodoButton;
     private Spinner spinner_box;
-    private CheckBox reminderButton;
-    private Button limitClearButton;
+    private ImageButton timeClearButton;
+    private ImageButton dateClearButton;
 
     String setTextTodo = null;
     String setTextBox = null;
@@ -64,8 +64,9 @@ public class TodoEdit extends Activity {
         editTime = findViewById(R.id.new_edit_Time);
         editMemo = findViewById(R.id.new_edit_Memo);
         editTodoButton = findViewById(R.id.edit_todo_button);
+        timeClearButton = findViewById(R.id.time_clear_button);
+        dateClearButton = findViewById(R.id.date_clear_button);
         spinner_box = (Spinner) findViewById(R.id.new_box_spinner);
-        limitClearButton = findViewById(R.id.limit_clear_button);
         db = new DBHelper(this);
         dbAdapter = new DBAdapter(this);
         boxDBAdapter = new BoxDBAdapter(this);
@@ -118,6 +119,7 @@ public class TodoEdit extends Activity {
                 String strHourOfDay = String.format("%02d", hourOfDay);
                 String strMinute = String.format("%02d", minute);
                 editTime.setText(strHourOfDay + "時" + strMinute + "分");
+                setReminder();
             }
         };
         DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
@@ -155,18 +157,24 @@ public class TodoEdit extends Activity {
             }
         });
 
-        limitClearButton.setOnClickListener(new View.OnClickListener() {
+        dateClearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             // チェックボックスがクリックされた時に呼び出されます
             public void onClick(View v) {
                 editDate.setText("");
+            }
+        });
+
+        timeClearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // チェックボックスがクリックされた時に呼び出されます
+            public void onClick(View v) {
                 editTime.setText("");
             }
         });
     }
 
-    public void onCheckboxClicked(View view) {
-        final boolean checked = ((CheckBox) view).isChecked();
+    public void setReminder() {
         if (editDate.getText().toString().equals("")){
             // チェックボックス1がチェックされる
             //設定された時間

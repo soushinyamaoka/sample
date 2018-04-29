@@ -11,10 +11,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -40,8 +39,8 @@ public class TodoDetail extends Activity {
     private TextView textMemo;
     private TextView textBox;
     private Spinner spinner_box;
-    private CheckBox reminderButton;
-    private Button limitClearButton;
+    private ImageButton timeClearButton;
+    private ImageButton dateClearButton;
     DBHelper db;
     DBAdapter dbAdapter;
     BoxDBAdapter boxDBAdapter;
@@ -86,7 +85,8 @@ public class TodoDetail extends Activity {
             editTime = findViewById(R.id.new_edit_Time);
             editMemo = findViewById(R.id.new_edit_Memo);
             spinner_box = (Spinner) findViewById(R.id.new_box_spinner);
-            limitClearButton = findViewById(R.id.limit_clear_button);
+            timeClearButton = findViewById(R.id.time_clear_button);
+            dateClearButton = findViewById(R.id.date_clear_button);
         }
 
         db = new DBHelper(this);
@@ -103,6 +103,7 @@ public class TodoDetail extends Activity {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 editTime.setText(hourOfDay + "時" + minute + "分");
+                setReminder();
             }
         };
 
@@ -143,19 +144,29 @@ public class TodoDetail extends Activity {
                 }
             });
 
-            limitClearButton.setOnClickListener(new View.OnClickListener() {
+            dateClearButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 // チェックボックスがクリックされた時に呼び出されます
                 public void onClick(View v) {
                     editDate.setText("");
+                }
+            });
+
+            timeClearButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                // チェックボックスがクリックされた時に呼び出されます
+                public void onClick(View v) {
                     editTime.setText("");
+                    cancelReminder();
+                    Toast.makeText(TodoDetail.this,
+                            "リマインダーを解除しました",
+                            Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
 
-    public void onCheckboxClicked(View view) {
-        final boolean checked = ((CheckBox) view).isChecked();
+    public void setReminder(){
         if (editDate.getText().toString().equals("")){
             // チェックボックス1がチェックされる
             //設定された時間
@@ -186,6 +197,17 @@ public class TodoDetail extends Activity {
                     "リマインダーを設定しました",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void cancelReminder(){
+        // アラームの削除
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, todoId, intent, 0);
+
+        pendingIntent.cancel();
+        alarmManager.cancel(pendingIntent);
     }
 
     private void scheduleNotification(String content, Calendar calendar){

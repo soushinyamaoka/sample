@@ -8,6 +8,21 @@
     >
 
     <TextView
+        android:id="@+id/reminder_text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/new_edit_Time"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:gravity="left|center_vertical"
+        android:text="@string/reminder_text"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_edit_Date" />
+
+    <TextView
         android:id="@+id/todo_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -103,8 +118,8 @@
         android:id="@+id/new_edit_Time"
         android:layout_width="160dp"
         android:layout_height="40dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_weight="1"
         android:background="@drawable/flame_style"
@@ -112,8 +127,8 @@
         android:paddingLeft="10dp"
         android:text="@string/time_text"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date_text" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reminder_text2" />
 
     <TextView
         android:id="@+id/memo_text"

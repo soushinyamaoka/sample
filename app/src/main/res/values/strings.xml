@@ -24,5 +24,5 @@
     <string name="reminder_text">リマインダー</string>
     <string name="date_reminder_text">日付けとリマインダーを設定</string>
     <string name="finish_text">完了</string>
-    <string name="limit_clear_text">期限をクリア</string>
+    <string name="limit_clear_text">日時をクリア</string>
 </resources>
