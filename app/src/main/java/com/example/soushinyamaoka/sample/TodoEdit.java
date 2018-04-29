@@ -237,9 +237,10 @@ public class TodoEdit extends Activity {
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_CONTENT, content);
+        notificationIntent.putExtra("requestCode",todoId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this,
-                0,
+                todoId,
                 notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 

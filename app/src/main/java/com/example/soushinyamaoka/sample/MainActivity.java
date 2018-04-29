@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("boxName", boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
-                //startActivity(intent);
             }
         });
 
@@ -153,11 +152,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void deleteBoxList(int boxId){
         try {
-            String setBox = "完了済み";
-            //boxId = 1;//完了
-            //カテゴリ内にあるタスクのカテゴリを完了に変更
-            //boxDBAdapter.updateBoxDB(boxId,setBox);
-            //カテゴリ名を削除
             boxDBAdapter.deleteBoxDB(boxId);
 
             //カテゴリ内にあるタスクのカテゴリを完了に変更

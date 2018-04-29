@@ -228,9 +228,10 @@ public class TodoDetail extends Activity {
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(AlarmReceiver.NOTIFICATION_CONTENT, content);
+        notificationIntent.putExtra("requestCode",todoId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this,
-                0,
+                todoId,
                 notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -253,7 +254,7 @@ public class TodoDetail extends Activity {
         if (boxId == 1){//完了済みのタスクの場合
             finish();
         } else {
-            int updateBoxId = boxDBAdapter.changeToBoxId(spinner_box.getSelectedItemPosition() + 2);//ListViewのずれ1と、完了済みを抜いてる分の１をプラス
+            int updateBoxId = boxDBAdapter.changeToBoxId(spinner_box.getSelectedItemPosition() + 1);//完了済みを抜いてる分の１をプラス
             boxName = boxDBAdapter.changeToBoxName(updateBoxId);
             dbAdapter.updateDB(todoId,
                     editTodo.getText().toString(),
@@ -271,6 +272,21 @@ public class TodoDetail extends Activity {
             }
             Intent data = new Intent(TodoDetail.this,ToDoActivity.class);
             data.putExtra("boxName",boxId);
+            //-----------でバック
+            if (boxId == -1) {
+                Toast.makeText(TodoDetail.this,
+                        "boxID:"+boxId+"カテゴリ:今日",
+                        Toast.LENGTH_LONG).show();
+            } else if (boxId == 0) {
+                Toast.makeText(TodoDetail.this,
+                        "boxID:"+boxId+"カテゴリ:全て",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(TodoDetail.this,
+                        "boxID:"+boxId+"カテゴリ:"+boxDBAdapter.getBoxName(boxId),
+                        Toast.LENGTH_LONG).show();
+            }
+            //-----------
             setResult(RESULT_OK, data);
             finish();
         }

@@ -95,28 +95,26 @@ public class ToDoActivity extends AppCompatActivity {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (boxId == -1 || boxId == 0){
-                    boxName = "未分類";
-                    boxId = 2;
-                }
                 try {
                     editTodo = editText.getText().toString();//書き込まれた内容(getText)をstrに格納
                     if(editTodo.equals("")){//空欄の時:入力するようにとのメッセージ
                         emptyTaskDialogFragment.show(getFragmentManager(), "empty");
                     } else if (boxId == -1) {//今日の時:今日の日付を自動設定
-                        boxName = "未分類";
-                        boxId = 2;
-                        dbAdapter.writeDB(editTodo, boxName, getNowDate(), editTime, editMemo, boxId);
-                        boxId = -1;//元に戻す
+                        //boxName = "未分類";
+                        //boxId = 2;
+                        dbAdapter.writeDB(editTodo, "未分類", getNowDate(), editTime, editMemo, 2);
+                        showList(boxId);
+                        //boxId = -1;//元に戻す
                     } else if (boxId == 0) {//全ての時
-                        boxName = "未分類";
-                        boxId = 2;
-                        dbAdapter.writeDB(editTodo, boxName, editDate, editTime, editMemo, boxId);
-                        boxId = 0;//元に戻す
+                        //boxName = "未分類";
+                        //boxId = 2;
+                        dbAdapter.writeDB(editTodo, "未分類", editDate, editTime, editMemo, 2);
+                        showList(boxId);
+                        //boxId = 0;//元に戻す
                     } else {
                         dbAdapter.writeDB(editTodo, boxName, editDate, editTime, editMemo, boxId);
+                        showDividedTodoList(boxId);
                     }
-                    showDividedTodoList(boxId);
                     editText.getEditableText().clear();
                 } catch (Exception e) {//エラーの場合
                     Log.e(TAG, "SQLExcepption:" + e.toString());
@@ -151,7 +149,7 @@ public class ToDoActivity extends AppCompatActivity {
                 Intent intent = new Intent(ToDoActivity.this, TodoDetail.class);
                 int todoId = dbAdapter.getTodoId(getNowDate(),boxId,id);//todoのidを取得
                 //boxId = dbAdapter.getBoxIdData(todoId);//todoのboxidを取得
-                spinnerPosition = boxDBAdapter.getSpinnerPosition(dbAdapter.getBoxIdData(todoId));
+                spinnerPosition = boxDBAdapter.getSpinnerPosition(dbAdapter.getBoxIdData(todoId))-1;//完了済みの分-1する
 
                 intent.putExtra( "todoId", todoId);
                 intent.putExtra("spinnerPosition", spinnerPosition);
