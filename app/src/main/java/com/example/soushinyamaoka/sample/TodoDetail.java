@@ -80,7 +80,7 @@ public class TodoDetail extends Activity {
             textBox = findViewById(R.id.new_edit_box);
             reminderButton = findViewById(R.id.reminder_button);
         } else {//完了済み以外の時
-            boxName = boxDBAdapter.changeToBoxName(dbAdapter.getBoxIdData(todoId));//todo内のboxIdを取得し渡す。
+            boxName = boxDBAdapter.getBoxName(dbAdapter.getBoxIdData(todoId));//todo内のboxIdを取得し渡す。
             setContentView(R.layout.activity_detail_todo);
             editTodo = findViewById(R.id.new_edit_Todo);
             editDate = findViewById(R.id.new_edit_Date);
@@ -254,8 +254,9 @@ public class TodoDetail extends Activity {
         if (boxId == 1){//完了済みのタスクの場合
             finish();
         } else {
-            int updateBoxId = boxDBAdapter.changeToBoxId(spinner_box.getSelectedItemPosition() + 1);//完了済みを抜いてる分の１をプラス
-            boxName = boxDBAdapter.changeToBoxName(updateBoxId);
+            //int updateBoxId = boxDBAdapter.changeToBoxId(spinner_box.getSelectedItemPosition() + 3);//完了済みを抜いてる分の１をプラス
+            int updateBoxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition());
+            //boxName = boxDBAdapter.getBoxName(boxId);
             dbAdapter.updateDB(todoId,
                     editTodo.getText().toString(),
                     //edit_Box.getText().toString(),
@@ -265,11 +266,11 @@ public class TodoDetail extends Activity {
                     editMemo.getText().toString(),
                     updateBoxId
                     );
-            if (allTodo){//全てが選ばれていた場合はboxidを0に戻す
-                boxId = 0;
-            } else if (todayTodo) {//今日が選ばれているとき
-                boxId = -1;
-            }
+            //if (allTodo){//全てが選ばれていた場合はboxidを0に戻す
+            //    boxId = 0;
+            //} else if (todayTodo) {//今日が選ばれているとき
+            //    boxId = -1;
+            //}
             Intent data = new Intent(TodoDetail.this,ToDoActivity.class);
             data.putExtra("boxName",boxId);
             //-----------でバック
@@ -331,11 +332,11 @@ public class TodoDetail extends Activity {
 
     public void setSpinner(){
         ArrayList<String> lvAdapter = new ArrayList<>();
-        lvAdapter = boxDBAdapter.readBoxSpinnerDB();
+        lvAdapter = boxDBAdapter.readBoxSpinnerDB();//「完了済み」のみ抽出しないList
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.text_box_list, lvAdapter);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_box.setAdapter(adapter);
-        spinner_box.setSelection(spinnerPosition);//完了済みを抜いている分をマイナスする
+        spinner_box.setSelection(spinnerPosition);//遷移元のアクティビティから渡された値。すでに未分類の分は加算済み
     }
 }
 

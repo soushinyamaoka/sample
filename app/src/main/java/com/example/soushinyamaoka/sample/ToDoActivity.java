@@ -68,14 +68,15 @@ public class ToDoActivity extends AppCompatActivity {
         db = new DBHelper(this);
 
         Intent intent = getIntent();
-        spinnerPosition = intent.getIntExtra("spinnerPosition",0);//detail表示の際に使用
+        //detail表示の際に使用。Detailでは未分類も表示するためあらかじめ＋1しておく
+        spinnerPosition = intent.getIntExtra("spinnerPosition",0);
         boxId = intent.getIntExtra("boxName",0);
         if (boxId == 0){
             boxName = "全て";
         } else if (boxId == -1){
             boxName = "今日";
         } else {
-            boxName =  boxDBAdapter.changeToBoxName(boxId);
+            boxName =  boxDBAdapter.getBoxName(boxId);
         }
 
         setToolbar(boxName);
@@ -149,7 +150,7 @@ public class ToDoActivity extends AppCompatActivity {
                 Intent intent = new Intent(ToDoActivity.this, TodoDetail.class);
                 int todoId = dbAdapter.getTodoId(getNowDate(),boxId,id);//todoのidを取得
                 //boxId = dbAdapter.getBoxIdData(todoId);//todoのboxidを取得
-                spinnerPosition = boxDBAdapter.getSpinnerPosition(dbAdapter.getBoxIdData(todoId))-1;//完了済みの分-1する
+                //spinnerPosition = boxDBAdapter.getSpinnerPosition(dbAdapter.getBoxIdData(todoId))-1;//完了済みの分-1する
 
                 intent.putExtra( "todoId", todoId);
                 intent.putExtra("spinnerPosition", spinnerPosition);

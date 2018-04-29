@@ -89,7 +89,7 @@ public class BoxDBAdapter extends AppCompatActivity {
             Cursor c = db.query(
                     DB_TABLE,
                     cols,
-                    "id != 1 AND id != 2",//id.1の完了済みと、id.2の今日は表示させない
+                    "id != 1 AND id != 2",//id.1の完了済みと、id.2の未分類は表示させない
                     null,
                     null,
                     null,
@@ -190,32 +190,6 @@ public class BoxDBAdapter extends AppCompatActivity {
         }
         String[] setBoxName = listBox.toArray(new String[listBox.size()]);
         return setBoxName[0];
-    }
-
-    public int changeToBoxId(int boxId){
-        openBoxDB();
-        listBoxId = new ArrayList<>();
-        String[] cols = {COL_ID};
-        try {
-            Cursor c = db.query(
-                    DB_TABLE,
-                    cols,
-                    "id =" + boxId,
-                    null,
-                    null,
-                    null,
-                    ORDER_BY);
-            c.moveToFirst();
-            for (int i = 0; i < c.getCount(); i++) {
-                listBoxId.add(c.getInt(0));
-                c.moveToNext();
-            }
-            c.close();
-        }catch(SQLException e) {
-            Log.e(TAG, "SQLExcepption:"+e.toString());
-        }
-        Integer[] setBoxId = listBoxId.toArray(new Integer[listBoxId.size()]);
-        return setBoxId[0];
     }
 
     public String getBoxName(int boxId) {

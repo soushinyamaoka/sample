@@ -85,7 +85,7 @@ public class TodoEdit extends Activity {
             public void onClick(View v) {
                 boxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition());
                 setTextTodo = editTodo.getText().toString();
-                setTextBox = boxDBAdapter.changeToBoxName(boxId);
+                setTextBox = boxDBAdapter.getBoxName(boxId);
                 setTextDate = editDate.getText().toString();
                 setTextTime = editTime.getText().toString();
                 setTextMemo = editMemo.getText().toString();

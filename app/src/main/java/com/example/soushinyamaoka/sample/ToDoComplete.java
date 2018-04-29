@@ -54,7 +54,7 @@ public class ToDoComplete extends AppCompatActivity{
 
         Intent intent = getIntent();
         boxId = intent.getIntExtra("boxName",0);
-        boxName = boxDBAdapter.changeToBoxName(boxId);
+        boxName = boxDBAdapter.getBoxName(boxId);
 
         setToolbar(boxName);
 
