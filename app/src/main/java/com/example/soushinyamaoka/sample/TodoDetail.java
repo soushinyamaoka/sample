@@ -237,23 +237,30 @@ public class TodoDetail extends Activity {
 
     @Override
     public void onBackPressed(){
-        if (boxId == 1){//完了済みのタスクの場合
-            finish();
+        if ((editDate.getText().toString().equals("")) && (!editTime.getText().toString().equals(""))){
+            Toast.makeText(TodoDetail.this,
+                    "日付を設定してください",
+                    Toast.LENGTH_SHORT).show();
         } else {
-            int updateBoxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition());
-            dbAdapter.updateDB(todoId,
-                    editTodo.getText().toString(),
-                    (String)spinner_box.getSelectedItem(),
-                    editDate.getText().toString(),
-                    editTime.getText().toString(),
-                    editMemo.getText().toString(),
-                    updateBoxId
-                    );
-            Intent data = new Intent(TodoDetail.this,ToDoActivity.class);
-            data.putExtra("boxName",boxId);
-            setResult(RESULT_OK, data);
-            finish();
+            if (boxId == 1){//完了済みのタスクの場合
+                finish();
+            } else {
+                int updateBoxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition());
+                dbAdapter.updateDB(todoId,
+                        editTodo.getText().toString(),
+                        (String)spinner_box.getSelectedItem(),
+                        editDate.getText().toString(),
+                        editTime.getText().toString(),
+                        editMemo.getText().toString(),
+                        updateBoxId
+                );
+                Intent data = new Intent(TodoDetail.this,ToDoActivity.class);
+                data.putExtra("boxName",boxId);
+                setResult(RESULT_OK, data);
+                finish();
+            }
         }
+
     }
 
     public void showDetail(int todoId, int boxId)  {

@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -83,26 +82,32 @@ public class TodoEdit extends Activity {
         editTodoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition());
-                setTextTodo = editTodo.getText().toString();
-                setTextBox = boxDBAdapter.getBoxName(boxId);
-                setTextDate = editDate.getText().toString();
-                setTextTime = editTime.getText().toString();
-                setTextMemo = editMemo.getText().toString();
-                try {
-                    if(setTextTodo.equals("")){//todoが空欄だった時の処理
-                        emptyTaskDialogFragment.show(getFragmentManager(), "empty");
-                    } else if (setTextBox == null){//分類がされていない時の処理
-                        setTextBox = "未分類";
-                        boxId = 2;
-                        dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
-                        finish();
-                    } else {//通常処理
-                        dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
-                        finish();
+                if ((editDate.getText().toString().equals("")) && (!editTime.getText().toString().equals(""))){
+                    Toast.makeText(TodoEdit.this,
+                            "日付を設定してください",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    boxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition());
+                    setTextTodo = editTodo.getText().toString();
+                    setTextBox = boxDBAdapter.getBoxName(boxId);
+                    setTextDate = editDate.getText().toString();
+                    setTextTime = editTime.getText().toString();
+                    setTextMemo = editMemo.getText().toString();
+                    try {
+                        if(setTextTodo.equals("")){//todoが空欄だった時の処理
+                            emptyTaskDialogFragment.show(getFragmentManager(), "empty");
+                        } else if (setTextBox == null){//分類がされていない時の処理
+                            setTextBox = "未分類";
+                            boxId = 2;
+                            dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
+                            finish();
+                        } else {//通常処理
+                            dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
+                            finish();
+                        }
+                    } catch (Exception e) {//エラーの場合
+                        Log.e(TAG, "SQLExcepption:" + e.toString());
                     }
-                } catch (Exception e) {//エラーの場合
-                    Log.e(TAG, "SQLExcepption:" + e.toString());
                 }
             }
         });
