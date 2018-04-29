@@ -244,10 +244,10 @@ public class BoxDBAdapter extends AppCompatActivity {
         Integer[] array = listBoxId.toArray(new Integer[listBoxId.size()]);
         for (int i=0; i<=listBoxId.size(); i++){
             if (array[i] == boxId){
-                setSpinnerPosition = array[i];
+                setSpinnerPosition = i;
                 break;
             }
         }
-        return setSpinnerPosition - 2;
+        return setSpinnerPosition; //Listが0スタートの分と、完了済みを抜く分で-2
     }
 }

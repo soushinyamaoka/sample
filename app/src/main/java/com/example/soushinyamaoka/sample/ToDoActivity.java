@@ -68,8 +68,7 @@ public class ToDoActivity extends AppCompatActivity {
         db = new DBHelper(this);
 
         Intent intent = getIntent();
-        //detail表示の際に使用。Detailでは未分類も表示するためあらかじめ＋1しておく
-        spinnerPosition = intent.getIntExtra("spinnerPosition",0);
+        //spinnerPosition = intent.getIntExtra("spinnerPosition",0);
         boxId = intent.getIntExtra("boxName",0);
         if (boxId == 0){
             boxName = "全て";
@@ -96,29 +95,35 @@ public class ToDoActivity extends AppCompatActivity {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    editTodo = editText.getText().toString();//書き込まれた内容(getText)をstrに格納
-                    if(editTodo.equals("")){//空欄の時:入力するようにとのメッセージ
-                        emptyTaskDialogFragment.show(getFragmentManager(), "empty");
-                    } else if (boxId == -1) {//今日の時:今日の日付を自動設定
-                        //boxName = "未分類";
-                        //boxId = 2;
-                        dbAdapter.writeDB(editTodo, "未分類", getNowDate(), editTime, editMemo, 2);
-                        showList(boxId);
-                        //boxId = -1;//元に戻す
-                    } else if (boxId == 0) {//全ての時
-                        //boxName = "未分類";
-                        //boxId = 2;
-                        dbAdapter.writeDB(editTodo, "未分類", editDate, editTime, editMemo, 2);
-                        showList(boxId);
-                        //boxId = 0;//元に戻す
-                    } else {
-                        dbAdapter.writeDB(editTodo, boxName, editDate, editTime, editMemo, boxId);
-                        showDividedTodoList(boxId);
+                if (editText.getText().toString().equals("")){
+                    Toast.makeText(ToDoActivity.this,
+                            "タスクを入力してください",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        editTodo = editText.getText().toString();//書き込まれた内容(getText)をstrに格納
+                        if(editTodo.equals("")){//空欄の時:入力するようにとのメッセージ
+                            emptyTaskDialogFragment.show(getFragmentManager(), "empty");
+                        } else if (boxId == -1) {//今日の時:今日の日付を自動設定
+                            //boxName = "未分類";
+                            //boxId = 2;
+                            dbAdapter.writeDB(editTodo, "未分類", getNowDate(), editTime, editMemo, 2);
+                            showList(boxId);
+                            //boxId = -1;//元に戻す
+                        } else if (boxId == 0) {//全ての時
+                            //boxName = "未分類";
+                            //boxId = 2;
+                            dbAdapter.writeDB(editTodo, "未分類", editDate, editTime, editMemo, 2);
+                            showList(boxId);
+                            //boxId = 0;//元に戻す
+                        } else {
+                            dbAdapter.writeDB(editTodo, boxName, editDate, editTime, editMemo, boxId);
+                            showDividedTodoList(boxId);
+                        }
+                        editText.getEditableText().clear();
+                    } catch (Exception e) {//エラーの場合
+                        Log.e(TAG, "SQLExcepption:" + e.toString());
                     }
-                    editText.getEditableText().clear();
-                } catch (Exception e) {//エラーの場合
-                    Log.e(TAG, "SQLExcepption:" + e.toString());
                 }
             }
         });
@@ -129,7 +134,6 @@ public class ToDoActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,View view,
                                            int position, long id) {
-
                 todoId = dbAdapter.getTodoId(getNowDate(),boxId,id);
                 deleteList(todoId);
                 if (boxId == 0){//全てが選択されているとき
@@ -149,12 +153,10 @@ public class ToDoActivity extends AppCompatActivity {
                 // 遷移先のactivityを指定してintentを作成
                 Intent intent = new Intent(ToDoActivity.this, TodoDetail.class);
                 int todoId = dbAdapter.getTodoId(getNowDate(),boxId,id);//todoのidを取得
-                //boxId = dbAdapter.getBoxIdData(todoId);//todoのboxidを取得
-                //spinnerPosition = boxDBAdapter.getSpinnerPosition(dbAdapter.getBoxIdData(todoId))-1;//完了済みの分-1する
+                spinnerPosition = boxDBAdapter.getSpinnerPosition(dbAdapter.getBoxIdData(todoId));
 
                 intent.putExtra( "todoId", todoId);
                 intent.putExtra("spinnerPosition", spinnerPosition);
-
                 intent.putExtra("boxName", boxId);//todoのboxidを取得
                 startActivityForResult(intent, TODO_DETAIL);
             }

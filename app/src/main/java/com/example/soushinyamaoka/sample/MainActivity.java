@@ -55,14 +55,11 @@ public class MainActivity extends AppCompatActivity {
         allTodoView.setClickable(true);
         allTodoView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                spinnerPosition =
-                startTodoActivityClass(spinnerPosition,boxId);
                 Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
                 int boxId = 0;
                 intent.putExtra("boxName",boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
-                //startActivity(intent);
             }
         });
 
@@ -74,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("boxName", boxId);
                 int requestCode = 123;
                 startActivityForResult(intent, requestCode);
-                //startActivity(intent);
             }
         });
 
@@ -118,21 +114,24 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     alertDialog.create().show();
-
                 } else if (view.getId() == R.id.text){
-                    startTodoActivityClass(spinnerPosition,boxId);
+                    startTodoActivityClass(boxId);
                 }
             }
         });
 
         editBoxButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String setBoxName = editBoxView.getText().toString();
-
-                boxDBAdapter.writeBoxDB(setBoxName);
-
-                showBox();
-                editBoxView.getEditableText().clear();
+                if (editBoxView.getText().toString().equals("")){
+                    Toast.makeText(MainActivity.this,
+                            "カテゴリを入力してください",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    String setBoxName = editBoxView.getText().toString();
+                    boxDBAdapter.writeBoxDB(setBoxName);
+                    showBox();
+                    editBoxView.getEditableText().clear();
+                }
             }
         });
 
@@ -161,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
             Integer[] integerArray = dbAdapter.getTodoIdAsArray(null,boxId);
             int[] todoIdArray = new int[integerArray.length];
             String[] todoArray = new String[integerArray.length];
-            String[] boxArray = new String[integerArray.length];
+            //String[] boxArray = new String[integerArray.length];
             String[] dateArray = new String[integerArray.length];
             String[] timeArray = new String[integerArray.length];
             String[] memoArray = new String[integerArray.length];
@@ -194,12 +193,12 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(editIntent, requestCode);
     }
 
-    public void startTodoActivityClass(int spinnerPosition, int boxId){
+    public void startTodoActivityClass(int boxId){
         // 遷移先のactivityを指定してintentを作成
         Intent todoActiveIntent = new Intent(MainActivity.this, ToDoActivity.class);
 
         todoActiveIntent.putExtra("boxName", boxId);
-        todoActiveIntent.putExtra("spinnerPosition", spinnerPosition);//Detail表示の際に使用
+        //todoActiveIntent.putExtra("spinnerPosition", spinnerPosition);//Detail表示の際に使用
 
         int requestCode = 123;
         startActivityForResult(todoActiveIntent, requestCode);

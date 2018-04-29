@@ -254,40 +254,17 @@ public class TodoDetail extends Activity {
         if (boxId == 1){//完了済みのタスクの場合
             finish();
         } else {
-            //int updateBoxId = boxDBAdapter.changeToBoxId(spinner_box.getSelectedItemPosition() + 3);//完了済みを抜いてる分の１をプラス
             int updateBoxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition());
-            //boxName = boxDBAdapter.getBoxName(boxId);
             dbAdapter.updateDB(todoId,
                     editTodo.getText().toString(),
-                    //edit_Box.getText().toString(),
                     (String)spinner_box.getSelectedItem(),
                     editDate.getText().toString(),
                     editTime.getText().toString(),
                     editMemo.getText().toString(),
                     updateBoxId
                     );
-            //if (allTodo){//全てが選ばれていた場合はboxidを0に戻す
-            //    boxId = 0;
-            //} else if (todayTodo) {//今日が選ばれているとき
-            //    boxId = -1;
-            //}
             Intent data = new Intent(TodoDetail.this,ToDoActivity.class);
             data.putExtra("boxName",boxId);
-            //-----------でバック
-            if (boxId == -1) {
-                Toast.makeText(TodoDetail.this,
-                        "boxID:"+boxId+"カテゴリ:今日",
-                        Toast.LENGTH_LONG).show();
-            } else if (boxId == 0) {
-                Toast.makeText(TodoDetail.this,
-                        "boxID:"+boxId+"カテゴリ:全て",
-                        Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(TodoDetail.this,
-                        "boxID:"+boxId+"カテゴリ:"+boxDBAdapter.getBoxName(boxId),
-                        Toast.LENGTH_LONG).show();
-            }
-            //-----------
             setResult(RESULT_OK, data);
             finish();
         }
@@ -298,7 +275,6 @@ public class TodoDetail extends Activity {
         String setDate;
         String setTime;
         String setMemo;
-        Integer setId;
 
         setTodo = dbAdapter.getTodoData(todoId);
         setDate = dbAdapter.getDateData(todoId);
