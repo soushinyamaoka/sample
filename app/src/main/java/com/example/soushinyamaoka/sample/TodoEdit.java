@@ -99,10 +99,16 @@ public class TodoEdit extends Activity {
                         } else if (setTextBox == null){//分類がされていない時の処理
                             setTextBox = "未分類";
                             boxId = 2;
+                            Toast.makeText(TodoEdit.this,
+                                    "1件追加しました",
+                                    Toast.LENGTH_SHORT).show();
                             dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
                             finish();
                         } else {//通常処理
                             dbAdapter.writeDB(setTextTodo, setTextBox, setTextDate, setTextTime, setTextMemo, boxId);
+                            Toast.makeText(TodoEdit.this,
+                                    "1件追加しました",
+                                    Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     } catch (Exception e) {//エラーの場合

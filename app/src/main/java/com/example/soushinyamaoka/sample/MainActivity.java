@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     BoxDBAdapter boxDBAdapter;
     DBHelper db;
     CustomAdapter customAdapter;
-    int boxDataBaseId;
     int boxId;
     int spinnerPosition;
 

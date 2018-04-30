@@ -22,7 +22,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private Notification buildNotification(Context context, String content) {
-        Intent resultIntent = new Intent(context, MainActivity.class);
+        Intent resultIntent = new Intent(context, TodoDetail.class);
+        resultIntent.putExtra("todoId",requestCode);
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(context,
                                         requestCode,

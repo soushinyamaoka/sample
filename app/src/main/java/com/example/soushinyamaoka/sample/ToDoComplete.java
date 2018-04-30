@@ -28,7 +28,6 @@ public class ToDoComplete extends AppCompatActivity{
     int spinnerPosition = 0;
     String boxName;
     int boxId;
-    int boxDataBaseId;
     private static final int TODO_DETAIL = 1001;
     private static final int TODO_DELETE = 1002;
     private Button deleteButton;
@@ -93,9 +92,7 @@ public class ToDoComplete extends AppCompatActivity{
                     public boolean onItemLongClick(AdapterView<?> parent,View view,
                                                    int position, long listviewId) {
                         todoId = dbAdapter.getTodoId(null,boxId,listviewId);
-                        //todoId = dbAdapter.changeDividedId(listviewId, boxId);
                         dbAdapter.playBackDB(todoId, "未分類",2);//未分類id=2
-                        //deleteArchive(getApplicationContext(),listviewId);
                         showDividedTodoList(boxId);
                         Toast.makeText(ToDoComplete.this, "完了済みを解除しました", Toast.LENGTH_LONG).show();
 
@@ -166,7 +163,6 @@ public class ToDoComplete extends AppCompatActivity{
     }
 
     public void deleteComplete(){
-        //dbAdapter = new DBAdapter(context);
         try {
             dbAdapter.deleteDB(boxId);//DB上の値をDB上のidで削除。
         } catch (Exception e) {
@@ -198,8 +194,6 @@ public class ToDoComplete extends AppCompatActivity{
             intent.putExtra( "todoId", id );
             startActivity(intent);
 
-            //int requestCode = 1234;
-            //startActivityForResult(intent, requestCode);
             return true;
         }
         return super.onOptionsItemSelected(item);

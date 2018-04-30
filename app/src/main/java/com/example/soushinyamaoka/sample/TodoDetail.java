@@ -167,47 +167,54 @@ public class TodoDetail extends Activity {
     }
 
     public void setReminder(){
-        if (editDate.getText().toString().equals("")){
-            // チェックボックス1がチェックされる
-            //設定された時間
-            String strDate = editDate.getText().toString();//"yyyy年MM月dd日"
-            String strTime = editTime.getText().toString();//"HH時mm分"
-            String str1 = strDate + strTime;
-            String str2 = str1.replace("年", "/");
-            String str3 = str2.replace("月", "/");
-            String str4 = str3.replace("日", " ");
-            String str5 = str4.replace("時", ":");
-            String str6 = str5.replace("分", "");//"yyyy/MM/dd HH:mm"
+        //設定された時間
+        String strDate = editDate.getText().toString();//"yyyy年MM月dd日"
+        String strTime = editTime.getText().toString();//"HH時mm分"
+        String str1 = strDate + strTime;
+        String str2 = str1.replace("年", "/");
+        String str3 = str2.replace("月", "/");
+        String str4 = str3.replace("日", " ");
+        String str5 = str4.replace("時", ":");
+        String str6 = str5.replace("分", "");//"yyyy/MM/dd HH:mm"
 
-            Date dDate = null;
-            DateFormat df2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");// 変換
-            try {
-                dDate = df2.parse(str6);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            //現在の時間
-            Date now = new Date(System.currentTimeMillis());
-            long triggerAtTime = getTriggerAtTime(now,dDate);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.add(Calendar.SECOND, (int) triggerAtTime);
-            scheduleNotification(editTodo.getText().toString(), calendar);
-            Toast.makeText(TodoDetail.this,
-                    "リマインダーを設定しました",
-                    Toast.LENGTH_SHORT).show();
+        Date dDate = null;
+        DateFormat df2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");// 変換
+        try {
+            dDate = df2.parse(str6);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        //現在の時間
+        Date now = new Date(System.currentTimeMillis());
+        long triggerAtTime = getTriggerAtTime(now,dDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(Calendar.SECOND, (int) triggerAtTime);
+        scheduleNotification(editTodo.getText().toString(), calendar);
+        Toast.makeText(TodoDetail.this,
+                "リマインダーを設定しました",
+                Toast.LENGTH_SHORT).show();
     }
 
     private void cancelReminder(){
         // アラームの削除
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        //AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
+        //Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        //PendingIntent pendingIntent = PendingIntent.getBroadcast(this, todoId, intent, 0);
+
+        //pendingIntent.cancel();
+        //alarmManager.cancel(pendingIntent);
+        // ActivityAlarmReceiverを呼び出すインテントを作成
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, todoId, intent, 0);
-
-        pendingIntent.cancel();
-        alarmManager.cancel(pendingIntent);
+        // ブロードキャストを投げるPendingIntentの作成
+        PendingIntent sender = PendingIntent.getBroadcast(
+                this, todoId, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        // AlarmManager取得
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        // PendingIntentをキャンセル
+        am.cancel(sender);
     }
 
     private void scheduleNotification(String content, Calendar calendar){
@@ -260,7 +267,6 @@ public class TodoDetail extends Activity {
                 finish();
             }
         }
-
     }
 
     public void showDetail(int todoId, int boxId)  {
