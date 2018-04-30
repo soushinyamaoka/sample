@@ -1,4 +1,4 @@
-package com.example.soushinyamaoka.sample;
+package todo.example.soushinyamaoka.sample;
 
 import org.junit.Test;
 

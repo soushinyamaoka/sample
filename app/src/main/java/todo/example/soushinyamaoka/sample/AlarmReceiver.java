@@ -1,4 +1,4 @@
-package com.example.soushinyamaoka.sample;
+package todo.example.soushinyamaoka.sample;
 
 import android.app.Notification;
 import android.app.NotificationManager;

@@ -1,4 +1,4 @@
-package com.example.soushinyamaoka.sample;
+package todo.example.soushinyamaoka.sample;
 
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.example.soushinyamaoka.sample.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package com.example.soushinyamaoka.sample;
+package todo.example.soushinyamaoka.sample;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
