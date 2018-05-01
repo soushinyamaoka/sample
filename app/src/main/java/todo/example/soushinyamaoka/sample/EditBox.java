@@ -6,8 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.example.soushinyamaoka.sample.R;
+import android.widget.Toast;
 
 public class EditBox extends AppCompatActivity{
 
@@ -35,6 +34,11 @@ public class EditBox extends AppCompatActivity{
 
         editEditButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if (editEditBox.getText().toString().equals("")){
+                    Toast.makeText(EditBox.this,
+                            "カテゴリ名を入力してください",
+                            Toast.LENGTH_SHORT).show();
+                }
                 //todoの詳細を表示
                 //-------------------------
                 String setBoxName = editEditBox.getText().toString();

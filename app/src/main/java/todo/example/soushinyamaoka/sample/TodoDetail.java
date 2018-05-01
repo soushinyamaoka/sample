@@ -18,9 +18,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
-import com.example.soushinyamaoka.sample.R;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -114,6 +111,9 @@ public class TodoDetail extends Activity {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
                 editDate.setText(year + "年" + (monthOfYear + 1) + "月" + dayOfMonth + "日");
+                if (!editTime.getText().toString().equals("")){
+                    setReminder();
+                }
             }
         };
         Calendar calendar = Calendar.getInstance();
@@ -199,15 +199,6 @@ public class TodoDetail extends Activity {
     }
 
     private void cancelReminder(){
-        // アラームの削除
-        //AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        //Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-        //PendingIntent pendingIntent = PendingIntent.getBroadcast(this, todoId, intent, 0);
-
-        //pendingIntent.cancel();
-        //alarmManager.cancel(pendingIntent);
-        // ActivityAlarmReceiverを呼び出すインテントを作成
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         // ブロードキャストを投げるPendingIntentの作成
         PendingIntent sender = PendingIntent.getBroadcast(
@@ -246,28 +237,30 @@ public class TodoDetail extends Activity {
 
     @Override
     public void onBackPressed(){
-        if ((editDate.getText().toString().equals("")) && (!editTime.getText().toString().equals(""))){
+        if (boxId == 1) {//完了済みのタスクの場合
+            finish();
+        } else if ((editDate.getText().toString().equals("")) && (!editTime.getText().toString().equals(""))) {
             Toast.makeText(TodoDetail.this,
                     "日付を設定してください",
                     Toast.LENGTH_SHORT).show();
+        } else if (editTodo.getText().toString().equals("")) {
+            Toast.makeText(TodoDetail.this,
+                    "タスクを入力してください",
+                    Toast.LENGTH_SHORT).show();
         } else {
-            if (boxId == 1){//完了済みのタスクの場合
-                finish();
-            } else {
-                int updateBoxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition());
-                dbAdapter.updateDB(todoId,
-                        editTodo.getText().toString(),
-                        (String)spinner_box.getSelectedItem(),
-                        editDate.getText().toString(),
-                        editTime.getText().toString(),
-                        editMemo.getText().toString(),
-                        updateBoxId
-                );
-                Intent data = new Intent(TodoDetail.this,ToDoActivity.class);
-                data.putExtra("boxName",boxId);
-                setResult(RESULT_OK, data);
-                finish();
-            }
+            int updateBoxId = boxDBAdapter.getBoxId(spinner_box.getSelectedItemPosition());
+            dbAdapter.updateDB(todoId,
+                    editTodo.getText().toString(),
+                    (String)spinner_box.getSelectedItem(),
+                    editDate.getText().toString(),
+                    editTime.getText().toString(),
+                    editMemo.getText().toString(),
+                    updateBoxId
+            );
+            Intent data = new Intent(TodoDetail.this,ToDoActivity.class);
+            data.putExtra("boxName",boxId);
+            setResult(RESULT_OK, data);
+            finish();
         }
     }
 

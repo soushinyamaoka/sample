@@ -8,9 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.example.soushinyamaoka.sample.R;
-
 class CustomAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private int resourcedId;

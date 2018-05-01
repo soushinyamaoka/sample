@@ -31,7 +31,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                                         PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification.Builder builder = new Notification.Builder(context);
-        builder.setContentTitle("リマインダーID:" +requestCode)
+        builder.setContentTitle("リマインダー")
                 .setContentText(content)
                 .setAutoCancel(true)
                 .setSmallIcon(android.R.drawable.sym_def_app_icon);

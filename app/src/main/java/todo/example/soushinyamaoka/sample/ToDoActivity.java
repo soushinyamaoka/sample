@@ -15,9 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.example.soushinyamaoka.sample.R;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -90,9 +87,6 @@ public class ToDoActivity extends AppCompatActivity {
         } else {//その他すべて
             showDividedTodoList(boxId);
         }
-        Toast.makeText(ToDoActivity.this,
-                "boxID:"+boxId+"カテゴリ:"+boxName,
-                Toast.LENGTH_LONG).show();
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
